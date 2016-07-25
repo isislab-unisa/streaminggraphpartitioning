@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>it.isislab.streamingkway</groupId>
+	<artifactId>kwaysgp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>kwaysgp</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+
+
+	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/args4j/args4j -->
+		<dependency>
+			<groupId>args4j</groupId>
+			<artifactId>args4j</artifactId>
+			<version>2.33</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/net.sf.opencsv/opencsv -->
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+
+		<dependency>
+			<artifactId>gs-core</artifactId>
+			<groupId>org.graphstream</groupId>
+			<version>1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.graphstream</groupId>
+			<artifactId>gs-ui</artifactId>
+			<version>1.3</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<artifactId>gs-algo</artifactId>
+			<groupId>org.graphstream</groupId>
+			<version>1.3</version>
+		</dependency>
+
+
+
+		<!-- The new dependency : -->
+		<dependency>
+			<artifactId>commons-math</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<version>2.1</version>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
