@@ -115,7 +115,7 @@ public class App {
 		printWriter.println(toPrint);
 		printWriter.flush();
 		printWriter.close();
-		gr.display();
+		//gr.display();
 	}
 	
 }
