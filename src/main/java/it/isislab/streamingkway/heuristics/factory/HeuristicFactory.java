@@ -1,5 +1,6 @@
 package it.isislab.streamingkway.heuristics.factory;
 
+
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.heuristics.BalanceBig;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
@@ -16,6 +17,7 @@ import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.UnweightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedRandomizedGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedTriangles;
+import it.isislab.streamingkway.heuristics.my.ParallelHeuristic;
 import it.isislab.streamingkway.heuristics.my.ParallelUnweightedDeterministicGreedy;
 
 public class HeuristicFactory {
@@ -52,13 +54,12 @@ public class HeuristicFactory {
 		case Heuristic.BALANCE_BIG : euristic = new BalanceBig();
 				break;
 				
-//		case Heuristic.PARALLEL_U_DETERMINISTIC_G: euristic = new ParallelUnweightedDeterministicGreedy();
-//				break;
+		case ParallelHeuristic.PARALLEL_U_DETERMINISTIC_G: euristic = new ParallelUnweightedDeterministicGreedy();
+				break;
 
 		default: euristic = new BalancedHeuristic();
 				break;
 		}
-		
 		return euristic;
 	}
 

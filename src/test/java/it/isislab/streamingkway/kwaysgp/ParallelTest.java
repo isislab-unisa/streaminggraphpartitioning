@@ -12,6 +12,7 @@ import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraver
 import it.isislab.streamingkway.heuristics.Heuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
+import it.isislab.streamingkway.heuristics.my.ParallelHeuristic;
 import it.isislab.streamingkway.metrics.ParallelQualityChecker;
 import it.isislab.streamingkway.metrics.QualityChecker;
 import junit.framework.Test;
@@ -20,9 +21,8 @@ import junit.framework.TestSuite;
 
 public class ParallelTest extends TestCase {
 
-	private final static String GRAPH_PATH = "src/test/resources/4elt.graph";
+	private final static String GRAPH_PATH = "resources/4elt.graph";
 	private final static Integer ITERATION_TIME = 5;
-	private static final Double DISPLACEMENT_TOLERANCE = 5.0;
 	private Logger log = Logger.getGlobal();
 	private double parallelResult;
 	private double serialResult;
@@ -47,7 +47,7 @@ public class ParallelTest extends TestCase {
 		//parallel test
 		Integer k = 4;
 		Integer c = 3902;
-		SGPHeuristic heuristic = HeuristicFactory.getHeuristic(Heuristic.PARALLEL_U_DETERMINISTIC_G);
+		SGPHeuristic heuristic = HeuristicFactory.getHeuristic(ParallelHeuristic.PARALLEL_U_DETERMINISTIC_G);
 		GraphTraversingOrdering gto = OrderingFactory.getOrdering(Ordering.BFS_ORDER);
 		for(int i = 0; i < ITERATION_TIME; i++) {
 			Long startTime = System.currentTimeMillis();

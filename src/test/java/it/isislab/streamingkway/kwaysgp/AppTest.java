@@ -36,14 +36,14 @@ extends TestCase
 
 	private Logger log = Logger.getGlobal();
 	
-	public static final Integer ITERATION_TIME = 20;
+	public static final Integer ITERATION_TIME = 5;
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
-	public static final String PATH_4ELT_ST_RES = "src/test/resources/4elt-stanton-res";
-	public static final String PATH_4ELT_GRAPH = "src/test/resources/4elt.graph";
-	public static final String PATH_TINY_GRAPH = "src/test/resources/tiny_01.graph";
+	public static final String PATH_4ELT_ST_RES = "resources/4elt-stanton-res";
+	public static final String PATH_4ELT_GRAPH = "resources/4elt.graph";
+	public static final String PATH_TINY_GRAPH = "resources/tiny_01.graph";
 	private static final Double DISPLACEMENT_TOLERANCE = 5.0;
 	
 	Map<Integer, Double> res4eltBfs = new HashMap<>();
@@ -133,83 +133,39 @@ extends TestCase
 	 * @throws IOException 
 	 * @throws HeuristicNotFound ****************************************************************************
 	 */
-	
-	public void test4eltDG() throws HeuristicNotFound, IOException {
+	public void test4eltBFS() throws HeuristicNotFound, IOException, InterruptedException {
 		File fpIn = new File(PATH_4ELT_GRAPH);
-		File fpOut = new File(PATH_4ELT_GRAPH+".bfs");
+		assertTrue(fpIn.exists());
+		File fpOut = new File(PATH_4ELT_GRAPH + ".bfs");
+
+		//check 4elt with 4 partitions
 		Integer k = 4;
-		Integer C = 3902;
+		Integer C = 3902; // 15606/4+1
 
-		HashMap<Integer, Double> heuristicEdgesRatio = new HashMap<>();
-		GraphLoader gl = null; 
-
-		//check all heuristics
-		Field[] heuristics = Heuristic.class.getDeclaredFields();
-		QualityChecker qc = new ParallelQualityChecker();
-		for (int i = Heuristic.U_DETERMINISTIC_GREEDY; i <= Heuristic.E_TRIANGLES; i++) {
-			heuristicEdgesRatio.put(i, 0.0); //init entry
-			log.info("Executing: " + HeuristicFactory.getHeuristic(i).getHeuristicName());
-			for (int j = 0; j < ITERATION_TIME; j++) {
-				gl = getGraphLoader(Ordering.BFS_ORDER, fpIn,fpOut,k,HeuristicFactory.getHeuristic(i),C,true);
-				gl.run();    
-				double edgesRatio = qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph());
-				edgesRatio += heuristicEdgesRatio.get(i);
-				heuristicEdgesRatio.put(i, edgesRatio);
-				//count total partitioned nodes
-				int totalNodes = gl.getGraphPartitionator().getTotalPartitionedNodes();
-				assertEquals(totalNodes, gl.getNodeNumbers());
-				assertEquals(totalNodes,gl.getGraphPartitionator().getGraph().getNodeCount());
-				//count total partitioned edges
-				int totalEdges = gl.getEdgeNumbers();
-				assertEquals(totalEdges, gl.getGraphPartitionator().getGraph().getEdgeCount());
-				//check displacement
-				assertTrue(qc.getDisplacement(gl.getGraphPartitionator().getPartitionMap()) <= 
-						DISPLACEMENT_TOLERANCE);
-			}
-			log.info("Test for " + HeuristicFactory.getHeuristic(i).getHeuristicName() + " done.");
-			heuristicEdgesRatio.put(i, heuristicEdgesRatio.get(i) / ITERATION_TIME);
-		}
-		for (Entry<Integer, Double> e : heuristicEdgesRatio.entrySet()) {
-			log.info("Result for " + e.getKey() +" : " + e.getValue());
-		}
-
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.BFS_ORDER, res4eltBfs);
 	}
-//	@Ignore
-//	public void test4eltBFS() throws HeuristicNotFound, IOException, InterruptedException {
-//		File fpIn = new File(PATH_4ELT_GRAPH);
-//		assertTrue(fpIn.exists());
-//		File fpOut = new File(PATH_4ELT_GRAPH + ".bfs");
-//
-//		//check 4elt with 4 partitions
-//		Integer k = 4;
-//		Integer C = 3902; // 15606/4+1
-//
-//		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.BFS_ORDER, res4eltBfs);
-//	}
-//	@Ignore
-//	public void test4eltDFS() throws HeuristicNotFound, IOException, InterruptedException {
-//		File fpIn = new File(PATH_4ELT_GRAPH);
-//		assertTrue(fpIn.exists());
-//		File fpOut = new File(PATH_4ELT_GRAPH +".dfs");
-//
-//		//check 4elt with 4 partitions
-//		Integer k = 4;
-//		Integer C = 3902; // 15606/4+1
-//
-//		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.DFS_ORDER, res4eltDfs);
-//	}
-//	@Ignore
-//	public void test4eltRND() throws HeuristicNotFound, IOException, InterruptedException {
-//		File fpIn = new File(PATH_4ELT_GRAPH);
-//		assertTrue(fpIn.exists());
-//		File fpOut = new File(PATH_4ELT_GRAPH + ".rnd");
-//
-//		//check 4elt with 4 partitions
-//		Integer k = 4;
-//		Integer C = 3902; // 15606/4+1
-//
-//		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.RANDOM_ORDER, res4eltRan);
-//	}
+	public void test4eltDFS() throws HeuristicNotFound, IOException, InterruptedException {
+		File fpIn = new File(PATH_4ELT_GRAPH);
+		assertTrue(fpIn.exists());
+		File fpOut = new File(PATH_4ELT_GRAPH +".dfs");
+
+		//check 4elt with 4 partitions
+		Integer k = 4;
+		Integer C = 3902; // 15606/4+1
+
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.DFS_ORDER, res4eltDfs);
+	}
+	public void test4eltRND() throws HeuristicNotFound, IOException, InterruptedException {
+		File fpIn = new File(PATH_4ELT_GRAPH);
+		assertTrue(fpIn.exists());
+		File fpOut = new File(PATH_4ELT_GRAPH + ".rnd");
+
+		//check 4elt with 4 partitions
+		Integer k = 4;
+		Integer C = 3902; // 15606/4+1
+
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.RANDOM_ORDER, res4eltRan);
+	}
 	/******************************************************************************
 	 * 
 	 * 		TEST FOR 4ELT GRAPH ENDED
@@ -236,6 +192,7 @@ extends TestCase
 			log.info("Executing: " + HeuristicFactory.getHeuristic(i).getHeuristicName());
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				gl = getGraphLoader(glType, fpIn,fpOut,k,HeuristicFactory.getHeuristic(i),C,true);
+				Thread.sleep(500);
 				gl.run();    
 				double edgesRatio = qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph());
 				edgesRatio += heuristicEdgesRatio.get(i);
@@ -266,10 +223,9 @@ extends TestCase
 
 		for (Entry<Integer, Double> val : heuristicEdgesRatio.entrySet()) {
 			boolean gt = Double.compare(val.getValue(),toCompareResults.get(val.getKey()) + MES_TOLERANCE) <= 0;
-			boolean lt = Double.compare(val.getValue(),toCompareResults.get(val.getKey()) - MES_TOLERANCE) >= 0;
 			log.info("Comparing: " + val.getValue() + " vs " + toCompareResults.get(val.getKey()) +
 					" with " + HeuristicFactory.getHeuristic(val.getKey()).getHeuristicName());
-			//assertTrue("Comparing results",gt && lt);
+			assertTrue("Comparing results",gt);
 		}
 	}
 

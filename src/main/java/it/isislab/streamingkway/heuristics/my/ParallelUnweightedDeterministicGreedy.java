@@ -12,7 +12,7 @@ public class ParallelUnweightedDeterministicGreedy extends ParallelAbstractDeter
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Deterministic Greedy";
+		return "Parallel Unweighted Deterministic Greedy";
 	}
 
 	public Double getWeight(Double intersectNodes, Integer c) {

@@ -15,7 +15,6 @@ public class Heuristic {
 	public static final int L_TRIANGLES = 11;
 	public static final int E_TRIANGLES = 12;
 	public static final int BALANCE_BIG = 13;
-	
-	//MY
-	//public static final int PARALLEL_U_DETERMINISTIC_G = 21;
+
+
 }

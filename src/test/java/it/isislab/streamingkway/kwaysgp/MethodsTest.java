@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 
 public class MethodsTest extends TestCase {
 
-	private static final int PROB_TOLERANCE = 5;
+	private static final int PROB_TOLERANCE = 2;
 
 	public MethodsTest (String testName) {
 		super(testName);
@@ -81,6 +81,8 @@ public class MethodsTest extends TestCase {
 		Long count1 = integers.parallelStream().filter(p -> p.intValue() == 1).count();
 		Long count2 = integers.parallelStream().filter(p -> p.intValue() == 2).count();
 
+
+		
 		assertTrue(Long.compare(70L+PROB_TOLERANCE, count1) >= 0);
 		assertTrue(Long.compare(70L-PROB_TOLERANCE, count1) <= 0);
 		assertTrue(Long.compare(30L+PROB_TOLERANCE, count2) >= 0);
