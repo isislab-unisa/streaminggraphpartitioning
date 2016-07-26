@@ -1,9 +1,9 @@
 package it.isislab.streamingkway.heuristics.my;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.graphstream.graph.Graph;
@@ -23,11 +23,11 @@ public abstract class ParallelAbstractDeterministicGreedy implements SGPHeuristi
 		max = Double.NEGATIVE_INFINITY;
 		Integer c = partitionMap.getC();
 		Integer k = partitionMap.getK();
-		Map<Integer, Set<Node>> partitions = partitionMap.getPartitions();
+		Map<Integer, Collection<Node>> partitions = partitionMap.getPartitions();
 
-		partitions.entrySet().parallelStream().forEach(new Consumer<Entry<Integer,Set<Node>>>() {
+		partitions.entrySet().parallelStream().forEach(new Consumer<Entry<Integer,Collection<Node>>>() {
 
-			public void accept(Entry<Integer, Set<Node>> partition) {
+			public void accept(Entry<Integer, Collection<Node>> partition) {
 				Integer partitionSize = partition.getValue().size();
 				Integer partitionIndx = partition.getKey();
 				if (partitionSize >= c) {

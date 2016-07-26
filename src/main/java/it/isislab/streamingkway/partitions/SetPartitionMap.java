@@ -1,39 +1,37 @@
 package it.isislab.streamingkway.partitions;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.ToIntFunction;
 
 import org.graphstream.graph.Node;
 
+import it.isislab.streamingkway.exceptions.InvalidCapacity;
 import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
 
 public class SetPartitionMap implements PartitionMap {
 
-	private ConcurrentHashMap<Integer, Set<Node>> chm;
-	private ConcurrentHashMap<Integer, Integer> partitionsSize; //TODO to remove?
-	private ConcurrentHashMap<Integer,Integer> degreeMap; 
+	private Map<Integer, Collection<Node>> chm;
+	private Map<Integer, Integer> partitionsSize; //TODO to remove?
+	private Map<Integer,Integer> degreeMap; 
 	private Integer size = 0;
 	private Integer K;
 	private Integer C;
 
 	public SetPartitionMap(Integer k, Integer capacity) {
 		this.K = k;
-		chm = new ConcurrentHashMap<Integer, Set<Node>>(k);
+		chm = new ConcurrentHashMap<Integer, Collection<Node>>(k);
 		partitionsSize = new ConcurrentHashMap<Integer, Integer>(k);
 		degreeMap = new ConcurrentHashMap<Integer,Integer>();
-		int capacityInit = 0;
-		if (capacity != Integer.MAX_VALUE) {
-			capacityInit = capacity/2;
-			this.C = capacity;
-		} else {
-			this.C = Integer.MAX_VALUE;
+		if (capacity <= 0) {
+			throw new InvalidCapacity("Capacity must be greater than 0");
 		}
+		this.C = capacity;
 		for (int i = 1; i <= k; i++) {
-			chm.put(i, new HashSet<Node>(capacityInit));
+			chm.put(i, new HashSet<Node>(capacity/2));
 		}
 		for (int i = 1; i <= k; i++) {
 			partitionsSize.put(i, 0);
@@ -48,7 +46,7 @@ public class SetPartitionMap implements PartitionMap {
 
 	public Node assignToPartition(Node v, Integer ind) throws PartitionOutOfBoundException {
 		checkIndex(ind);
-		Set<Node> s = chm.get(ind);
+		Collection<Node> s = chm.get(ind);
 		s.add(v);
 		//update size
 		partitionsSize.put(ind, partitionsSize.get(ind) + 1);
@@ -86,15 +84,16 @@ public class SetPartitionMap implements PartitionMap {
 		return true;
 	}
 
-	public Set<Node> getPartition(Integer index) {
+	public Collection<Node> getPartition(Integer index) {
 		return this.chm.get(index);
 	}
 
-	public Set<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException {
+	public Collection<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException {
+		
 		checkIndex(partitionIndex);
 		Iterator<Node> vNeigh = v.getNeighborNodeIterator();
-		Set<Node> partition = this.chm.get(partitionIndex);
-		Set<Node> intersection = new HashSet<Node>(1);
+		Collection<Node> partition = this.chm.get(partitionIndex);
+		Collection<Node> intersection = new HashSet<Node>(1);
 		while (vNeigh.hasNext()) {
 			Node u = vNeigh.next();
 			if (partition.contains(u)) {
@@ -106,7 +105,7 @@ public class SetPartitionMap implements PartitionMap {
 	
 	public Integer getIntersectionValueParallel(Node v, Integer partitionIndex) throws PartitionOutOfBoundException {
 		checkIndex(partitionIndex);
-		Set<Node> partition = this.chm.get(partitionIndex);
+		Collection<Node> partition = this.chm.get(partitionIndex);
 		Integer intersection = 0;
 		
 		intersection = partition.parallelStream().mapToInt(new ToIntFunction<Node>() {
@@ -120,13 +119,13 @@ public class SetPartitionMap implements PartitionMap {
 		return intersection;
 	}
 	
-	public Map<Integer, Set<Node>> getPartitions() {
+	public Map<Integer, Collection<Node>> getPartitions() {
 		return this.chm;
 	}
 
 	public Integer getIntersectionValue(Node v, Integer partitionIndex) throws PartitionOutOfBoundException {
 		checkIndex(partitionIndex);
-		Set<Node> partition = this.chm.get(partitionIndex);
+		Collection<Node> partition = this.chm.get(partitionIndex);
 		Integer intersection = 0;
 		
 		partition.stream().mapToInt(new ToIntFunction<Node>() {

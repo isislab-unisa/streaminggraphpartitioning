@@ -1,9 +1,9 @@
 package it.isislab.streamingkway.heuristics;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -15,13 +15,13 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n)  {
 		
-		Map<Integer,Set<Node>> partitions = partitionMap.getPartitions();
+		Map<Integer,Collection<Node>> partitions = partitionMap.getPartitions();
 		Integer index  = -1; 
 		double max = Double.NEGATIVE_INFINITY;
 		Integer c = partitionMap.getC();
 		Integer k = partitionMap.getK();
 
-		for (Entry<Integer, Set<Node>> partition : partitions.entrySet()) {
+		for (Entry<Integer, Collection<Node>> partition : partitions.entrySet()) {
 			Integer partitionSize = partition.getValue().size();
 			Integer partitionIndx = partition.getKey();
 			if (partitionSize >= c) {

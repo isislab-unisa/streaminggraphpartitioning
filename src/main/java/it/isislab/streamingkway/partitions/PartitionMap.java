@@ -1,10 +1,8 @@
 package it.isislab.streamingkway.partitions;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
-
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
 
 public interface PartitionMap {
@@ -15,9 +13,9 @@ public interface PartitionMap {
 	public Map<Integer, Integer> getPartitionsSize();
 	public Integer getK();
 	public Integer getC();
-	public Set<Node> getPartition(Integer index);
-	public Set<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
-	public Map<Integer, Set<Node>> getPartitions();
+	public Collection<Node> getPartition(Integer index);
+	public Collection<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
+	public Map<Integer, Collection<Node>> getPartitions();
 	public Integer getIntersectionValueParallel(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
 	public Integer getIntersectionValue(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
 	public Double getDegreeAverage();

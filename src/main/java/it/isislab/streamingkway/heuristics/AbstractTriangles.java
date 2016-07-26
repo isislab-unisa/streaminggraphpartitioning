@@ -1,10 +1,10 @@
 package it.isislab.streamingkway.heuristics;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -17,15 +17,15 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 		Integer index = -1;
-		Map<Integer,Set<Node>> parts = partitionMap.getPartitions();
+		Map<Integer,Collection<Node>> parts = partitionMap.getPartitions();
 	
 		
 		Double max = Double.NEGATIVE_INFINITY;
-		Iterator<Entry<Integer, Set<Node>>> partsIt = parts.entrySet().iterator();
+		Iterator<Entry<Integer, Collection<Node>>> partsIt = parts.entrySet().iterator();
 		while (partsIt.hasNext()) {
-			Entry<Integer, Set<Node>> t = partsIt.next();
+			Entry<Integer, Collection<Node>> t = partsIt.next();
 			Integer partitionIndex = t.getKey();
-			Set<Node> partitionNodes = t.getValue();
+			Collection<Node> partitionNodes = t.getValue();
 			if (partitionNodes.size() >= c) { //partition sated
 				continue;
 			}
