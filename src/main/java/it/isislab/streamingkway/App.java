@@ -57,7 +57,7 @@ public class App {
 		
 		//load files
 		File fpIn = new File(fileName);
-		String fileOutName = "res-"+fileName+"-"+new Date().getTime()+"-e"+heuristicNumber;
+		String fileOutName = fileName+"-"+new Date().getTime()+"-e"+heuristicNumber;
 		File fpOut = new File(fileOutName);
 		//load heuristic
 		SGPHeuristic heuristic = null;
