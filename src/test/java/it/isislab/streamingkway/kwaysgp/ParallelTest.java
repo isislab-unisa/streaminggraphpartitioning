@@ -35,8 +35,7 @@ public class ParallelTest extends TestCase {
 	
 	public static Test suite() {
 		return new TestSuite(ParallelTest.class);
-	}
-	
+	}	
 	
 	public void testParallel() throws IOException {
 		File fpIn = new File(GRAPH_PATH);

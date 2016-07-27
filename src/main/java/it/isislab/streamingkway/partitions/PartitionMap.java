@@ -1,8 +1,11 @@
 package it.isislab.streamingkway.partitions;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
 
 public interface PartitionMap {
@@ -15,6 +18,7 @@ public interface PartitionMap {
 	public Integer getC();
 	public Collection<Node> getPartition(Integer index);
 	public Collection<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
+	public List<Node> getIntersectionNodesParallel(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
 	public Map<Integer, Collection<Node>> getPartitions();
 	public Integer getIntersectionValueParallel(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
 	public Integer getIntersectionValue(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;

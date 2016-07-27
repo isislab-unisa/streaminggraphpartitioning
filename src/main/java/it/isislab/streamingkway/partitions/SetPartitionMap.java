@@ -1,10 +1,13 @@
 package it.isislab.streamingkway.partitions;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
 import org.graphstream.graph.Node;
@@ -14,6 +17,7 @@ import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
 
 public class SetPartitionMap implements PartitionMap {
 
+	private static final int DEGREE_DENOM = 2;
 	private Map<Integer, Collection<Node>> chm;
 	private Map<Integer, Integer> partitionsSize; //TODO to remove?
 	private Map<Integer,Integer> degreeMap; 
@@ -160,6 +164,22 @@ public class SetPartitionMap implements PartitionMap {
 				p -> p.getValue()
 		).sum();
 		return totalNodes;
+	}
+
+	public List<Node> getIntersectionNodesParallel(Node v, Integer partitionIndex)
+			throws PartitionOutOfBoundException {
+		checkIndex(partitionIndex);
+		Collection<Node> partition = this.chm.get(partitionIndex);
+		List<Node> gammaVintersect = new ArrayList<Node>(v.getDegree()/DEGREE_DENOM);
+		
+		partition.parallelStream().forEach(new Consumer<Node>() {
+			public void accept(Node t) {
+				if (v.hasEdgeBetween(t)) {
+					gammaVintersect.add(t);
+				}
+			}
+		});
+		return gammaVintersect;
 	}
 	
 

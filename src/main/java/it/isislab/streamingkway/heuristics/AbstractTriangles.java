@@ -2,11 +2,11 @@ package it.isislab.streamingkway.heuristics;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
@@ -31,18 +31,15 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 			}
 			
 			int totalEdges = 0;
-			Iterator<Node> nodeIt = partitionNodes.iterator();
-			while (nodeIt.hasNext()) {
-				Iterator<Edge> edgeIt = nodeIt.next().getEdgeIterator();
-				while (edgeIt.hasNext()) {
-					Edge e = edgeIt.next();
-					if (partitionNodes.contains(e.getNode0())
-							&& partitionNodes.contains(e.getNode1())) {
-						totalEdges++;
+			List<Node> gammaNIntersect = partitionMap.getIntersectionNodesParallel(n, partitionIndex);
+			for (int i = 0; i < gammaNIntersect.size(); i++) {
+				for (int j = 1; j < gammaNIntersect.size(); j++) {
+					if (gammaNIntersect.get(i).hasEdgeBetween(gammaNIntersect.get(j))) {
+						totalEdges ++;
 					}
 				}
 			}
-			
+
 			//calculate score
 			Double totalScore = 0.0;
 			Integer N = partitionMap.getIntersectionValueParallel(n, partitionIndex);
@@ -56,6 +53,7 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 				continue;
 			}
 			totalScore = (double)totalEdges/binCoeff * weight; //safe to calculate because binCoeff != 0
+			
 			if (Double.max(max, totalScore) == totalScore) {
 				max = totalScore;
 				index = partitionIndex;
