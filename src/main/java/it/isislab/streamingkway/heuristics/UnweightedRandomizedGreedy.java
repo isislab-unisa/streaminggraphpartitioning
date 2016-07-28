@@ -14,7 +14,7 @@ public class UnweightedRandomizedGreedy extends AbstractRandomizedGreedy {
 
 	
 	public String getHeuristicName() {
-		return "Uneighted Randomized Greedy";
+		return "Unweighted Randomized Greedy";
 	}
 
 	public Double getWeight(Double intersectNumber, Integer c) {

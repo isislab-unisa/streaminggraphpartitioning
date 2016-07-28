@@ -11,5 +11,6 @@ public interface QualityChecker {
 	public Integer getCuttingEdgesCount(Graph gr);
 	public Double getDisplacement(PartitionMap pm);
 	public Double getCuttingEdgeRatio(Graph gr);
+	public Double getNormalizedMaximumLoad(PartitionMap pm, Graph gr);
 	
 }

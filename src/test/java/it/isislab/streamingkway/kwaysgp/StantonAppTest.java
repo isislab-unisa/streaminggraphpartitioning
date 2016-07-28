@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
+public class StantonAppTest 
 extends TestCase
 {
 
@@ -54,7 +54,7 @@ extends TestCase
 	 * @param testName name of the test case
 	 * @throws IOException 
 	 */
-	public AppTest( String testName ) throws IOException
+	public StantonAppTest( String testName ) throws IOException
 	{
 		super( testName );
 		init4EltMap();
@@ -70,7 +70,7 @@ extends TestCase
 	 */
 	public static Test suite()
 	{
-		return new TestSuite( AppTest.class );
+		return new TestSuite( StantonAppTest.class );
 	}
 	/********************************************************************************
 	 * 

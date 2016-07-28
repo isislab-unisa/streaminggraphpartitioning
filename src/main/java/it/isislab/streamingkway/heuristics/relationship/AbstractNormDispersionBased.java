@@ -18,11 +18,14 @@ import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
 import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
 import it.isislab.streamingkway.partitions.PartitionMap;
+public abstract class AbstractNormDispersionBased implements SGPHeuristic, WeightedHeuristic {
 
-public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, WeightedHeuristic{
-
-	public DistanceFunction dist = new SimpleDistanceFunction();
-
+	private static final Double A = 0.61;
+	private static final Double B = 0.0;
+	private static final Double C = 5.0;
+	
+	private DistanceFunction dist = new SimpleDistanceFunction();
+	
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
 		Integer index = -1;
 		Integer c = partitionMap.getC();
@@ -31,7 +34,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 			return new BalancedHeuristic().getIndex(g, partitionMap, n);
 		}
 		
-		Map<Node, Integer> nodeScores = new HashMap<>();
+		Map<Node, Double> nodeScores = new HashMap<>();
 		List<Node> nNeighbour = new ArrayList<Node>(n.getDegree());
 		
 		Iterator<Node> nNeighIt = n.getNeighborNodeIterator();
@@ -39,19 +42,22 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 			nNeighbour.add(nNeighIt.next());
 		}
 		for (Node v : nNeighbour) {
-			nodeScores.put(v, Dispersion.getDispersion(n, v, dist));
+			double disp = Dispersion.getDispersion(n, v, dist);
+			double emb = Dispersion.cuvCalculator(n, v).size();
+			nodeScores.put(v, Math.pow(disp + B, A) / (double)emb + C);
 		}
 		
 		Map<Integer, Double> partitionsScores = new HashMap<>(partitionMap.getK());
-		for (Entry<Node, Integer> nSc : nodeScores.entrySet()) {
+		for (Entry<Node, Double> nSc : nodeScores.entrySet()) {
 			if (!nSc.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
 				continue;
 			}
 			Integer partitionIndex = partitionMap.getNodePartition(nSc.getKey());
 			if (partitionIndex == null) continue;
 			if (partitionsScores.containsKey(partitionIndex)) {
-				partitionsScores.put(partitionIndex, (partitionsScores.get(partitionIndex) + nSc.getValue())
-						* getWeight((double)partitionMap.getIntersectionValueParallel(n, partitionIndex), c));
+				double value = (partitionsScores.get(partitionIndex) + nSc.getValue())
+						* getWeight((double)partitionMap.getIntersectionValueParallel(n, partitionIndex), c);
+				partitionsScores.put(partitionIndex, value);
 			} else {
 				partitionsScores.put(partitionIndex, (double)nSc.getValue());
 			}
@@ -71,11 +77,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		}
 		
 		return index == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : index;
-		
 	}
-	
-
-
 	public abstract Double getWeight(Double intersectNumber, Integer c);
 	public abstract String getHeuristicName();
 

@@ -33,5 +33,12 @@ public class ParallelQualityChecker implements QualityChecker {
 				).sum();
 	}
 
+	public Double getNormalizedMaximumLoad(PartitionMap pm, Graph gr) {
+		Map<Integer,Integer> partitionsSize = pm.getPartitionsSize();
+		int max = partitionsSize.values().parallelStream().mapToInt(p -> p.intValue()).max().getAsInt();
+		int nk = gr.getNodeCount()/pm.getK();
+		return (double)max/nk;
+	}
+
 
 }

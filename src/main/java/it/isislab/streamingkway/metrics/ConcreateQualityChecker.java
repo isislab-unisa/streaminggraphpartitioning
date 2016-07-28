@@ -8,6 +8,7 @@ import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.partitions.PartitionMap;
+import scala.NotImplementedError;
 
 public class ConcreateQualityChecker implements QualityChecker {
 
@@ -34,11 +35,17 @@ public class ConcreateQualityChecker implements QualityChecker {
 
 	public Double getDisplacement(PartitionMap pm) {
 		//TODO
-		return 0.0;
+		throw new NotImplementedError("Not implemented yet");
 	}
 
 	public Double getCuttingEdgeRatio(Graph gr) {
 		return (double)getCuttingEdgesCount(gr)/gr.getNodeCount();
+	}
+
+	@Override
+	public Double getNormalizedMaximumLoad(PartitionMap pm, Graph gr) {
+		// TODO Auto-generated method stub
+		throw new NotImplementedError("Not implemented yet");
 	}
 
 }

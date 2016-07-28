@@ -16,7 +16,7 @@ import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.WeightedHeuristic;
-import it.isislab.streamingkway.heuristics.relationship.distance.CuvCalculator;
+import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
 import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
 import it.isislab.streamingkway.partitions.PartitionMap;
@@ -24,6 +24,7 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, WeightedHeuristic {
 
 
+	private static final int ITERATION_TIME = 3;
 	private DistanceFunction dist = new SimpleDistanceFunction();
 	
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
@@ -88,7 +89,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 			}
 		}
 
-		return index;
+		return index == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : index;
 	}
 
 	public abstract String getHeuristicName();
@@ -96,10 +97,10 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 
 	private Map<Node,Double> getDispersion(List<Node> uNeighbour, Node u) {
 		Map<Node, Double> xNodes = new HashMap<>(u.getDegree());
-		for (int iteration = 0; iteration <= 2; iteration++) {
+		for (int iteration = 0; iteration < ITERATION_TIME; iteration++) {
 			for (Node v: uNeighbour) {
 				//cuv contains all uv common neighbour
-				List<Node> cuv = CuvCalculator.cuvCalculator(u, v);
+				List<Node> cuv = Dispersion.cuvCalculator(u, v);
 				
 				//calculate pt.1
 				Double pt1 = 0.0;
