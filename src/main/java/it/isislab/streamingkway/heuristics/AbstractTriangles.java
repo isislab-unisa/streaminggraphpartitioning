@@ -33,7 +33,7 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 			int totalEdges = 0;
 			List<Node> gammaNIntersect = partitionMap.getIntersectionNodesParallel(n, partitionIndex);
 			for (int i = 0; i < gammaNIntersect.size(); i++) {
-				for (int j = 1; j < gammaNIntersect.size(); j++) {
+				for (int j = i+1; j < gammaNIntersect.size(); j++) {
 					if (gammaNIntersect.get(i).hasEdgeBetween(gammaNIntersect.get(j))) {
 						totalEdges ++;
 					}

@@ -1,9 +1,9 @@
 package it.isislab.streamingkway.heuristics.relationship;
 
-public class LinearWeightedDispersionBased extends AbstractDispersionBased {
+public class LinearRecWeightedDispersionBased extends AbstractRecursiveDispersionBased {
 	
 	public String getHeuristicName() {
-		return "Linear Weighted Dispersion Based";
+		return "Linear Recursive Dispersion Based";
 	}
 
 	public Double getWeight(Double intersectNumber, Integer c) {

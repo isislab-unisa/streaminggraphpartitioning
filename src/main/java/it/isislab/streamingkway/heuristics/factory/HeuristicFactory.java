@@ -19,10 +19,10 @@ import it.isislab.streamingkway.heuristics.UnweightedRandomizedGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedTriangles;
 import it.isislab.streamingkway.heuristics.my.ParallelHeuristic;
 import it.isislab.streamingkway.heuristics.my.ParallelUnweightedDeterministicGreedy;
-import it.isislab.streamingkway.heuristics.relationship.ExponentiallyWeightedDispersionBased;
-import it.isislab.streamingkway.heuristics.relationship.LinearWeightedDispersionBased;
+import it.isislab.streamingkway.heuristics.relationship.ExponentiallyRecWeightedDispersionBased;
+import it.isislab.streamingkway.heuristics.relationship.LinearRecWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.RelationshipHeuristics;
-import it.isislab.streamingkway.heuristics.relationship.UnweightedDispersionBased;
+import it.isislab.streamingkway.heuristics.relationship.UnweightedRecDispersionBased;
 
 public class HeuristicFactory {
 
@@ -61,11 +61,11 @@ public class HeuristicFactory {
 		case ParallelHeuristic.PARALLEL_U_DETERMINISTIC_G: euristic = new ParallelUnweightedDeterministicGreedy();
 				break;
 				
-		case RelationshipHeuristics.U_DISPERSION_BASED: euristic = new  UnweightedDispersionBased();
+		case RelationshipHeuristics.U_REC_DISPERSION_BASED: euristic = new  UnweightedRecDispersionBased();
 				break;
-		case RelationshipHeuristics.L_DISPERSION_BASED: euristic = new  LinearWeightedDispersionBased();
+		case RelationshipHeuristics.L_REC_DISPERSION_BASED: euristic = new  LinearRecWeightedDispersionBased();
 				break;
-		case RelationshipHeuristics.E_DISPERSION_BASED: euristic = new  ExponentiallyWeightedDispersionBased();
+		case RelationshipHeuristics.E_REC_DISPERSION_BASED: euristic = new  ExponentiallyRecWeightedDispersionBased();
 				break;
 
 
