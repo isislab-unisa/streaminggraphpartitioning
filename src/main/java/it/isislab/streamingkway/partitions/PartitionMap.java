@@ -24,4 +24,5 @@ public interface PartitionMap {
 	public Integer getIntersectionValue(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
 	public Double getDegreeAverage();
 	public Integer getTotalPartitionedNodes();
+	public Integer getNodePartition(Node v);
 }

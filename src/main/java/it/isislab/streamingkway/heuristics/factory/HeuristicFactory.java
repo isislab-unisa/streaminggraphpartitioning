@@ -19,9 +19,12 @@ import it.isislab.streamingkway.heuristics.UnweightedRandomizedGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedTriangles;
 import it.isislab.streamingkway.heuristics.my.ParallelHeuristic;
 import it.isislab.streamingkway.heuristics.my.ParallelUnweightedDeterministicGreedy;
+import it.isislab.streamingkway.heuristics.relationship.ExponentiallyAbsWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.ExponentiallyRecWeightedDispersionBased;
+import it.isislab.streamingkway.heuristics.relationship.LinearAbsWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.LinearRecWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.RelationshipHeuristics;
+import it.isislab.streamingkway.heuristics.relationship.UnweightedAbsDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.UnweightedRecDispersionBased;
 
 public class HeuristicFactory {
@@ -29,48 +32,54 @@ public class HeuristicFactory {
 	public static SGPHeuristic getHeuristic(Integer index) throws HeuristicNotFound {
 		if (index <= 0) throw new HeuristicNotFound("Index cannot be less than 0");
 		SGPHeuristic euristic = null;
-		
+
 		switch(index) {
 		case Heuristic.BALANCED: euristic = new BalancedHeuristic();
-				break;
+		break;
 		case Heuristic.CHUNKING : euristic = new ChunkingHeuristic();
-				break;
+		break;
 		case Heuristic.HASHING : euristic = new HashingHeuristic();
-				break;
+		break;
 		case Heuristic.U_DETERMINISTIC_GREEDY: euristic = new UnweightedDeterministicGreedy();
-				break;
+		break;
 		case Heuristic.L_DETERMINISTIC_GREEDY: euristic = new LinearWeightedDeterministicGreedy();
-				break;
+		break;
 		case Heuristic.E_DETERMINISTIC_GREEDY: euristic = new ExponentiallyWeightedDeterministicGreedy();
-				break;
+		break;
 		case Heuristic.U_RANDOMIZED_GREEDY: euristic = new UnweightedRandomizedGreedy();
-				break;
+		break;
 		case Heuristic.L_RANDOMIZED_GREEDY: euristic = new LinearWeightedRandomizedGreedy();
-				break;
+		break;
 		case Heuristic.E_RANDOMIZED_GREEDY: euristic = new ExponentiallyWeightedRandomizedGreedy();
-				break;
+		break;
 		case Heuristic.U_TRIANGLES: euristic = new UnweightedTriangles();
-				break;
+		break;
 		case Heuristic.L_TRIANGLES: euristic = new LinearWeightedTriangles();
-				break;
+		break;
 		case Heuristic.E_TRIANGLES: euristic = new ExponentiallyWeightedTriangles();
-				break;
+		break;
 		case Heuristic.BALANCE_BIG : euristic = new BalanceBig();
-				break;
-				
+		break;
+
 		case ParallelHeuristic.PARALLEL_U_DETERMINISTIC_G: euristic = new ParallelUnweightedDeterministicGreedy();
-				break;
-				
+		break;
+
 		case RelationshipHeuristics.U_REC_DISPERSION_BASED: euristic = new  UnweightedRecDispersionBased();
-				break;
+		break;
 		case RelationshipHeuristics.L_REC_DISPERSION_BASED: euristic = new  LinearRecWeightedDispersionBased();
-				break;
+		break;
 		case RelationshipHeuristics.E_REC_DISPERSION_BASED: euristic = new  ExponentiallyRecWeightedDispersionBased();
-				break;
+		break;
+		case RelationshipHeuristics.U_ABS_DISPERSION_BASED: euristic = new  UnweightedAbsDispersionBased();
+		break;
+		case RelationshipHeuristics.L_ABS_DISPERSION_BASED: euristic = new  LinearAbsWeightedDispersionBased();
+		break;
+		case RelationshipHeuristics.E_ABS_DISPERSION_BASED: euristic = new  ExponentiallyAbsWeightedDispersionBased();
+		break;
 
 
 		default: euristic = new BalancedHeuristic();
-				break;
+		break;
 		}
 		return euristic;
 	}

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
@@ -180,6 +181,17 @@ public class SetPartitionMap implements PartitionMap {
 			}
 		});
 		return gammaVintersect;
+	}
+
+	public Integer getNodePartition(Node v) {
+		for (Entry<Integer, Collection<Node>> part : this.chm.entrySet()) {
+			if (part.getValue().isEmpty()) continue;
+			
+			if (part.getValue().contains(v)) {
+				return part.getKey();
+			}
+		}
+		return null;
 	}
 	
 

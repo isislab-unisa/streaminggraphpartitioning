@@ -16,6 +16,7 @@ import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.WeightedHeuristic;
+import it.isislab.streamingkway.heuristics.relationship.distance.CuvCalculator;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
 import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
 import it.isislab.streamingkway.partitions.PartitionMap;
@@ -98,15 +99,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		for (int iteration = 0; iteration <= 2; iteration++) {
 			for (Node v: uNeighbour) {
 				//cuv contains all uv common neighbour
-				List<Node> cuv = new ArrayList<>(Math.min(v.getDegree(), u.getDegree()));
-				//construct cuv
-				for (Edge cuvEdge : v.getEdgeSet()) {
-					Node z = cuvEdge.getOpposite(v); //z is a neighbour of v
-					//check if z if already partitioned and has edge between u 
-					if (z.hasEdgeBetween(u)) {
-						cuv.add(z);
-					}
-				}
+				List<Node> cuv = CuvCalculator.cuvCalculator(u, v);
 				
 				//calculate pt.1
 				Double pt1 = 0.0;
