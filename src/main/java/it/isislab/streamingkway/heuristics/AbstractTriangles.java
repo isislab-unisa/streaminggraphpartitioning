@@ -18,9 +18,8 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 		Integer c = partitionMap.getC();
 		Integer index = -1;
 		Map<Integer,Collection<Node>> parts = partitionMap.getPartitions();
-	
-		
 		Double max = Double.NEGATIVE_INFINITY;
+
 		Iterator<Entry<Integer, Collection<Node>>> partsIt = parts.entrySet().iterator();
 		while (partsIt.hasNext()) {
 			Entry<Integer, Collection<Node>> t = partsIt.next();
@@ -29,9 +28,9 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 			if (partitionNodes.size() >= c) { //partition sated
 				continue;
 			}
-			
+
 			int totalEdges = 0;
-			List<Node> gammaNIntersect = partitionMap.getIntersectionNodes(n, partitionIndex);
+			List<Node> gammaNIntersect = partitionMap.getIntersectionNodesParallel(n, partitionIndex);
 			for (int i = 0; i < gammaNIntersect.size(); i++) {
 				for (int j = i+1; j < gammaNIntersect.size(); j++) {
 					if (gammaNIntersect.get(i).hasEdgeBetween(gammaNIntersect.get(j))) {
@@ -53,7 +52,7 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 				continue;
 			}
 			totalScore = (double)totalEdges/binCoeff * weight; //safe to calculate because binCoeff != 0
-			
+
 			if (Double.max(max, totalScore) == totalScore) {
 				max = totalScore;
 				index = partitionIndex;
@@ -69,13 +68,13 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 						index = partitionIndex;
 					}
 				}
-				
+
 			}
 		}
 
+
 		return index;
 	}
-	
 	public abstract Double getWeight(Double intersectNumber, Integer c);
 	public abstract String getHeuristicName();
 
