@@ -8,7 +8,8 @@ public class RandomComparator<Node> implements Comparator<Node> {
 	Random rnd = new Random();
 
 	public int compare(Node o1, Node o2) {
-		return rnd.nextBoolean() == true ? -rnd.nextInt() : rnd.nextInt();
+		int random = rnd.nextInt(2);
+		return random == 2? -1 : random;
 	}
 
 }

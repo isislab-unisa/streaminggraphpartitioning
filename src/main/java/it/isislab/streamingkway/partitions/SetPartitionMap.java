@@ -18,6 +18,7 @@ import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
 
 public class SetPartitionMap implements PartitionMap {
 
+	@SuppressWarnings("unused")
 	private static final int DEGREE_DENOM = 2;
 	private Map<Integer, Collection<Node>> chm;
 	private Map<Integer, Integer> partitionsSize; //TODO to remove?
@@ -93,12 +94,12 @@ public class SetPartitionMap implements PartitionMap {
 		return this.chm.get(index);
 	}
 
-	public Collection<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException {
+	public List<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException {
 		
 		checkIndex(partitionIndex);
 		Iterator<Node> vNeigh = v.getNeighborNodeIterator();
 		Collection<Node> partition = this.chm.get(partitionIndex);
-		Collection<Node> intersection = new HashSet<Node>(1);
+		List<Node> intersection = new ArrayList<Node>(1);
 		while (vNeigh.hasNext()) {
 			Node u = vNeigh.next();
 			if (partition.contains(u)) {
@@ -171,7 +172,7 @@ public class SetPartitionMap implements PartitionMap {
 			throws PartitionOutOfBoundException {
 		checkIndex(partitionIndex);
 		Collection<Node> partition = this.chm.get(partitionIndex);
-		List<Node> gammaVintersect = new ArrayList<Node>(v.getDegree()/DEGREE_DENOM);
+		List<Node> gammaVintersect = new ArrayList<Node>();
 		
 		partition.parallelStream().forEach(new Consumer<Node>() {
 			public void accept(Node t) {

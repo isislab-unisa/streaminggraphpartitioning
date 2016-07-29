@@ -17,7 +17,7 @@ public interface PartitionMap {
 	public Integer getK();
 	public Integer getC();
 	public Collection<Node> getPartition(Integer index);
-	public Collection<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
+	public List<Node> getIntersectionNodes(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
 	public List<Node> getIntersectionNodesParallel(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
 	public Map<Integer, Collection<Node>> getPartitions();
 	public Integer getIntersectionValueParallel(Node v, Integer partitionIndex) throws PartitionOutOfBoundException;
