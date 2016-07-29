@@ -2,6 +2,7 @@ package it.isislab.streamingkway.partitions;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -172,7 +173,7 @@ public class SetPartitionMap implements PartitionMap {
 			throws PartitionOutOfBoundException {
 		checkIndex(partitionIndex);
 		Collection<Node> partition = this.chm.get(partitionIndex);
-		List<Node> gammaVintersect = new ArrayList<Node>();
+		List<Node> gammaVintersect = Collections.synchronizedList(new ArrayList<>());
 		
 		partition.parallelStream().forEach(new Consumer<Node>() {
 			public void accept(Node t) {

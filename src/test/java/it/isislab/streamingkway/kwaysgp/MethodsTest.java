@@ -10,7 +10,7 @@ import junit.framework.TestSuite;
 
 public class MethodsTest extends TestCase {
 
-	private static final int PROB_TOLERANCE = 2;
+	private static final int PROB_TOLERANCE = 5;
 
 	public MethodsTest (String testName) {
 		super(testName);

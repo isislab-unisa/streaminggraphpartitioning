@@ -10,15 +10,15 @@ public class DistributedRandomNumberGenerator {
     private Map<Integer, Double> distribution;
     private double distSum;
 
+    public DistributedRandomNumberGenerator() {
+    	distribution = new HashMap<>();
+    	distSum = Double.MIN_VALUE;
+    }
     
     public void setDistribution(Map<Integer, Double> probs) {
 		this.distribution = probs;
+		distSum = probs.values().parallelStream().mapToDouble(p -> p.doubleValue()).sum();
 	}
-
-
-    public DistributedRandomNumberGenerator() {
-        distribution = new HashMap<>();
-    }
 
     public void addNumber(int value, double distribution) {
         if (this.distribution.get(value) != null) {
