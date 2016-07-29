@@ -173,7 +173,7 @@ extends TestCase
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,false);
-				Thread.sleep(500);
+//				Thread.sleep(500);
 				Long startTime = System.currentTimeMillis();
 				gl.run(); 
 				Long endTime = System.currentTimeMillis();
