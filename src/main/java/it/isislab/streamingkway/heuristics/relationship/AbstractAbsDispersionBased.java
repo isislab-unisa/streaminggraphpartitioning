@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -31,17 +32,22 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 			return new BalancedHeuristic().getIndex(g, partitionMap, n);
 		}
 		
-		Map<Node, Integer> nodeScores = new HashMap<>();
+		//FIXME USE PARALLEL REDUCTION!
 		List<Node> nNeighbour = new ArrayList<Node>(n.getDegree());
+		Map<Node, Integer> nodeScores = new ConcurrentHashMap<Node, Integer>(n.getDegree());
 		
 		Iterator<Node> nNeighIt = n.getNeighborNodeIterator();
 		while (nNeighIt.hasNext()) {
 			nNeighbour.add(nNeighIt.next());
 		}
-		for (Node v : nNeighbour) {
-			nodeScores.put(v, Dispersion.getDispersion(n, v, dist));
-		}
+		nNeighbour.parallelStream()
+			.forEach(p -> nodeScores.put(p, Dispersion.getDispersion(p, n, dist)));
+
+//		for (Node v : nNeighbour) {
+//			nodeScores.put(v, Dispersion.getDispersion(n, v, dist));
+//		}
 		
+		//FIXME USE AGGREGATION FUNCTIONS
 		Map<Integer, Double> partitionsScores = new HashMap<>(partitionMap.getK());
 		for (Entry<Node, Integer> nSc : nodeScores.entrySet()) {
 			if (!nSc.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
@@ -61,12 +67,14 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		}
 		double max = Double.NEGATIVE_INFINITY;
 		for (Entry<Integer, Double> partitionScore : partitionsScores.entrySet()) {
-			if (partitionMap.getPartitionSize(partitionScore.getKey()) >= c) {
+			Integer key = partitionScore.getKey();
+			if (partitionMap.getPartitionSize(key) >= c) {
 				continue;
 			}
-			if (Double.max(max, partitionScore.getValue()) == partitionScore.getValue()) {
-				max = partitionScore.getValue();
-				index = partitionScore.getKey();
+			double score = partitionScore.getValue();
+			if (Double.max(max, score) == score) {
+				max = score;
+				index = key;
 			}
 		}
 		

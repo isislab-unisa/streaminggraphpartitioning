@@ -6,10 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
@@ -42,8 +40,9 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 			nNeighbour.add(nNeighIt.next());
 		}
 		for (Node v : nNeighbour) {
-			double disp = Dispersion.getDispersion(n, v, dist);
-			double emb = Dispersion.cuvCalculator(n, v).size();
+			List<Node> cuv = Dispersion.cuvCalculator(n, v);
+			int emb = cuv.size();
+			double disp = Dispersion.getDispersion(n, v, dist, cuv);
 			nodeScores.put(v, Math.pow(disp + B, A) / (double)emb + C);
 		}
 		
@@ -52,14 +51,16 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 			if (!nSc.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
 				continue;
 			}
+			//TODO FIXME XXX
 			Integer partitionIndex = partitionMap.getNodePartition(nSc.getKey());
 			if (partitionIndex == null) continue;
+			double nscValue = nSc.getValue();
 			if (partitionsScores.containsKey(partitionIndex)) {
-				double value = (partitionsScores.get(partitionIndex) + nSc.getValue())
+				double value = (partitionsScores.get(partitionIndex) + nscValue)
 						* getWeight((double)partitionMap.getIntersectionValueParallel(n, partitionIndex), c);
 				partitionsScores.put(partitionIndex, value);
 			} else {
-				partitionsScores.put(partitionIndex, (double)nSc.getValue());
+				partitionsScores.put(partitionIndex, (double)nscValue);
 			}
 		}
 		if (partitionsScores.isEmpty()) {
