@@ -58,7 +58,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		int index = -1;
 		do {
 			index = prob.getDistributedRandomNumber();
-			if (partitions.get(index).size() >= c) {
+			if (partitions.containsKey(index) && partitions.get(index).size() >= c) {
 				prob.removeNumber(index);
 			}
 		} while(partitions.get(index).size() >= c);

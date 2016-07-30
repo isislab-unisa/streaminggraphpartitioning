@@ -34,15 +34,15 @@ extends TestCase
 
 	private CSVWriter writer;
 	
-	public static final Integer ITERATION_TIME = 1;
+	public static final Integer ITERATION_TIME = 10;
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
-	public static final String TEST_STREET_GRAPH = "resources/luxembourg.osm.graph";
+	public static final String TEST_STREET_GRAPH = "resources/data.graph";
 	private static final Double DISPLACEMENT_TOLERANCE = 10.0;
 
-	private static final String CSV_FILENAME = "resources/results_street.csv";
+	private static final String CSV_FILENAME = TEST_STREET_GRAPH + "-res.csv";
 
 
 	/** 
@@ -102,7 +102,7 @@ extends TestCase
 		Integer k = 4;
 		Integer C = -1; // 15606/4+1
 
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.BFS_ORDER, "4elt");
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.BFS_ORDER, TEST_STREET_GRAPH);
 	}
 	public void testStreetDFS() throws HeuristicNotFound, IOException, InterruptedException {
 		File fpIn = new File(TEST_STREET_GRAPH);
@@ -113,7 +113,7 @@ extends TestCase
 		Integer k = 4;
 		Integer C = -1; // 15606/4+1
 
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.DFS_ORDER, "4elt");
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.DFS_ORDER, TEST_STREET_GRAPH);
 	}
 	public void testStreetRND() throws HeuristicNotFound, IOException, InterruptedException {
 		File fpIn = new File(TEST_STREET_GRAPH);
@@ -124,7 +124,7 @@ extends TestCase
 		Integer k = 4;
 		Integer C = -1; // 15606/4+1
 
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.RANDOM_ORDER, "4elt");
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.RANDOM_ORDER, TEST_STREET_GRAPH);
 	}
 	/******************************************************************************
 	 * 
@@ -186,10 +186,10 @@ extends TestCase
 				assertEquals(totalNodes.intValue(),gl.getGraphPartitionator().getGraph().getNodeCount());
 				//count total partitioned edges
 				totalEdges = gl.getEdgeNumbers();
-				assertEquals(totalEdges.intValue(), gl.getGraphPartitionator().getGraph().getEdgeCount());
+				//assertEquals(totalEdges.intValue(), gl.getGraphPartitionator().getGraph().getEdgeCount());
 				//check displacement
 				displacement += qc.getDisplacement(gl.getGraphPartitionator().getPartitionMap());
-				//assertTrue(displacement <= DISPLACEMENT_TOLERANCE);
+				assertTrue(displacement <= DISPLACEMENT_TOLERANCE);
 				//check normalized maximum load
 				normalizedMaxLoad += qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), 
 						gl.getGraphPartitionator().getGraph());
@@ -248,7 +248,7 @@ extends TestCase
 				assertEquals(totalEdges.intValue(), gl.getGraphPartitionator().getGraph().getEdgeCount());
 				//check displacement
 				displacement += qc.getDisplacement(gl.getGraphPartitionator().getPartitionMap());
-				//assertTrue(displacement <= DISPLACEMENT_TOLERANCE);
+				assertTrue(displacement <= DISPLACEMENT_TOLERANCE);
 				//check normalized maximum load
 				normalizedMaxLoad += qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), 
 						gl.getGraphPartitionator().getGraph());

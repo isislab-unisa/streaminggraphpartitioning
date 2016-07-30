@@ -105,13 +105,16 @@ public class TraversingGraphLoader implements GraphLoader {
 		ConnectedComponents cc = new ConnectedComponents();
 		cc.init(gr);
 		int connectedComponents = cc.getConnectedComponentsCount();
+		System.out.println(connectedComponents);
+		System.out.println(capacity);
 		if (connectedComponents > 1) { //there are at least 2 connected components
 			//the algorithm requires to visit them and are not enabled to do
 			if (gto.getClass().equals(BFSTraversing.class) || gto.getClass().equals(DFSTraversing.class)) {
+				cc.compute();
 				Iterator<ConnectedComponent> connComps = cc.iterator();
 				while (connComps.hasNext()) {
 					ConnectedComponent connComp = connComps.next();
-					Node vRand = connComp.iterator().next();
+					Node vRand = connComp.getEachNode().iterator().next();
 					Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
 					while (traversingGraph.hasNext()) {
 						Integer part = graphPartitionator.getPartitionNode(traversingGraph.next());
