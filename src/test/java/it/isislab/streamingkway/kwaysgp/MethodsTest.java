@@ -46,14 +46,14 @@ public class MethodsTest extends TestCase {
 	}
 	
 	public void testProbability() {
-		DistributedRandomNumberGenerator rand = new DistributedRandomNumberGenerator();
+		DistributedRandomNumberGenerator rand = new DistributedRandomNumberGenerator(2);
 		rand.addNumber(1, 1.0);
 		rand.addNumber(2, 0.0);
 		assertEquals(rand.getDistributedRandomNumber(), 1);
 	}
 	
 	public void testProbability2() {
-		DistributedRandomNumberGenerator rand = new DistributedRandomNumberGenerator();
+		DistributedRandomNumberGenerator rand = new DistributedRandomNumberGenerator(2);
 		rand.addNumber(1, 0.5);
 		rand.addNumber(2, 0.5);
 		ArrayList<Integer> integers = new ArrayList<Integer>(100);
@@ -71,7 +71,7 @@ public class MethodsTest extends TestCase {
 	}
 	
 	public void testProbability3() {
-		DistributedRandomNumberGenerator rand = new DistributedRandomNumberGenerator();
+		DistributedRandomNumberGenerator rand = new DistributedRandomNumberGenerator(2);
 		rand.addNumber(1, 0.7);
 		rand.addNumber(2, 0.3);
 		ArrayList<Integer> integers = new ArrayList<Integer>(100);

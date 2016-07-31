@@ -5,13 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import org.graphstream.algorithm.ConnectedComponents;
 import org.graphstream.algorithm.Toolkit;
-import org.graphstream.algorithm.ConnectedComponents.ConnectedComponent;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
@@ -79,6 +80,7 @@ public class TraversingGraphLoader implements GraphLoader {
 				}
 				break;
 			}
+
 		}
 		if (!thereIsC) {
 			capacity = nodeNumbers / K + 1;
@@ -95,7 +97,7 @@ public class TraversingGraphLoader implements GraphLoader {
 			StringTokenizer strTok = new StringTokenizer(line, " ");
 			Node v = gr.addNode(Integer.toString(nodeCount++));
 			gr.addNode(v.getId());
-			
+
 			while (strTok.hasMoreTokens()) {
 				String uId = (String) strTok.nextElement();
 				gr.addEdge(v.getId()+uId, v.getId(),uId);
@@ -104,32 +106,35 @@ public class TraversingGraphLoader implements GraphLoader {
 		//scanning the graph
 		ConnectedComponents cc = new ConnectedComponents();
 		cc.init(gr);
+		cc.compute();
+		cc.setCountAttribute(GraphLoader.CONNECTED_COMPONENT_ATTR);
 		int connectedComponents = cc.getConnectedComponentsCount();
+		//FIXME check out the documentation
 		System.out.println(connectedComponents);
-		System.out.println(capacity);
-		if (connectedComponents > 1) { //there are at least 2 connected components
+		if (connectedComponents > 1 &&
+				(gto.getClass().equals(BFSTraversing.class) || gto.getClass().equals(DFSTraversing.class))) { //there are at least 2 connected components
 			//the algorithm requires to visit them and are not enabled to do
-			if (gto.getClass().equals(BFSTraversing.class) || gto.getClass().equals(DFSTraversing.class)) {
-				cc.compute();
-				Iterator<ConnectedComponent> connComps = cc.iterator();
-				while (connComps.hasNext()) {
-					ConnectedComponent connComp = connComps.next();
-					Node vRand = connComp.getEachNode().iterator().next();
+			List<Integer> connComps = new ArrayList<>(connectedComponents);
+			while (connComps.size() < connectedComponents) {
+				Node vRand = Toolkit.randomNode(gr);
+				Integer ccIndex = vRand.getAttribute(GraphLoader.CONNECTED_COMPONENT_ATTR, Integer.class);
+				if (!connComps.contains(ccIndex)) {
+					connComps.add(ccIndex);
 					Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
 					while (traversingGraph.hasNext()) {
 						Integer part = graphPartitionator.getPartitionNode(traversingGraph.next());
 						printerOut.println(part);
 					}
 				}
-			} 
+			}
 		} else {
-				//choose a random node
-				Node vRand = Toolkit.randomNode(gr);
-				Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
-				while (traversingGraph.hasNext()) {
-					Integer part = graphPartitionator.getPartitionNode(traversingGraph.next());
-					printerOut.println(part);
-				}			
+			//choose a random node
+			Node vRand = Toolkit.randomNode(gr);
+			Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
+			while (traversingGraph.hasNext()) {
+				Integer part = graphPartitionator.getPartitionNode(traversingGraph.next());
+				printerOut.println(part);
+			}			
 		}
 		printerOut.flush();
 		printerOut.close();
@@ -150,7 +155,7 @@ public class TraversingGraphLoader implements GraphLoader {
 		return edgeNumbers;
 	}
 
-	
+
 
 
 }

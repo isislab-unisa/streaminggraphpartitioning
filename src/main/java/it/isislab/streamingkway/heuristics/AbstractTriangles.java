@@ -25,7 +25,7 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 			Entry<Integer, Collection<Node>> t = partsIt.next();
 			Integer partitionIndex = t.getKey();
 			Collection<Node> partitionNodes = t.getValue();
-			if (partitionNodes.size() >= c) { //partition sated
+			if (partitionNodes.size() > c) { //partition sated
 				continue;
 			}
 

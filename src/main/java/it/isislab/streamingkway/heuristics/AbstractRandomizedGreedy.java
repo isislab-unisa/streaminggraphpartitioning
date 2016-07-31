@@ -3,7 +3,6 @@ package it.isislab.streamingkway.heuristics;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -22,7 +21,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		int c = partitionMap.getC();
 		int k = partitionMap.getK();
 		
-		DistributedRandomNumberGenerator prob = new DistributedRandomNumberGenerator();
+		DistributedRandomNumberGenerator prob = new DistributedRandomNumberGenerator(k);
 		
 		Map<Integer,Collection<Node>> partitions = partitionMap.getPartitions();
 		Map<Integer, Double> probs = new ConcurrentHashMap<Integer, Double>(k);
@@ -39,6 +38,10 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 				}
 		);
 		
+		if (probs.isEmpty()) {
+			return new BalancedHeuristic().getIndex(g, partitionMap, n);
+		}
+		
 		//calculate Z
 		Z = probs.values().parallelStream()
 				.mapToDouble( p -> p.doubleValue())
@@ -49,21 +52,23 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 					probs.put(t.getKey(), t.getValue() / Z);
 				}
 			});			
+		} else if (Z == 0) {
+			return new BalancedHeuristic().getIndex(g, partitionMap, n);
 		}
 		
 		//populate 
-		prob.setDistribution(probs);
-		
+		prob.setDistribution(probs, Z);
 		
 		int index = -1;
 		do {
 			index = prob.getDistributedRandomNumber();
-			if (partitions.containsKey(index) && partitions.get(index).size() >= c) {
+			if (partitions.containsKey(index) && partitions.get(index).size() > c) {
 				prob.removeNumber(index);
+				continue;
 			}
-		} while(partitions.get(index).size() >= c);
+		} while(!prob.isEmpty() && partitionMap.getPartitionSize(index) > c);
 		
-		return index == -1? new Random().nextInt(k) + 1 : index;
+		return index == -1? new BalancedHeuristic().getIndex(g, partitionMap, n) : index;
 	}
 
 	public abstract Double getWeight(Double intersectNumber, Integer c);

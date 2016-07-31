@@ -71,7 +71,7 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		}
 		double max = Double.NEGATIVE_INFINITY;
 		for (Entry<Integer, Double> partitionScore : partitionsScores.entrySet()) {
-			if (partitionMap.getPartitionSize(partitionScore.getKey()) >= c) {
+			if (partitionMap.getPartitionSize(partitionScore.getKey()) > c) {
 				continue;
 			}
 			if (Double.max(max, partitionScore.getValue()) == partitionScore.getValue()) {

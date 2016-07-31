@@ -9,15 +9,22 @@ public class DistributedRandomNumberGenerator {
 	
     private Map<Integer, Double> distribution;
     private double distSum;
+    private int k;
 
-    public DistributedRandomNumberGenerator() {
+    public DistributedRandomNumberGenerator(int k) {
     	distribution = new HashMap<>();
     	distSum = Double.MIN_VALUE;
+    	this.k = k;
     }
     
     public void setDistribution(Map<Integer, Double> probs) {
 		this.distribution = probs;
 		distSum = probs.values().parallelStream().mapToDouble(p -> p.doubleValue()).sum();
+	}
+    
+    public void setDistribution(Map<Integer, Double> probs, Double dist) {
+		this.distribution = probs;
+		distSum = dist;
 	}
 
     public void addNumber(int value, double distribution) {
@@ -29,11 +36,16 @@ public class DistributedRandomNumberGenerator {
     }
 
     public void removeNumber(int value) {
-    	double removedNumber = distribution.remove(value);
-    	distSum -= removedNumber;
+    	if (distribution.containsKey(value)) {
+    		double removedNumber = distribution.remove(value);
+    		distSum -= removedNumber;
+    	}
     }
     
     public int getDistributedRandomNumber() {
+    	if (distribution.isEmpty()) {
+    		return new Random().nextInt(k) + 1;
+    	}
         double rand = Math.random();
         double ratio = 1.0f / distSum;
         double tempDist = 0;
@@ -43,7 +55,14 @@ public class DistributedRandomNumberGenerator {
                 return i;
             }
         }
-        return new Random().nextInt(distribution.size());
+        return new Random().nextInt(k) + 1;
     }
 
+    public String toString() {
+    	return distribution.toString();
+    }
+
+	public boolean isEmpty() {
+		return distribution.isEmpty();
+	}
 }

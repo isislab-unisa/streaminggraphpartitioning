@@ -19,12 +19,11 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 		Integer index  = -1; 
 		double max = Double.NEGATIVE_INFINITY;
 		Integer c = partitionMap.getC();
-		Integer k = partitionMap.getK();
 
 		for (Entry<Integer, Collection<Node>> partition : partitions.entrySet()) {
 			Integer partitionSize = partition.getValue().size();
 			Integer partitionIndx = partition.getKey();
-			if (partitionSize >= c) {
+			if (partitionSize > c) {
 				continue;
 			}
 			//computate score
@@ -51,7 +50,7 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 			}
 		}
 		//it cannot happens
-		return index == -1 ? new Random().nextInt(k) + 1 : index;
+		return index == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : index;
 	}
 
 	public abstract Double getWeight(Double intersectNodes, Integer c);

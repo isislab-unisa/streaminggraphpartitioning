@@ -20,6 +20,7 @@ public class BalancedHeuristic implements SGPHeuristic {
 		Integer index = -1;
 		Map<Integer, Collection<Node>> partitions = partitionMap.getPartitions();
 		Integer min = Integer.MAX_VALUE;
+		//TODO to parallelize
 		for (Entry<Integer, Collection<Node>> partition : partitions.entrySet()) {
 			int size = partition.getValue().size();
 			if (size < min) {

@@ -73,7 +73,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		nNeighbours = null;
 
 		for (Entry<Integer,Double> score : partitionsScore.entrySet()) {
-			if (partitionMap.getPartitionSize(score.getKey()) >= c) {
+			if (partitionMap.getPartitionSize(score.getKey()) > c) {
 				continue;
 			}
 			double partitionValue = score.getValue();
