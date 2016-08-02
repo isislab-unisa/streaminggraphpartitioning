@@ -22,8 +22,16 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 
 					public int compare(Entry<Integer, Collection<Node>> p1,
 							Entry<Integer, Collection<Node>> p2) {
-						double w1 = getWeight((double) p1.getValue().size(), c);
-						double w2 = getWeight((double) p2.getValue().size(), c);
+						int p1size = partitionMap.getPartitionSize(p1.getKey());
+						int p2size = partitionMap.getPartitionSize(p2.getKey());
+						if (p1size > c) {
+							return -1;
+						}
+						if (p2size > c) {
+							return 1;
+						}
+						double w1 = getWeight((double)p1size, c);
+						double w2 = getWeight((double)p2size, c);
 						double tri1 = getTrianglesValue(n, partitionMap, p1.getKey()) * w1;
 						double tri2 = getTrianglesValue(n, partitionMap, p2.getKey()) * w2;
 						if (Math.max(tri1, tri2) == tri1) {
@@ -31,7 +39,13 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 						} else if (Math.max(tri1, tri2) == tri2) {
 							return 2;
 						} else {
-							return 0;
+							if (p1size > p2size) {
+								return -1;
+							} else if (p1size < p2size) {
+								return 1;
+							} else {
+								return 0;
+							}
 						}
 					}
 				}).get().getKey();
