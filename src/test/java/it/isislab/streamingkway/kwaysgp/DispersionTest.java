@@ -41,6 +41,7 @@ extends TestCase
 	public static final String PLACEHOLDER_R = "R";
 	public static final String PATH_4ELT_GRAPH = "resources/4elt.graph";
 	public static final String PATH_TINY_GRAPH = "resources/tiny_01.graph";
+	@SuppressWarnings("unused")
 	private static final Double DISPLACEMENT_TOLERANCE = 10.0;
 
 	private static final String CSV_FILENAME = "resources/results.csv";
