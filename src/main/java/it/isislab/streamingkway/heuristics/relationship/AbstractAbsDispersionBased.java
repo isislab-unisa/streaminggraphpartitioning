@@ -48,14 +48,15 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 			if (!nSc.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
 				continue;
 			}
+			//TODO check out another way
 			Integer partitionIndex = partitionMap.getNodePartition(nSc.getKey());
 			if (partitionIndex == null) continue;
 			if (partitionsScores.containsKey(partitionIndex)) {
 				partitionsScores.put(partitionIndex, (partitionsScores.get(partitionIndex)) + nSc.getValue()
-						* getWeight((double)partitionMap.getIntersectionValueParallel(n, partitionIndex), c));
+						* getWeight((double)partitionMap.getPartitionSize(partitionIndex),c));
 			} else {
 				partitionsScores.put(partitionIndex, (double)nSc.getValue()* 
-						getWeight((double)partitionMap.getIntersectionValueParallel(n, partitionIndex), c));
+						getWeight((double)partitionMap.getPartitionSize(partitionIndex), c));
 			}
 		}
 		if (partitionsScores.isEmpty()) {
@@ -80,7 +81,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 	
 
 
-	public abstract Double getWeight(Double intersectNumber, Integer c);
+	public abstract Double getWeight(Double partitionSize, Integer c);
 	public abstract String getHeuristicName();
 
 }

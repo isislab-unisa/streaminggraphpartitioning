@@ -17,8 +17,8 @@ public class ExponentiallyWeightedRandomizedGreedy extends AbstractRandomizedGre
 		return "Exponentially Weighted Randomized Greedy";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
-		return 1 - Math.exp(intersectNumber - c);
+	public Double getWeight(Double partitionSize, Integer c) {
+		return 1 - Math.exp(partitionSize - c);
 	}
 
 }

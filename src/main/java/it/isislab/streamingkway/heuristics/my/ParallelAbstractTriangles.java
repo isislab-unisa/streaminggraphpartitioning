@@ -25,6 +25,7 @@ public abstract class ParallelAbstractTriangles implements SGPHeuristic,Weighted
 		Map<Integer,Collection<Node>> parts = partitionMap.getPartitions();
 		max = Double.NEGATIVE_INFINITY;
 
+		@SuppressWarnings("unused")
 		Iterator<Entry<Integer, Collection<Node>>> partsIt = parts.entrySet().iterator();
 
 		parts.entrySet().parallelStream().forEach(new Consumer<Entry<Integer, Collection<Node>>>() {

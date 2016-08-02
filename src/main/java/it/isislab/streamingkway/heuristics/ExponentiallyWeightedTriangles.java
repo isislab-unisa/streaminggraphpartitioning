@@ -15,8 +15,8 @@ public class ExponentiallyWeightedTriangles extends AbstractTriangles {
 		return "Exponentially Weighted Triangles";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
-		return 1 - Math.exp(intersectNumber - c);
+	public Double getWeight(Double partitionSize, Integer c) {
+		return 1 - Math.exp(partitionSize - c);
 	}
 
 }

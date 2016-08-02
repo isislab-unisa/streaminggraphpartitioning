@@ -16,8 +16,8 @@ public class LinearWeightedDeterministicGreedy extends AbstractDeterministicGree
 		return "Linear Weighted Deterministic Greedy";
 	}
 
-	public Double getWeight(Double intersectNodes, Integer c) {
-		return 1-intersectNodes/c;
+	public Double getWeight(Double partitionSize, Integer c) {
+		return 1-partitionSize/c;
 	}
 
 }

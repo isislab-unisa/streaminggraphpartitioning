@@ -16,8 +16,8 @@ public class ExponentiallyWeightedDeterministicGreedy extends AbstractDeterminis
 		return "Exponentially Weighted Deterministic Greedy";
 	}
 
-	public Double getWeight(Double intersectNodes, Integer c) {
-		return 1.0 - Math.exp(intersectNodes - c);
+	public Double getWeight(Double partitionSize, Integer c) {
+		return 1.0 - Math.exp(partitionSize - c);
 	}
 
 }

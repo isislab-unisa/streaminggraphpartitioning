@@ -15,7 +15,7 @@ public class UnweightedDeterministicGreedy extends AbstractDeterministicGreedy {
 		return "Unweighted Deterministic Greedy";
 	}
 
-	public Double getWeight(Double intersectNodes, Integer c) {
+	public Double getWeight(Double partitionSize, Integer c) {
 		return 1.0;
 	}
 

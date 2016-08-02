@@ -1,11 +1,10 @@
 package it.isislab.streamingkway.heuristics;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -16,65 +15,50 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
-		Integer index = -1;
 		Map<Integer,Collection<Node>> parts = partitionMap.getPartitions();
-		Double max = Double.NEGATIVE_INFINITY;
 
-		Iterator<Entry<Integer, Collection<Node>>> partsIt = parts.entrySet().iterator();
-		while (partsIt.hasNext()) {
-			Entry<Integer, Collection<Node>> t = partsIt.next();
-			Integer partitionIndex = t.getKey();
-			Collection<Node> partitionNodes = t.getValue();
-			if (partitionNodes.size() > c) { //partition sated
-				continue;
-			}
+		Integer maxIndex = parts.entrySet().parallelStream()
+				.max(new Comparator<Entry<Integer,Collection<Node>>>() {
 
-			int totalEdges = 0;
-			List<Node> gammaNIntersect = partitionMap.getIntersectionNodesParallel(n, partitionIndex);
-			for (int i = 0; i < gammaNIntersect.size(); i++) {
-				for (int j = i+1; j < gammaNIntersect.size(); j++) {
-					if (gammaNIntersect.get(i).hasEdgeBetween(gammaNIntersect.get(j))) {
-						totalEdges ++;
+					public int compare(Entry<Integer, Collection<Node>> p1,
+							Entry<Integer, Collection<Node>> p2) {
+						double w1 = getWeight((double) p1.getValue().size(), c);
+						double w2 = getWeight((double) p2.getValue().size(), c);
+						double tri1 = getTrianglesValue(n, partitionMap, p1.getKey()) * w1;
+						double tri2 = getTrianglesValue(n, partitionMap, p2.getKey()) * w2;
+						if (Math.max(tri1, tri2) == tri1) {
+							return 1;
+						} else if (Math.max(tri1, tri2) == tri2) {
+							return 2;
+						} else {
+							return 0;
+						}
 					}
-				}
-			}
+				}).get().getKey();
 
-			//calculate score
-			Double totalScore = 0.0;
-			Integer N = partitionMap.getIntersectionValueParallel(n, partitionIndex);
-			double weight = getWeight((double)N, c);
-			Integer binCoeff = N == 1 || N == 0 ? 0 : N*(N-1)/2;
-			if (binCoeff == 0) {  //hardcoded 0.0 because totalEdges must be 0 too. check it out
-				if (Double.max(max, 0.0) == 0.0) {  
-					max = 0.0;
-					index = partitionIndex;
-				}
-				continue;
-			}
-			totalScore = (double)totalEdges/binCoeff * weight; //safe to calculate because binCoeff != 0
+		return maxIndex == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : maxIndex;
+	}
 
-			if (Double.max(max, totalScore) == totalScore) {
-				max = totalScore;
-				index = partitionIndex;
-			} else if (Double.compare(max, totalScore) == 0) { //tie break
-				int competitorSize = parts.get(index).size();
-				if (competitorSize > partitionNodes.size()) {
-					max = totalScore;
-					index = partitionIndex;
-				} else if (competitorSize == partitionNodes.size()) {
-					boolean ivsc = new Random().nextBoolean();
-					if (ivsc) {
-						max = totalScore;
-						index = partitionIndex;
-					}
-				}
+	private double getTrianglesValue(Node n, PartitionMap parts, Integer partitionIndex) {
+		int totalEdges = 0;
 
+		List<Node> gammaNIntersect = parts.getIntersectionNodesParallel(n, partitionIndex);
+		for (int i = 0; i < gammaNIntersect.size(); i++) {
+			for (int j = i+1; j < gammaNIntersect.size(); j++) {
+				if (gammaNIntersect.get(i).hasEdgeBetween(gammaNIntersect.get(j))) {
+					totalEdges ++;
+				}
 			}
 		}
-
-
-		return index;
+		//calculate score
+		Integer N = gammaNIntersect.size();
+		Integer binCoeff = N == 1 || N == 0 ? 0 : N*(N-1)/2;
+		if (binCoeff == 0) {  //hardcoded 0.0 because totalEdges must be 0 too. check it out
+			return 0.0;
+		}
+		return (double)totalEdges/binCoeff; //safe to calculate because binCoeff != 0
 	}
+
 	public abstract Double getWeight(Double intersectNumber, Integer c);
 	public abstract String getHeuristicName();
 

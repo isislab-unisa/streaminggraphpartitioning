@@ -15,7 +15,7 @@ public class UnweightedTriangles extends AbstractTriangles {
 		return "Unweighted Triangles";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
+	public Double getWeight(Double partitionSize, Integer c) {
 		return 1.0;
 	}
 

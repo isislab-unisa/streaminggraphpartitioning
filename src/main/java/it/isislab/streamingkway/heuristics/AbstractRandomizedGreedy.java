@@ -32,8 +32,9 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 				new Consumer<Entry<Integer, Collection<Node>>>() {
 					public void accept(Entry<Integer, Collection<Node>> t) {
 						int index = t.getKey();
-						double intersectNumber = (double) partitionMap.getIntersectionValueParallel(n, index);						
-						probs.put(index, intersectNumber * getWeight(intersectNumber, c));
+						double intersectNumber = (double) partitionMap.getIntersectionValueParallel(n, index);
+						double partitionSize = t.getValue().size();
+						probs.put(index, intersectNumber * getWeight(partitionSize, c));
 					}
 				}
 		);
@@ -71,7 +72,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		return index == -1? new BalancedHeuristic().getIndex(g, partitionMap, n) : index;
 	}
 
-	public abstract Double getWeight(Double intersectNumber, Integer c);
+	public abstract Double getWeight(Double partitionSize, Integer c);
 	public abstract String getHeuristicName();
 
 }

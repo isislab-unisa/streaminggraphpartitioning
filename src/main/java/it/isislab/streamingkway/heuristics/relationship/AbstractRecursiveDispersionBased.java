@@ -62,9 +62,8 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		for (Node v: xNodes.keySet()) {
 			if (v.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
 				Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
-				Integer intersectNodes = partitionMap.getIntersectionValue(n, partitionIndex);
 				partitionsScore.put(partitionIndex, (partitionsScore.get(partitionIndex) +
-						xNodes.get(v) * getWeight((double)intersectNodes, c)));
+						xNodes.get(v) * getWeight((double)partitions.get(partitionIndex).size(), c)));
 			}
 		}
 		double max = Double.NEGATIVE_INFINITY;

@@ -17,8 +17,8 @@ public class LinearWeightedRandomizedGreedy extends AbstractRandomizedGreedy {
 		return "Linear Weighted Randomized Greedy";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
-		return 1 - intersectNumber / c;
+	public Double getWeight(Double partitionSize, Integer c) {
+		return 1 - partitionSize / c;
 	}
 
 }

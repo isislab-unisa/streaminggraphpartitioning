@@ -1,10 +1,8 @@
 package it.isislab.streamingkway.heuristics;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
@@ -16,44 +14,39 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n)  {
 		
 		Map<Integer,Collection<Node>> partitions = partitionMap.getPartitions();
-		Integer index  = -1; 
-		double max = Double.NEGATIVE_INFINITY;
 		Integer c = partitionMap.getC();
 
-		for (Entry<Integer, Collection<Node>> partition : partitions.entrySet()) {
-			Integer partitionSize = partition.getValue().size();
-			Integer partitionIndx = partition.getKey();
-			if (partitionSize > c) {
-				continue;
-			}
-			//computate score
-			double intersectNumber = (double) partitionMap.getIntersectionValueParallel(n, partitionIndx);
-			double weight = getWeight(intersectNumber, c);
-			intersectNumber *= weight;
-
-			if (Math.max(max, intersectNumber) == intersectNumber) {
-				max = intersectNumber;
-				index = partitionIndx;
-			}
-			else if (Double.compare(max, intersectNumber) == 0) { //tie break
-				int competitorPartitionSize = partitions.get(index).size();
-				if (competitorPartitionSize > partitionSize) { //old partition are greater
-					max = intersectNumber; //i win!
-					index = partitionIndx;
-				} else if (competitorPartitionSize == partitionSize) {
-					boolean ivsc = new Random().nextBoolean();
-					if (ivsc) {
-						max = intersectNumber;
-						index = partitionIndx;
+		Integer maxIndex = partitions.entrySet().parallelStream()
+				.max(new Comparator<Map.Entry<Integer,Collection<Node>>>() {
+					public int compare(Map.Entry<Integer,Collection<Node>> p1,
+							Map.Entry<Integer,Collection<Node>> p2) {
+						int p1size = p1.getValue().size();
+						int p2size = p2.getValue().size();
+						if (p1size > c) {
+							return -1;
+						}
+						if (p2size > c) {
+							return 1;
+						}
+						double intersect1 = partitionMap.getIntersectionValueParallel(n, p1.getKey());
+						double intersect2 = partitionMap.getIntersectionValueParallel(n, p2.getKey());
+						double w1 = getWeight((double)p1size, c);
+						double w2 = getWeight((double)p2size, c);
+						intersect1 *= w1;
+						intersect2 *= w2;
+						if (Double.max(intersect1, intersect2) == intersect1) {
+							return 1;
+						} else if (Double.max(intersect1, intersect2) == intersect2) {
+							return -1;
+						} else return 0;
 					}
-				} 
-			}
-		}
-		//it cannot happens
-		return index == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : index;
+					
+				}).get().getKey();
+		
+		return maxIndex == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : maxIndex;
 	}
 
-	public abstract Double getWeight(Double intersectNodes, Integer c);
+	public abstract Double getWeight(Double partitionSize, Integer c);
 	public abstract String getHeuristicName();
 
 }

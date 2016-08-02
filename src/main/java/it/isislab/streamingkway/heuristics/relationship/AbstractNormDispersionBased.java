@@ -58,10 +58,10 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		for (Node v: nodeScores.keySet()) {
 			if (v.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
 				Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
-				Integer intersectNodes = partitionMap.getIntersectionValue(n, partitionIndex);
 				if (partitionsScores.containsKey(partitionIndex)) {
 					partitionsScores.put(partitionIndex, (partitionsScores.get(partitionIndex) +
-							nodeScores.get(v) * getWeight((double)intersectNodes, c)));
+							nodeScores.get(v) * 
+							getWeight((double)partitionMap.getPartitionSize(partitionIndex),c)));
 				}
 			}
 		}

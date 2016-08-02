@@ -17,7 +17,7 @@ public class UnweightedRandomizedGreedy extends AbstractRandomizedGreedy {
 		return "Unweighted Randomized Greedy";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
+	public Double getWeight(Double partitionSize, Integer c) {
 		return 1.0;
 	}
 
