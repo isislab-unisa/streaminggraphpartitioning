@@ -34,7 +34,7 @@ extends TestCase
 
 	private CSVWriter writer;
 	
-	public static final Integer ITERATION_TIME = 5;
+	public static final Integer ITERATION_TIME = 2;
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
