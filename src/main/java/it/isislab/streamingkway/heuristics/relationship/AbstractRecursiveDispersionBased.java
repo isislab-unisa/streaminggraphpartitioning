@@ -1,19 +1,16 @@
 package it.isislab.streamingkway.heuristics.relationship;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
@@ -30,7 +27,6 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 	private DistanceFunction dist = new SimpleDistanceFunction();
 
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
-		Integer index = -1; 
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
@@ -42,7 +38,6 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		while (edgeIt.hasNext()) {
 			Edge t = edgeIt.next();
 			Node u = t.getOpposite(n);
-			//TODO check if it u must be already partitioned
 			nNeighbours.add(u);
 		}
 		edgeIt = null;
@@ -53,36 +48,51 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 
 		Map<Node, Double> xNodes = getDispersion(nNeighbours, n);
 
-		Map<Integer, Collection<Node>> partitions = partitionMap.getPartitions();
-		Map<Integer, Double> partitionsScore = new HashMap<>(partitions.size());
-		for (int i = 1; i <= partitions.size(); i++) {
-			partitionsScore.put(i,0.0);
-		}
+		Map<Integer, Double> partitionsScore = new ConcurrentHashMap<>(partitionMap.getK());
+		xNodes.entrySet().parallelStream()
+			.forEach(new Consumer<Entry<Node,Double>>() {
+				public void accept(Entry<Node, Double> t) {
+					Node v = t.getKey();
+					if (v.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
+						Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
+						Integer partitionSize = partitionMap.getPartitionSize(partitionIndex);
+						if (partitionSize > c) {
+							return;
+						}
+						if (partitionsScore.containsKey(partitionIndex)) {
+							partitionsScore.put(partitionIndex, (partitionsScore.get(partitionIndex)) +
+									t.getValue() * getWeight((double) partitionSize,c));
+						} else {
+							partitionsScore.put(partitionIndex,
+									t.getValue() * getWeight((double) partitionSize,c));
+						}
+					}
+				}
+				
+			});
 
-		for (Node v: xNodes.keySet()) {
-			if (v.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
-				Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
-				partitionsScore.put(partitionIndex, (partitionsScore.get(partitionIndex) +
-						xNodes.get(v) * getWeight((double)partitions.get(partitionIndex).size(), c)));
-			}
+		if (partitionsScore.isEmpty()) {
+			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
 		}
-		double max = Double.NEGATIVE_INFINITY;
-		//force garbage collector
-		xNodes = null;
-		nNeighbours = null;
+		
+		Integer maxPartIndex = partitionsScore.entrySet()
+				.parallelStream().max(new Comparator<Entry<Integer, Double>>() {
 
-		for (Entry<Integer,Double> score : partitionsScore.entrySet()) {
-			if (partitionMap.getPartitionSize(score.getKey()) > c) {
-				continue;
-			}
-			double partitionValue = score.getValue();
-			if (Double.max(max, partitionValue) == partitionValue) {
-				max = partitionValue;
-				index = score.getKey();
-			}
-		}
+					public int compare(Entry<Integer, Double> o1, Entry<Integer, Double> o2) {
+						Double p1score = o1.getValue();
+						Double p2score = o2.getValue();
+						if (Double.max(p1score, p2score) == p1score) {
+							return 1;
+						} else if (Double.max(p1score, p2score) == p2score) {
+							return -1;
+						} else {
+							return partitionMap.getPartitionSize(o1.getKey()) - 
+									partitionMap.getPartitionSize(o2.getKey());
+						}
+					}
+				}).get().getKey();
 
-		return index == -1 ? new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n) : index;
+		return maxPartIndex;
 	}
 
 	public abstract String getHeuristicName();

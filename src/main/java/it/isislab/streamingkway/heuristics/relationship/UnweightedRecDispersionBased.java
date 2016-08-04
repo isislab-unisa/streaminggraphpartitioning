@@ -6,7 +6,7 @@ public class UnweightedRecDispersionBased extends AbstractRecursiveDispersionBas
 		return "Unweighted Recursive Dispersion Based";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
+	public Double getWeight(Double partitionSize, Integer c) {
 		return 1.0;
 	}
 

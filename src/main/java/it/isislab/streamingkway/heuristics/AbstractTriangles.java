@@ -39,13 +39,7 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 						} else if (Math.max(tri1, tri2) == tri2) {
 							return 2;
 						} else {
-							if (p1size > p2size) {
-								return -1;
-							} else if (p1size < p2size) {
-								return 1;
-							} else {
-								return 0;
-							}
+							return p1size - p2size;
 						}
 					}
 				}).get().getKey();

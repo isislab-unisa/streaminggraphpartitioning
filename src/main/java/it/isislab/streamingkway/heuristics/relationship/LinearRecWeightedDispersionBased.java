@@ -6,8 +6,8 @@ public class LinearRecWeightedDispersionBased extends AbstractRecursiveDispersio
 		return "Linear Recursive Dispersion Based";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
-		return 1 - intersectNumber/c;
+	public Double getWeight(Double partitionSize, Integer c) {
+		return 1 - partitionSize/c;
 	}
 
 }

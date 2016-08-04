@@ -6,8 +6,8 @@ public class ExponentiallyRecWeightedDispersionBased extends AbstractRecursiveDi
 		return "Exponentially Recursive Dispersion Based";
 	}
 
-	public Double getWeight(Double intersectNumber, Integer c) {
-		return 1 - Math.exp(intersectNumber - c);
+	public Double getWeight(Double partitionSize, Integer c) {
+		return 1 - Math.exp(partitionSize - c);
 	}
 
 }
