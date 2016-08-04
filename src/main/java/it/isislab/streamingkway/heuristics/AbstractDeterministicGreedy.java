@@ -38,7 +38,7 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 							return 1;
 						} else if (Double.max(intersect1, intersect2) == intersect2) {
 							return -1;
-						} else {
+						} else { //tie break
 							if (p1size > p2size) {
 								return -1;
 							} else if (p1size < p2size) {
@@ -48,7 +48,6 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 							}
 						}
 					}
-					
 				}).get().getKey();
 		
 		return maxIndex == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : maxIndex;

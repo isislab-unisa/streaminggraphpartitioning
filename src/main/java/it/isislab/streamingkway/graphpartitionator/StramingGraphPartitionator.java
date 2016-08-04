@@ -1,9 +1,9 @@
 package it.isislab.streamingkway.graphpartitionator;
 
+import java.util.concurrent.ThreadLocalRandom;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
-
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 import it.isislab.streamingkway.partitions.SetPartitionMap;
@@ -18,7 +18,7 @@ public class StramingGraphPartitionator implements GraphPartitionator {
 
 
 	public StramingGraphPartitionator(Integer k, SGPHeuristic heuristic, Integer capacity) {
-		String graphId = Integer.toString(new java.util.Random().nextInt(Integer.MAX_VALUE));
+		String graphId = Integer.toString(ThreadLocalRandom.current().nextInt());
 		this.graph = createSingleGraph(graphId);
 		this.heuristic = heuristic;
 		this.k = k;

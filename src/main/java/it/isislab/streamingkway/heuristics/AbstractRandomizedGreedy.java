@@ -6,10 +6,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.partitions.PartitionMap;
 import it.isislab.streamingkway.utils.DistributedRandomNumberGenerator;
 

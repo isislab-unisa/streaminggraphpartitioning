@@ -2,7 +2,7 @@ package it.isislab.streamingkway.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DistributedRandomNumberGenerator {
 
@@ -44,7 +44,7 @@ public class DistributedRandomNumberGenerator {
     
     public int getDistributedRandomNumber() {
     	if (distribution.isEmpty()) {
-    		return new Random().nextInt(k) + 1;
+    		return ThreadLocalRandom.current().nextInt(k) + 1;
     	}
         double rand = Math.random();
         double ratio = 1.0f / distSum;
@@ -55,7 +55,7 @@ public class DistributedRandomNumberGenerator {
                 return i;
             }
         }
-        return new Random().nextInt(k) + 1;
+        return ThreadLocalRandom.current().nextInt(k) + 1;
     }
 
     public String toString() {
