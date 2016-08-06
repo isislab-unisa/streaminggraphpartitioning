@@ -1,6 +1,8 @@
 package it.isislab.streamingkway.kwaysgp;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -176,7 +178,7 @@ extends TestCase
 	 * ** 		UTILITY METHODS
 	 * ** 
 	 */
-	private void allHeuristicsTestCompare(File fpIn, File fpOut, Integer k, Integer C, String glType,
+	private void allHeuristicsTestCompare(File fileIn, File fileOut, Integer k, Integer C, String glType,
 			Map<Integer, Double> toCompareResults) 
 					throws HeuristicNotFound, IOException, InterruptedException {
 		HashMap<Integer, Double> heuristicEdgesRatio = new HashMap<>();
@@ -189,6 +191,8 @@ extends TestCase
 			heuristicEdgesRatio.put(i, 0.0); //init entry
 			log.info("Executing: " + HeuristicFactory.getHeuristic(i).getHeuristicName());
 			for (int j = 0; j < ITERATION_TIME; j++) {
+				FileInputStream fpIn = new FileInputStream(fileIn);
+				FileOutputStream fpOut = new FileOutputStream(fileOut);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,HeuristicFactory.getHeuristic(i),C,true);
 				Thread.sleep(500);
 				gl.run();    
@@ -205,6 +209,8 @@ extends TestCase
 				//check displacement
 				assertTrue(qc.getDisplacement(gl.getGraphPartitionator().getPartitionMap()) <= 
 						DISPLACEMENT_TOLERANCE);
+				fpIn.close();
+				fpOut.close();
 			}
 			log.info("Test for " + HeuristicFactory.getHeuristic(i).getHeuristicName() + " done.");
 			heuristicEdgesRatio.put(i, heuristicEdgesRatio.get(i) / ITERATION_TIME);
@@ -228,7 +234,7 @@ extends TestCase
 	}
 
 
-	private GraphLoader getGraphLoader(String glType, File fpIn, File fpOut, Integer k, 
+	private GraphLoader getGraphLoader(String glType, FileInputStream fpIn, FileOutputStream fpOut, Integer k, 
 			SGPHeuristic heuristic, Integer c, boolean thereIsC) throws IOException {
 		GraphTraversingOrdering gto = OrderingFactory.getOrdering(glType);
 		return new TraversingGraphLoader(fpIn, fpOut, k, heuristic, c, thereIsC, gto);

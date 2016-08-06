@@ -1,6 +1,8 @@
 package it.isislab.streamingkway.kwaysgp;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -38,8 +40,8 @@ public class ParallelTest extends TestCase {
 	}	
 	
 	public void testParallel() throws IOException {
-		File fpIn = new File(GRAPH_PATH);
-		File fpOut = new File(GRAPH_PATH + ".res");
+		File fileIn = new File(GRAPH_PATH);
+		File fileOut = new File(GRAPH_PATH + ".res");
 		
 		GraphLoader gl = null;
 		QualityChecker qc = new ParallelQualityChecker();
@@ -51,11 +53,15 @@ public class ParallelTest extends TestCase {
 		for(int i = 0; i < ITERATION_TIME; i++) {
 			Long startTime = System.currentTimeMillis();
 			log.info("Test n." + (i+1) + " for parallel");
+			FileInputStream fpIn = new FileInputStream(fileIn);
+			FileOutputStream fpOut = new FileOutputStream(fileOut);
 			gl = new TraversingGraphLoader(fpIn, fpOut, k, heuristic, c, true, gto);
 			gl.run();
 			Double.sum(parallelResult,qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph()));
 			Long endTime = System.currentTimeMillis();
 			parallelTime += (endTime - startTime);
+			fpIn.close();
+			fpOut.close();
 		}
 		parallelResult /= ITERATION_TIME;
 		//serial test
@@ -64,11 +70,15 @@ public class ParallelTest extends TestCase {
 		for(int i = 0; i < ITERATION_TIME; i++) {
 			Long startTime = System.currentTimeMillis();
 			log.info("Test n." + (i+1) + " for serial");
+			FileInputStream fpIn = new FileInputStream(fileIn);
+			FileOutputStream fpOut = new FileOutputStream(fileOut);
 			gl = new TraversingGraphLoader(fpIn, fpOut, k, heuristic, c, true, gto);
 			gl.run();
 			Double.sum(serialResult,qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph()));
 			Long endTime = System.currentTimeMillis();
 			serialTime += (endTime - startTime);
+			fpIn.close();
+			fpOut.close();
 		}
 		serialResult /= ITERATION_TIME;
 		

@@ -1,8 +1,9 @@
 package it.isislab.streamingkway.graphloaders;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class SimpleGraphLoader implements GraphLoader {
 	private boolean thereIsC;
 
 
-	public SimpleGraphLoader(File fpIn, File fpOut, Integer k, SGPHeuristic heuristic, Integer c, boolean thereIsC) throws IOException{
+	public SimpleGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k, SGPHeuristic heuristic, Integer c, boolean thereIsC) throws IOException{
 		this.heuristic = heuristic;
 		this.K = k;
 		this.thereIsC = thereIsC;
@@ -39,8 +40,13 @@ public class SimpleGraphLoader implements GraphLoader {
 			this.capacity = c;			
 		}
 		//file
-		this.scanner = new Scanner(fpIn);
-		this.printerOut = new PrintWriter(new BufferedWriter(new FileWriter(fpOut)));
+		this.scanner = new Scanner(new BufferedInputStream(fpIn));
+		this.printerOut = new PrintWriter(new BufferedOutputStream(fpOut));
+	}
+
+	public SimpleGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k2, Integer heuristicNumber,
+			Integer c, boolean thereIsC2) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public void run() {

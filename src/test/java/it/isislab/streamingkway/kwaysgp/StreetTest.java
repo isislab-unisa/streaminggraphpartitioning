@@ -1,6 +1,8 @@
 package it.isislab.streamingkway.kwaysgp;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -34,7 +36,7 @@ extends TestCase
 
 	private CSVWriter writer;
 	
-	public static final Integer ITERATION_TIME = 20;
+	public static final Integer ITERATION_TIME = 1;
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
@@ -282,9 +284,11 @@ extends TestCase
 	}
 
 
-	private GraphLoader getGraphLoader(String glType, File fpIn, File fpOut, Integer k, 
+	private GraphLoader getGraphLoader(String glType, File fileIn, File fileOut, Integer k, 
 			SGPHeuristic heuristic, Integer c, boolean thereIsC) throws IOException {
 		GraphTraversingOrdering gto = OrderingFactory.getOrdering(glType);
+		FileInputStream fpIn = new FileInputStream(fileIn);
+		FileOutputStream fpOut = new FileOutputStream(fileOut);
 		return new TraversingGraphLoader(fpIn, fpOut, k, heuristic, c, thereIsC, gto);
 	}
 

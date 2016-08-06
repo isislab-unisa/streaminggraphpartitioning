@@ -1,6 +1,8 @@
 package it.isislab.streamingkway.kwaysgp;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -34,7 +36,7 @@ extends TestCase
 
 	private CSVWriter writer;
 	
-	public static final Integer ITERATION_TIME = 2;
+	public static final Integer ITERATION_TIME = 1;
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
@@ -94,37 +96,27 @@ extends TestCase
 	 * ******************************************************************************
 	 */
 	public void testTinyBFS() throws HeuristicNotFound, IOException, InterruptedException {
-		File fpIn = new File(PATH_TINY_GRAPH);
-		assertTrue(fpIn.exists());
-		File fpOut = new File(PATH_TINY_GRAPH + ".bfs");
-
 		//check 4elt with 4 partitions
 		Integer k = 2;
 		Integer C = 4; // 7/2+1
-
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.BFS_ORDER, "Tiny_01");
+		allHeuristicsTestCompare(new File(PATH_TINY_GRAPH), new File(PATH_TINY_GRAPH + ".bfs"), k,
+				C, Ordering.BFS_ORDER, "Tiny_01");
 	}
 	public void testTinyDFS() throws HeuristicNotFound, IOException, InterruptedException {
-		File fpIn = new File(PATH_TINY_GRAPH);
-		assertTrue(fpIn.exists());
-		File fpOut = new File(PATH_TINY_GRAPH + ".dfs");
 
 		//check 4elt with 4 partitions
 		Integer k = 2;
 		Integer C = 4; // 7/2+1
-
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.DFS_ORDER, "Tiny_01");
+		allHeuristicsTestCompare(new File(PATH_TINY_GRAPH), new File(PATH_TINY_GRAPH + ".dfs"), k,
+				C, Ordering.DFS_ORDER, "Tiny_01");
 	}
 	public void testTinyRND() throws HeuristicNotFound, IOException, InterruptedException {
-		File fpIn = new File(PATH_TINY_GRAPH);
-		assertTrue(fpIn.exists());
-		File fpOut = new File(PATH_TINY_GRAPH + ".rnd");
 
 		//check 4elt with 4 partitions
 		Integer k = 2;
 		Integer C = 4; // 7/2+1
-
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.RANDOM_ORDER, "Tiny_01");
+		allHeuristicsTestCompare(new File(PATH_TINY_GRAPH), new File(PATH_TINY_GRAPH + ".rnd"), k,
+				C, Ordering.RANDOM_ORDER, "Tiny_01");
 	}
 	/********************************************************************************
 	 * 
@@ -144,37 +136,26 @@ extends TestCase
 	 * @throws HeuristicNotFound ****************************************************************************
 	 */
 	public void test4eltBFS() throws HeuristicNotFound, IOException, InterruptedException {
-		File fpIn = new File(PATH_4ELT_GRAPH);
-		assertTrue(fpIn.exists());
-		File fpOut = new File(PATH_4ELT_GRAPH + ".bfs");
-
 		//check 4elt with 4 partitions
 		Integer k = 4;
 		Integer C = 3902; // 15606/4+1
 
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.BFS_ORDER, "4elt");
+		allHeuristicsTestCompare(new File(PATH_4ELT_GRAPH), new File(PATH_4ELT_GRAPH + ".bfs"), 
+				k, C, Ordering.BFS_ORDER, "4elt");
 	}
 	public void test4eltDFS() throws HeuristicNotFound, IOException, InterruptedException {
-		File fpIn = new File(PATH_4ELT_GRAPH);
-		assertTrue(fpIn.exists());
-		File fpOut = new File(PATH_4ELT_GRAPH +".dfs");
-
 		//check 4elt with 4 partitions
 		Integer k = 4;
 		Integer C = 3902; // 15606/4+1
-
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.DFS_ORDER, "4elt");
+		allHeuristicsTestCompare(new File(PATH_4ELT_GRAPH), new File(PATH_4ELT_GRAPH + ".dfs"), 
+				k, C, Ordering.DFS_ORDER, "4elt");
 	}
 	public void test4eltRND() throws HeuristicNotFound, IOException, InterruptedException {
-		File fpIn = new File(PATH_4ELT_GRAPH);
-		assertTrue(fpIn.exists());
-		File fpOut = new File(PATH_4ELT_GRAPH + ".rnd");
-
 		//check 4elt with 4 partitions
 		Integer k = 4;
 		Integer C = 3902; // 15606/4+1
-
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, Ordering.RANDOM_ORDER, "4elt");
+		allHeuristicsTestCompare(new File(PATH_4ELT_GRAPH), new File(PATH_4ELT_GRAPH + ".rnd"), 
+				k, C, Ordering.RANDOM_ORDER, "4elt");
 	}
 	/******************************************************************************
 	 * 
@@ -188,8 +169,8 @@ extends TestCase
 	 * ** 		UTILITY METHODS
 	 * ** 
 	 */
-	private void allHeuristicsTestCompare(File fpIn, File fpOut, Integer k, Integer C, String glType, 
-			String graphName) throws HeuristicNotFound, IOException, InterruptedException {
+	private void allHeuristicsTestCompare(File file1, File file2, Integer k, Integer C, 
+			String glType, String graphName) throws HeuristicNotFound, IOException, InterruptedException {
 		Double heuristicEdgesRatio = 0.0;
 		Double cuttedEdges = 0.0;
 		Double displacement = 0.0;
@@ -221,6 +202,8 @@ extends TestCase
 			Integer totalEdges = 0;
 			SGPHeuristic heuristic = null;
 			for (int j = 0; j < ITERATION_TIME; j++) {
+				FileInputStream fpIn = new FileInputStream(file1);
+				FileOutputStream fpOut = new FileOutputStream(file2);
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,true);
 				Thread.sleep(500);
@@ -243,6 +226,9 @@ extends TestCase
 				//check normalized maximum load
 				normalizedMaxLoad += qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), 
 						gl.getGraphPartitionator().getGraph());
+				fpIn.close();
+				fpOut.close();
+
 			}
 			heuristicEdgesRatio /= ITERATION_TIME;
 			cuttedEdges /= ITERATION_TIME;
@@ -280,6 +266,8 @@ extends TestCase
 			Integer totalEdges = 0;
 			SGPHeuristic heuristic = null;
 			for (int j = 0; j < ITERATION_TIME; j++) {
+				FileInputStream fpIn = new FileInputStream(file1);
+				FileOutputStream fpOut = new FileOutputStream(file2);
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,true);
 				Thread.sleep(1500);
@@ -302,6 +290,8 @@ extends TestCase
 				//check normalized maximum load
 				normalizedMaxLoad += qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), 
 						gl.getGraphPartitionator().getGraph());
+				fpIn.close();
+				fpOut.close();
 			}
 			heuristicEdgesRatio /= ITERATION_TIME;
 			cuttedEdges /= ITERATION_TIME;
@@ -327,7 +317,7 @@ extends TestCase
 
 
 
-	private GraphLoader getGraphLoader(String glType, File fpIn, File fpOut, Integer k, 
+	private GraphLoader getGraphLoader(String glType, FileInputStream fpIn, FileOutputStream fpOut, Integer k, 
 			SGPHeuristic heuristic, Integer c, boolean thereIsC) throws IOException {
 		GraphTraversingOrdering gto = OrderingFactory.getOrdering(glType);
 		return new TraversingGraphLoader(fpIn, fpOut, k, heuristic, c, thereIsC, gto);

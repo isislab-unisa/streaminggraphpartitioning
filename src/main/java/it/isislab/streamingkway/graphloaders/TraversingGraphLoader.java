@@ -1,8 +1,9 @@
 package it.isislab.streamingkway.graphloaders;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ public class TraversingGraphLoader implements GraphLoader {
 	private boolean thereIsC;
 	private GraphTraversingOrdering gto;
 
-	public TraversingGraphLoader(File fpIn, File fpOut, Integer k, SGPHeuristic heuristic, 
-			Integer c, boolean thereIsC, GraphTraversingOrdering gto) throws IOException{
+	public TraversingGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k, 
+			SGPHeuristic heuristic, Integer c, boolean thereIsC, GraphTraversingOrdering gto) throws IOException{
 		this.heuristic = heuristic;
 		this.K = k;
 		this.thereIsC = thereIsC;
@@ -47,8 +48,8 @@ public class TraversingGraphLoader implements GraphLoader {
 		}
 		this.gto = gto;
 		//file
-		this.scanner = new Scanner(fpIn);
-		this.printerOut = new PrintWriter(new BufferedWriter(new FileWriter(fpOut)));
+		this.scanner = new Scanner(new BufferedInputStream(fpIn));
+		this.printerOut = new PrintWriter(new BufferedOutputStream(fpOut));
 	}
 
 	public void run() {
@@ -80,7 +81,6 @@ public class TraversingGraphLoader implements GraphLoader {
 				}
 				break;
 			}
-
 		}
 		if (!thereIsC) {
 			capacity = nodeNumbers / K + 1;
@@ -109,8 +109,6 @@ public class TraversingGraphLoader implements GraphLoader {
 		cc.compute();
 		cc.setCountAttribute(GraphLoader.CONNECTED_COMPONENT_ATTR);
 		int connectedComponents = cc.getConnectedComponentsCount();
-		//FIXME check out the documentation
-		System.out.println(connectedComponents);
 		if (connectedComponents > 1 &&
 				(gto.getClass().equals(BFSTraversing.class) || gto.getClass().equals(DFSTraversing.class))) { //there are at least 2 connected components
 			//the algorithm requires to visit them and are not enabled to do
