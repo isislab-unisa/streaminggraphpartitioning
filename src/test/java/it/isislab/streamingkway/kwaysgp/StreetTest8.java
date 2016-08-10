@@ -36,6 +36,7 @@ extends TestCase
 
 	private CSVWriter writer;
 	
+	public static final Integer CPU_REFRESH_TIME = 0;
 	public static final Integer ITERATION_TIME = 20;
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
@@ -179,7 +180,7 @@ extends TestCase
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,false);
-				Thread.sleep(500);
+				Thread.sleep(CPU_REFRESH_TIME);
 				Long startTime = System.currentTimeMillis();
 				gl.run(); 
 				Long endTime = System.currentTimeMillis();
@@ -239,7 +240,7 @@ extends TestCase
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,false);
-				Thread.sleep(500);
+				Thread.sleep(CPU_REFRESH_TIME);
 				Long startTime = System.currentTimeMillis();
 				gl.run(); 
 				Long endTime = System.currentTimeMillis();
