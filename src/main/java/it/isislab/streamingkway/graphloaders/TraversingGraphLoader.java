@@ -13,10 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
+
 import org.graphstream.algorithm.ConnectedComponents;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.BFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.DFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
@@ -130,14 +132,14 @@ public class TraversingGraphLoader implements GraphLoader {
 			if (line.equals("") || line.equals(" ") || line.equals('\n')) { //empty
 				continue;
 			}
-			StringTokenizer strTok = new StringTokenizer(line, " ");
+			String[] nNodes = line.split(" ");
 			Node v = gr.addNode(Integer.toString(nodeCount++));
 			gr.addNode(v.getId());
 
-			while (strTok.hasMoreTokens()) {
-				String uId = (String) strTok.nextElement();
-				gr.addEdge(v.getId()+uId, v.getId(),uId);
+			for (String s : nNodes) {
+				gr.addEdge(v.getId()+"-"+s, v.getId(), s);
 			}
+
 		}
 		//scanning the graph
 		ConnectedComponents cc = new ConnectedComponents();
@@ -182,11 +184,11 @@ public class TraversingGraphLoader implements GraphLoader {
 	}
 
 	public int getNodeNumbers() {
-		return nodeNumbers;
+		return nodeNumbers == gr.getNodeCount() ? nodeNumbers : -1;
 	}
 
 	public int getEdgeNumbers() {
-		return edgeNumbers;
+		return edgeNumbers == gr.getEdgeCount() ? edgeNumbers : -1;
 	}
 
 
