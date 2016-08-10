@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class StreetTest 
+public class StreetTest8 
 extends TestCase
 {
 
@@ -41,7 +41,7 @@ extends TestCase
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
-	public static final String TEST_STREET_GRAPH = "resources/delaunay_n10.graph";
+	public static final String TEST_STREET_GRAPH = "resources/luxembourg.osm.graph";
 	@SuppressWarnings("unused")
 	private static final Double DISPLACEMENT_TOLERANCE = 10.0;
 
@@ -56,7 +56,7 @@ extends TestCase
 	 * @param testName name of the test case
 	 * @throws IOException 
 	 */
-	public StreetTest( String testName ) throws IOException
+	public StreetTest8( String testName ) throws IOException
 	{
 		super( testName );
 		writer = new CSVWriter(new FileWriter(CSV_FILENAME,true));
@@ -82,7 +82,7 @@ extends TestCase
 	 */
 	public static Test suite()
 	{
-		return new TestSuite( StreetTest.class );
+		return new TestSuite( StreetTest8.class );
 	}
 	
 	/******************************************************************************

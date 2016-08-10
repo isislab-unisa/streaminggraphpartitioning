@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class StreetTest 
+public class StreetTest6 
 extends TestCase
 {
 
@@ -36,12 +36,13 @@ extends TestCase
 
 	private CSVWriter writer;
 	
+	public static final Integer CPU_REFRESH_TIME = 0;
 	public static final Integer ITERATION_TIME = 20;
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
-	public static final String TEST_STREET_GRAPH = "resources/delaunay_n10.graph";
+	public static final String TEST_STREET_GRAPH = "resources/4elt.graph";
 	@SuppressWarnings("unused")
 	private static final Double DISPLACEMENT_TOLERANCE = 10.0;
 
@@ -56,7 +57,7 @@ extends TestCase
 	 * @param testName name of the test case
 	 * @throws IOException 
 	 */
-	public StreetTest( String testName ) throws IOException
+	public StreetTest6( String testName ) throws IOException
 	{
 		super( testName );
 		writer = new CSVWriter(new FileWriter(CSV_FILENAME,true));
@@ -82,7 +83,7 @@ extends TestCase
 	 */
 	public static Test suite()
 	{
-		return new TestSuite( StreetTest.class );
+		return new TestSuite( StreetTest6.class );
 	}
 	
 	/******************************************************************************
@@ -179,7 +180,7 @@ extends TestCase
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,false);
-				Thread.sleep(500);
+				Thread.sleep(CPU_REFRESH_TIME);
 				Long startTime = System.currentTimeMillis();
 				gl.run(); 
 				Long endTime = System.currentTimeMillis();
@@ -239,7 +240,7 @@ extends TestCase
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,false);
-				Thread.sleep(500);
+				Thread.sleep(CPU_REFRESH_TIME);
 				Long startTime = System.currentTimeMillis();
 				gl.run(); 
 				Long endTime = System.currentTimeMillis();
