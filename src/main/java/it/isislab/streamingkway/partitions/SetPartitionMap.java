@@ -54,6 +54,9 @@ public class SetPartitionMap implements PartitionMap {
 	public Node assignToPartition(Node v, Integer ind) throws PartitionOutOfBoundException {
 		checkIndex(ind);
 		Collection<Node> s = chm.get(ind);
+		
+		if (s.size() > C) throw new PartitionOutOfBoundException("Partition " + ind + " is already full");
+		
 		s.add(v);
 		//update size
 		partitionsSize.put(ind, partitionsSize.get(ind) + 1);
@@ -196,5 +199,23 @@ public class SetPartitionMap implements PartitionMap {
 		return null;
 	}
 	
+	public double getTrianglesValue(Node n, Integer partitionIndex) {
+		int totalEdges = 0;
+
+		List<Node> gammaNIntersect = getIntersectionNodesParallel(n, partitionIndex);
+		for (int i = 0; i < gammaNIntersect.size(); i++) {
+			for (int j = i+1; j < gammaNIntersect.size(); j++) {
+				if (gammaNIntersect.get(i).hasEdgeBetween(gammaNIntersect.get(j))) {
+					totalEdges ++;
+				}
+			}
+		}
+		Integer N = gammaNIntersect.size();
+		Integer binCoeff = N == 1 || N == 0 ? 0 : N*(N-1)/2;
+		if (binCoeff == 0) {  //hardcoded 0.0 because totalEdges must be 0 too. check it out
+			return 0.0;
+		}
+		return (double)totalEdges/binCoeff; //safe to calculate because binCoeff != 0
+	}
 
 }

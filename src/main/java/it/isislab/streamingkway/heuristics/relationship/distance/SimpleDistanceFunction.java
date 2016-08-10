@@ -8,7 +8,6 @@ import org.graphstream.graph.Node;
 public class SimpleDistanceFunction implements DistanceFunction {
 
 	public Integer getDistance(Node s, Node t, Node u, Node v) {
-		
 		if (!s.hasEdgeBetween(t)) {
 			return 1;
 		}

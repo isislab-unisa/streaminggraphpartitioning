@@ -1,14 +1,16 @@
 package it.isislab.streamingkway.exceptions;
 
+/**
+ * 
+ * @author Dario Di Pasquale
+ * 
+ * This exception is thrown when the heuristic's number does not exist.
+ */
 public class HeuristicNotFound extends RuntimeException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8299395204259829060L;
 
 	public HeuristicNotFound() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public HeuristicNotFound(String message) {

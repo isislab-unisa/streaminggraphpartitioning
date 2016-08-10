@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+
+import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
@@ -21,20 +23,21 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, WeightedHeuristic{
 
 	public DistanceFunction dist = new SimpleDistanceFunction();
-
+	
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 		
 		if (n.getDegree() == 0) {
 			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
 		}
-		
+		//score for each neighbour 
 		Map<Node, Integer> nodeScores = new HashMap<Node, Integer>(n.getDegree());
 		
 		Iterator<Node> nNeighIt = n.getNeighborNodeIterator();
 
-		nNeighIt.forEachRemaining(p -> nodeScores.put(p, Dispersion.getDispersion(p, n, dist)));
-		
+		//1 + disp(u,v) in order to mix DG with ADB
+		nNeighIt.forEachRemaining(p -> nodeScores.put(p, 1+ Dispersion.getDispersion(p, n, dist)));
+
 		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<>(partitionMap.getK());
 		nodeScores.entrySet().parallelStream().forEach(new Consumer<Entry<Node,Integer>>() {
 			public void accept(Entry<Node, Integer> t) {
@@ -44,13 +47,14 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 				}
 				Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
 				if (partitionIndex <= 0 || partitionIndex > partitionMap.getK()) {
-					return;
+					throw new PartitionOutOfBoundException("Partition with index " + partitionIndex + "does not exist");
 				}
 				Integer partitionSize = partitionMap.getPartitionSize(partitionIndex);
 				if (partitionSize > c) {
 					return;
 				}
 				if (partitionsScores.containsKey(partitionIndex)){
+					//x1*w+x2*w+...+xn*w = w*(x1+x2+..+xn)
 					partitionsScores.put(partitionIndex, (partitionsScores.get(partitionIndex)) + t.getValue() 
 					* getWeight((double)partitionSize, c));
 				} else {
@@ -58,9 +62,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 							getWeight((double) partitionSize, c));
 				}
 			}
-			
 		});
-		
 		if (partitionsScores.isEmpty()) {
 			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
 		}

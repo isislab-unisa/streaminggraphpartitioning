@@ -1,6 +1,6 @@
 package it.isislab.streamingkway.heuristics.relationship;
 
-public class LinearNormWeightedDispersionBased extends AbstractAbsDispersionBased {
+public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBased{
 
 	public Double getWeight(Double partitionSize, Integer c) {
 		return 1 - partitionSize / c;

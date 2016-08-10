@@ -2,22 +2,31 @@ package it.isislab.streamingkway.graphloaders;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
-
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.NodeFactory;
-
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.graphpartitionator.StramingGraphPartitionator;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 
+/**
+ * @author Dario Di Pasquale
+ *
+ *	A simple graph loader that performs the partitioning of a graph given in input according to the traversing
+ * ordering given by the file.
+ *  It does not works well for some heuristics because the information lack concerns the node location but
+ *  it assigns a node at a partition as well as it is read and does not need immediately the full graph.
+ *
+ */
 public class SimpleGraphLoader implements GraphLoader {
 
 	private GraphPartitionator graphPartitionator;
@@ -31,7 +40,16 @@ public class SimpleGraphLoader implements GraphLoader {
 	private int edgeNumbers;
 	private boolean thereIsC;
 
-
+	/**
+	 * Creates a simple graph loader according to the given parameters.
+	 * @param fpIn the {@link FileInputStream} in which read the graph. It can be associated to a {@link File} or a {@link Socket}.
+	 * @param fpOut the {@link FileOutputStream} on which write the result of the partitioning. It can be associated to a {@link File} or a {@link Socket}.
+	 * @param k the number of partitions in which the graph should be partitioned.
+	 * @param heuristic the {@link SGPHeuristic} used for partitioning the graph.
+	 * @param c the capacity of every partition.
+	 * @param thereIsC a boolean value that indicates if the capacity is defined by the user of should be evaluate according to the graph size. If this value is false, c will be (n/k)+1 where n is the count of the nodes and k is the count of partitions.
+	 * @throws IOException if there is an error opening the input or output streams throw {@link IOException}
+	 */
 	public SimpleGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k, SGPHeuristic heuristic, Integer c, boolean thereIsC) throws IOException{
 		this.heuristic = heuristic;
 		this.K = k;
@@ -44,11 +62,14 @@ public class SimpleGraphLoader implements GraphLoader {
 		this.printerOut = new PrintWriter(new BufferedOutputStream(fpOut));
 	}
 
-	public SimpleGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k2, Integer heuristicNumber,
-			Integer c, boolean thereIsC2) {
-		// TODO Auto-generated constructor stub
-	}
-
+	/**
+	 * Performs the partitioning of the graph given by the {@link FileInputStream} in the constructor.
+	 * It first tries to read the number of nodes and edges that the graph should contains, then starts
+	 * loading and partitioning the graph according to the {@link SGPHeuristic} given in the constructor.
+	 * For every node that load in the stream, it retrieve the partition in which it should be and then 
+	 * assign the node to the partition and write this information on the {@link FileOutputStream} given to
+	 * the constructor.
+	 */
 	public void run() {
 
 		nodeNumbers = -1;
@@ -109,8 +130,6 @@ public class SimpleGraphLoader implements GraphLoader {
 		scanner.close();
 	}
 
-
-
 	public GraphPartitionator getGraphPartitionator() {
 		return graphPartitionator;
 	}
@@ -118,6 +137,7 @@ public class SimpleGraphLoader implements GraphLoader {
 	public int getNodeNumbers() {
 		return nodeNumbers;
 	}
+	
 
 	public int getEdgeNumbers() {
 		return edgeNumbers;

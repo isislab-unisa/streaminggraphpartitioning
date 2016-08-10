@@ -34,7 +34,8 @@ public class App {
 	String outputFn;
 	@Option(name="-t", usage="Sets traversing order", required=false)
 	String gt;
-	
+	@Option(name="--view", usage="Display the graph", required=false)
+	Boolean view = false;
 	
 	public static void main(String[] args)  {
 		
@@ -89,6 +90,9 @@ public class App {
 		System.out.println("Done!");
 		qualityCheck(gl, (endTime- startTime),heuristic, System.out);
 		
+		if (view) {
+			gl.getGraphPartitionator().getGraph().display();
+		}
 	}
 
 	private void qualityCheck(GraphLoader gl, Long timeSpent,SGPHeuristic heuristic, PrintStream outStream) {

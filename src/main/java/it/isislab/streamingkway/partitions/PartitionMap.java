@@ -25,4 +25,5 @@ public interface PartitionMap {
 	public Double getDegreeAverage();
 	public Integer getTotalPartitionedNodes();
 	public Integer getNodePartition(Node v);
+	public double getTrianglesValue(Node n, Integer partitionIndex);
 }

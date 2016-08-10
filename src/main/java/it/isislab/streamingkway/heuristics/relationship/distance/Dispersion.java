@@ -1,41 +1,24 @@
 package it.isislab.streamingkway.heuristics.relationship.distance;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
 public class Dispersion {
 
 	public static List<Node> cuvCalculator(Node u, Node v) {
-		Collection<Edge> minDegreeEdges = null;
-		List<Node> cuv = null;
-		Node maxDegNode = null;
-		Node minDegNode = null;
-		int vDeg;
-		int uDeg;
-		if ((vDeg = v.getDegree()) < (uDeg= u.getDegree())) {
-			cuv = new ArrayList<>(vDeg);
-			minDegreeEdges = v.getEdgeSet();
-			minDegNode = v;
-			maxDegNode = u;
-		} else {
-			cuv = new ArrayList<>(uDeg);
-			minDegreeEdges = u.getEdgeSet();
-			minDegNode = u;
-			maxDegNode = v;
-		}
-		
 
-		for (Edge cuvEdge : minDegreeEdges) {
-			Node z = cuvEdge.getOpposite(minDegNode);
-			if (z.hasEdgeBetween(maxDegNode)) {
-				cuv.add(z);
+		List<Node> cuv = new ArrayList<>(u.getDegree());
+		Iterator<Node> uIterator = u.getNeighborNodeIterator();
+
+		while (uIterator.hasNext()) {
+			Node w = uIterator.next();
+			if (v.hasEdgeBetween(w)) {
+				cuv.add(w);
 			}
 		}
-
 		
 		return cuv;
 	}

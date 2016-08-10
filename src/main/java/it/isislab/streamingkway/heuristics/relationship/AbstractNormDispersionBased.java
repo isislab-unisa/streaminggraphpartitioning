@@ -42,10 +42,9 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 				List<Node> cuv = Dispersion.cuvCalculator(n, v);
 				int emb = cuv.size();
 				double disp = Dispersion.getDispersion(n,v,dist,cuv);
-				nodeScores.put(v, Math.pow(disp + B, A) / (double) emb + C);
+				nodeScores.put(v, (Math.pow(disp +  B, A) / ((double) emb + C)));
 			}
 		});
-
 		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<>(partitionMap.getK());
 		nodeScores.entrySet().parallelStream()
 			.forEach(new Consumer<Entry<Node,Double>>() {
@@ -75,7 +74,6 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
 		}
 		Integer maxPart = partitionsScores.entrySet().parallelStream().max(new Comparator<Entry<Integer, Double>>() {
-
 			public int compare(Entry<Integer, Double> p1, Entry<Integer, Double> p2) {
 				Double p1score = p1.getValue();
 				Double p2score = p2.getValue();
