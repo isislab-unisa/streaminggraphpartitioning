@@ -17,8 +17,6 @@ import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.UnweightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedRandomizedGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedTriangles;
-import it.isislab.streamingkway.heuristics.my.ParallelHeuristic;
-import it.isislab.streamingkway.heuristics.my.ParallelUnweightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.relationship.ExponentiallyAbsWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.ExponentiallyNormWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.ExponentiallyRecWeightedDispersionBased;
@@ -64,8 +62,6 @@ public class HeuristicFactory {
 		case Heuristic.BALANCE_BIG : euristic = new BalanceBig();
 		break;
 
-		case ParallelHeuristic.PARALLEL_U_DETERMINISTIC_G: euristic = new ParallelUnweightedDeterministicGreedy();
-		break;
 
 		case RelationshipHeuristics.U_REC_DISPERSION_BASED: euristic = new  UnweightedRecDispersionBased();
 		break;

@@ -12,6 +12,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
+import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.WeightedHeuristic;
@@ -21,9 +22,9 @@ import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceF
 import it.isislab.streamingkway.partitions.PartitionMap;
 public abstract class AbstractNormDispersionBased implements SGPHeuristic, WeightedHeuristic {
 
-	private static final Double A = 0.61;
-	private static final Double B = 0.0;
-	private static final Double C = 5.0;
+	private Double A = 0.61;
+	private Double B = 0.0;
+	private Double C = 5.0;
 
 	private DistanceFunction dist = new SimpleDistanceFunction();
 
@@ -31,7 +32,7 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
-			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
+			return new BalancedHeuristic().getIndex(g, partitionMap, n);
 		}
 
 		Map<Node, Double> nodeScores = new ConcurrentHashMap<>();
@@ -47,28 +48,26 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		});
 		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<>(partitionMap.getK());
 		nodeScores.entrySet().parallelStream()
+			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))
+			.filter(p -> partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Double>>() {
-
+	
 				public void accept(Entry<Node, Double> t) {
 					Node v = t.getKey();
 					Double score = t.getValue();
-					if (v.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
-						Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
-						Integer partitionSize = partitionMap.getPartitionSize(partitionIndex);
-						if (partitionSize > c) {
-							return;
-						}
-						if (partitionsScores.containsKey(partitionIndex)) {
-							partitionsScores.put(partitionIndex, (partitionsScores.get(partitionIndex)) + 
-									score * getWeight((double) partitionSize,c));
-						} else {
-							partitionsScores.put(partitionIndex, score * 
-									getWeight((double) partitionSize,c));
-						}
-					} 
-				}
-				
-			});
+	
+					Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
+					Integer partitionSize = partitionMap.getPartitionSize(partitionIndex);
+					if (partitionsScores.containsKey(partitionIndex)) {
+						partitionsScores.put(partitionIndex, (partitionsScores.get(partitionIndex)) + 
+								score * getWeight((double) partitionSize,c));
+					} else {
+						partitionsScores.put(partitionIndex, score * 
+								getWeight((double) partitionSize,c));
+					}
+				} 
+
+		});
 
 		if (partitionsScores.isEmpty()) {
 			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
@@ -81,14 +80,33 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 					return 1;
 				} else if (Double.max(p1score, p2score) == p2score) {
 					return -1;
-				} else { //tie break
-					return partitionMap.getPartitionSize(p1.getKey()) - partitionMap.getPartitionSize(p2.getKey());
+				} else { //inverse tie break
+					return partitionMap.getPartitionSize(p2.getKey()) - 
+							partitionMap.getPartitionSize(p1.getKey());
 				}
 			}
-			
+
 		}).get().getKey();
 
 		return maxPart;
+	}
+	public Double getA() {
+		return A;
+	}
+	public void setA(Double a) {
+		A = a;
+	}
+	public Double getB() {
+		return B;
+	}
+	public void setB(Double b) {
+		B = b;
+	}
+	public Double getC() {
+		return C;
+	}
+	public void setC(Double c) {
+		C = c;
 	}
 	public abstract Double getWeight(Double intersectNumber, Integer c);
 	public abstract String getHeuristicName();

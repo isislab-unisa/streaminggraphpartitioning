@@ -17,18 +17,13 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 		Map<Integer,Collection<Node>> parts = partitionMap.getPartitions();
 
 		Integer maxIndex = parts.entrySet().parallelStream()
+				.filter(p -> p.getValue().size() <= c)
 				.max(new Comparator<Entry<Integer,Collection<Node>>>() {
 
 					public int compare(Entry<Integer, Collection<Node>> p1,
 							Entry<Integer, Collection<Node>> p2) {
 						int p1size = partitionMap.getPartitionSize(p1.getKey());
 						int p2size = partitionMap.getPartitionSize(p2.getKey());
-						if (p1size > c) {
-							return -1;
-						}
-						if (p2size > c) {
-							return 1;
-						}
 						double w1 = getWeight((double)p1size, c);
 						double w2 = getWeight((double)p2size, c);
 						double tri1 = partitionMap.getTrianglesValue(n, p1.getKey()) * w1;
@@ -36,14 +31,14 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 						if (Math.max(tri1, tri2) == tri1) {
 							return 1;
 						} else if (Math.max(tri1, tri2) == tri2) {
-							return 2;
+							return -1;
 						} else {
 							return p1size - p2size;
 						}
 					}
 				}).get().getKey();
 
-		return maxIndex == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : maxIndex;
+		return maxIndex;
 	}
 
 

@@ -17,17 +17,13 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 		Integer c = partitionMap.getC();
 
 		Integer maxIndex = partitions.entrySet().parallelStream()
+				.filter(p -> p.getValue().size() <= c)
 				.max(new Comparator<Map.Entry<Integer,Collection<Node>>>() {
 					public int compare(Map.Entry<Integer,Collection<Node>> p1,
 							Map.Entry<Integer,Collection<Node>> p2) {
 						int p1size = p1.getValue().size();
 						int p2size = p2.getValue().size();
-						if (p1size > c) {
-							return -1;
-						}
-						if (p2size > c) {
-							return 1;
-						}
+					
 						double intersect1 = partitionMap.getIntersectionValueParallel(n, p1.getKey());
 						double intersect2 = partitionMap.getIntersectionValueParallel(n, p2.getKey());
 						double w1 = getWeight((double)p1size, c);
@@ -44,7 +40,7 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic,Weight
 					}
 				}).get().getKey();
 		
-		return maxIndex == -1 ? new BalancedHeuristic().getIndex(g, partitionMap, n) : maxIndex;
+		return maxIndex;
 	}
 
 	public abstract Double getWeight(Double partitionSize, Integer c);

@@ -15,8 +15,10 @@ public class BalancedHeuristic implements SGPHeuristic {
 
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {		
 		Map<Integer, Collection<Node>> partitions = partitionMap.getPartitions();
-
+		int c = partitionMap.getC();
+		
 		Integer minimumSizeIndex = partitions.entrySet().parallelStream()
+				.filter(p -> p.getValue().size() <= c)
 				.min(new Comparator<Entry<Integer,Collection<Node>>>() {
 					public int compare(Entry<Integer, Collection<Node>> p1,Entry<Integer, Collection<Node>> p2) {
 						Integer part1size = p1.getValue().size();

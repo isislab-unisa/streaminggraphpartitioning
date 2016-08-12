@@ -26,7 +26,9 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		
 		//populate first probs
 		Stream<Entry<Integer,Collection<Node>>> parallelStream = partitions.entrySet().parallelStream();
-		parallelStream.forEach(
+		parallelStream
+			.filter(p -> p.getValue().size() <= c)
+			.forEach(
 				new Consumer<Entry<Integer, Collection<Node>>>() {
 					public void accept(Entry<Integer, Collection<Node>> t) {
 						int index = t.getKey();

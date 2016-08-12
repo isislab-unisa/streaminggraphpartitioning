@@ -2,16 +2,17 @@ package it.isislab.streamingkway.heuristics.relationship;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import org.graphstream.graph.Edge;
+
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
+import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.WeightedHeuristic;
@@ -30,51 +31,38 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
-			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
+			return new BalancedHeuristic().getIndex(g, partitionMap, n);
 		}
 
 		List<Node> nNeighbours = new ArrayList<Node>(n.getDegree());
-		Iterator<Edge> edgeIt = n.getEachEdge().iterator();
-		while (edgeIt.hasNext()) {
-			Edge t = edgeIt.next();
-			Node u = t.getOpposite(n);
-			nNeighbours.add(u);
-		}
-		edgeIt = null;
-
-		if (nNeighbours.isEmpty()) { //it does not have partitioned neighbour
-			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
-		}
+		n.getNeighborNodeIterator().forEachRemaining(p -> nNeighbours.add(p));
 
 		Map<Node, Double> xNodes = getDispersion(nNeighbours, n);
 
 		Map<Integer, Double> partitionsScore = new ConcurrentHashMap<>(partitionMap.getK());
 		xNodes.entrySet().parallelStream()
+			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))
+			.filter(p -> partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Double>>() {
 				public void accept(Entry<Node, Double> t) {
 					Node v = t.getKey();
-					if (v.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) {
-						Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
-						Integer partitionSize = partitionMap.getPartitionSize(partitionIndex);
-						if (partitionSize > c) {
-							return;
-						}
-						if (partitionsScore.containsKey(partitionIndex)) {
-							partitionsScore.put(partitionIndex, (partitionsScore.get(partitionIndex)) +
-									t.getValue() * getWeight((double) partitionSize,c));
-						} else {
-							partitionsScore.put(partitionIndex,
-									t.getValue() * getWeight((double) partitionSize,c));
-						}
+					Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
+					Integer partitionSize = partitionMap.getPartitionSize(partitionIndex);
+					if (partitionsScore.containsKey(partitionIndex)) {
+						partitionsScore.put(partitionIndex, (partitionsScore.get(partitionIndex)) +
+								t.getValue() * getWeight((double) partitionSize,c));
+					} else {
+						partitionsScore.put(partitionIndex,
+								t.getValue() * getWeight((double) partitionSize,c));
 					}
 				}
-				
-			});
+
+		});
 
 		if (partitionsScore.isEmpty()) {
 			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
 		}
-		
+
 		Integer maxPartIndex = partitionsScore.entrySet()
 				.parallelStream().max(new Comparator<Entry<Integer, Double>>() {
 
@@ -85,9 +73,9 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 							return 1;
 						} else if (Double.max(p1score, p2score) == p2score) {
 							return -1;
-						} else {
-							return partitionMap.getPartitionSize(o1.getKey()) - 
-									partitionMap.getPartitionSize(o2.getKey());
+						} else { //inverse tie break
+							return partitionMap.getPartitionSize(o2.getKey()) - 
+									partitionMap.getPartitionSize(o1.getKey());
 						}
 					}
 				}).get().getKey();
