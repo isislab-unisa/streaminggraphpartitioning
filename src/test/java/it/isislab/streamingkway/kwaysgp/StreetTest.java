@@ -50,7 +50,6 @@ extends TestCase
 
 	private static final int MAX_PARTITION_SIZE = 128;
 
-
 	/** 
 	 * Create the test case
 	 *

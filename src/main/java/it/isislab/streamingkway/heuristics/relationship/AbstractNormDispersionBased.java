@@ -27,7 +27,15 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 	private Double C = 5.0;
 
 	private DistanceFunction dist = new SimpleDistanceFunction();
+	
+	public AbstractNormDispersionBased() {}
 
+	public AbstractNormDispersionBased(Double A, Double B, Double C) {
+		this.A = A;
+		this.B = B;
+		this.C = C;
+	}
+	
 	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 
