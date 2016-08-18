@@ -32,7 +32,7 @@ public class StramingGraphPartitionator implements GraphPartitionator {
 			Node u = gammaV[i];
 			graph.addEdge(v.getId() + u.getId(), v.getId(), u.getId());
 		}
-		Integer index = heuristic.getIndex(graph,partitionMap, v);
+		Integer index = heuristic.getIndex(partitionMap,v);
 		partitionMap.assignToPartition(v, index);
 		Node addedV = graph.getNode(v.getId());
 		addedV.addAttribute(GraphPartitionator.PARTITION_ATTRIBUTE, Integer.toString(index));
@@ -42,7 +42,7 @@ public class StramingGraphPartitionator implements GraphPartitionator {
 	}
 
 	public Integer getPartitionNode(Node v) {
-		Integer index = heuristic.getIndex(graph,partitionMap, v);
+		Integer index = heuristic.getIndex(partitionMap,v);
 		partitionMap.assignToPartition(v, index);
 		Node addedV = graph.getNode(v.getId());
 		addedV.addAttribute(GraphPartitionator.PARTITION_ATTRIBUTE, Integer.toString(index));

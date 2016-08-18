@@ -1,15 +1,15 @@
 package it.isislab.streamingkway.heuristics;
 
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
+import it.isislab.streamingkway.heuristics.weight.UnweightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
-public class UnweightedRandomizedGreedy extends AbstractRandomizedGreedy {
+public class UnweightedRandomizedGreedy extends AbstractRandomizedGreedy implements UnweightedHeuristic {
 	
 
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
-		return super.getIndex(g, partitionMap, n);
+	public Integer getIndex(PartitionMap partitionMap, Node n) {
+		return super.getIndex(partitionMap, n);
 	}
 
 	
@@ -18,7 +18,7 @@ public class UnweightedRandomizedGreedy extends AbstractRandomizedGreedy {
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {
-		return 1.0;
+		return getWeightUn(partitionSize, c);
 	}
 
 }

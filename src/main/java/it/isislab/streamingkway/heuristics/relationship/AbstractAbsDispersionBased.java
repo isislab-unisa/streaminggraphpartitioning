@@ -8,28 +8,27 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
-import it.isislab.streamingkway.heuristics.WeightedHeuristic;
 import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
 import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
+import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
 public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, WeightedHeuristic{
 
 	public DistanceFunction dist = new SimpleDistanceFunction();
 	
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
+	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 		
 		if (n.getDegree() == 0) {
-			return new BalancedHeuristic().getIndex(g, partitionMap, n);
+			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 		//score for each neighbour 
 		Map<Node, Integer> nodeScores = new HashMap<Node, Integer>(n.getDegree());
@@ -63,7 +62,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		});
 		
 		if (partitionsScores.isEmpty()) {
-			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
+			return new LinearWeightedDeterministicGreedy().getIndex(partitionMap, n);
 		}
 		Integer maxPart = partitionsScores.entrySet().parallelStream()
 				.max(new Comparator<Entry<Integer, Double>>() {

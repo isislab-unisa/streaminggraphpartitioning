@@ -8,17 +8,16 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
-import it.isislab.streamingkway.heuristics.WeightedHeuristic;
 import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
 import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
+import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
 public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, WeightedHeuristic {
@@ -27,11 +26,11 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 	private static final int ITERATION_TIME = 4;
 	private DistanceFunction dist = new SimpleDistanceFunction();
 
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
+	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
-			return new BalancedHeuristic().getIndex(g, partitionMap, n);
+			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 
 		List<Node> nNeighbours = new ArrayList<Node>(n.getDegree());
@@ -60,7 +59,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		});
 
 		if (partitionsScore.isEmpty()) {
-			return new LinearWeightedDeterministicGreedy().getIndex(g, partitionMap, n);
+			return new LinearWeightedDeterministicGreedy().getIndex(partitionMap, n);
 		}
 
 		Integer maxPartIndex = partitionsScore.entrySet()

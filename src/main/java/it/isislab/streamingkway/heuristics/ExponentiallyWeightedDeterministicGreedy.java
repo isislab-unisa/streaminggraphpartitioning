@@ -1,15 +1,15 @@
 package it.isislab.streamingkway.heuristics;
 
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
+import it.isislab.streamingkway.heuristics.weight.ExponentiallyWeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
-public class ExponentiallyWeightedDeterministicGreedy extends AbstractDeterministicGreedy {
+public class ExponentiallyWeightedDeterministicGreedy extends AbstractDeterministicGreedy implements ExponentiallyWeightedHeuristic {
 
 
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
-		return super.getIndex(g, partitionMap, n);
+	public Integer getIndex(PartitionMap partitionMap, Node n) {
+		return super.getIndex(partitionMap, n);
 	}
 
 	public String getHeuristicName() {
@@ -17,7 +17,10 @@ public class ExponentiallyWeightedDeterministicGreedy extends AbstractDeterminis
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {
-		return 1.0 - Math.exp(partitionSize - c);
+		return getWeightEx(partitionSize, c);
 	}
+	
+	
+
 
 }

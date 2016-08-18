@@ -3,15 +3,16 @@ package it.isislab.streamingkway.heuristics;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
-import org.graphstream.graph.Graph;
+
 import org.graphstream.graph.Node;
 
+import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
-public abstract class AbstractDeterministicGreedy implements SGPHeuristic,WeightedHeuristic {
+public abstract class AbstractDeterministicGreedy implements SGPHeuristic, WeightedHeuristic {
 
 
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n)  {
+	public Integer getIndex(PartitionMap partitionMap, Node n)  {
 		
 		Map<Integer,Collection<Node>> partitions = partitionMap.getPartitions();
 		Integer c = partitionMap.getC();

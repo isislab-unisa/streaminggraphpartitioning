@@ -5,14 +5,14 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
+import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
 public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristic {
 
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
+	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 		Map<Integer,Collection<Node>> parts = partitionMap.getPartitions();
 

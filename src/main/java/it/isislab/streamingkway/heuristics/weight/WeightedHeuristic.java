@@ -1,4 +1,4 @@
-package it.isislab.streamingkway.heuristics;
+package it.isislab.streamingkway.heuristics.weight;
 
 public interface WeightedHeuristic {
 

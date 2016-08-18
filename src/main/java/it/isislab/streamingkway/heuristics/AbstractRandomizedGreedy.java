@@ -6,15 +6,17 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import org.graphstream.graph.Graph;
+
 import org.graphstream.graph.Node;
+
+import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 import it.isislab.streamingkway.utils.DistributedRandomNumberGenerator;
 
 public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedHeuristic {
 	
 
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {
+	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		double Z;
 		int c = partitionMap.getC();
 		int k = partitionMap.getK();
@@ -40,7 +42,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		);
 		
 		if (probs.isEmpty()) {
-			return new BalancedHeuristic().getIndex(g, partitionMap, n);
+			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 		
 		//calculate Z
@@ -54,7 +56,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 				}
 			});			
 		} else if (Z == 0) {
-			return new BalancedHeuristic().getIndex(g, partitionMap, n);
+			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 		
 		//populate 
@@ -69,7 +71,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 			}
 		} while(!prob.isEmpty() && partitionMap.getPartitionSize(index) > c);
 		
-		return index == -1? new BalancedHeuristic().getIndex(g, partitionMap, n) : index;
+		return index == -1? new BalancedHeuristic().getIndex(partitionMap, n) : index;
 	}
 
 	public abstract Double getWeight(Double partitionSize, Integer c);

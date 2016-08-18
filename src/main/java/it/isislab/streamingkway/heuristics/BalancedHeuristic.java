@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
-import org.graphstream.graph.Graph;
+
 import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.partitions.PartitionMap;
@@ -13,7 +13,7 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 
 public class BalancedHeuristic implements SGPHeuristic {
 
-	public Integer getIndex(Graph g, PartitionMap partitionMap, Node n) {		
+	public Integer getIndex(PartitionMap partitionMap, Node n) {		
 		Map<Integer, Collection<Node>> partitions = partitionMap.getPartitions();
 		int c = partitionMap.getC();
 		
