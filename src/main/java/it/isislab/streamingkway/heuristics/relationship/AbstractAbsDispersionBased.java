@@ -12,7 +12,6 @@ import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
-import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
@@ -23,34 +22,32 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, WeightedHeuristic{
 
 	public DistanceFunction dist = new SimpleDistanceFunction();
-	
+
 	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
-		
+
 		if (n.getDegree() == 0) {
 			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 		//score for each neighbour 
 		Map<Node, Integer> nodeScores = new HashMap<Node, Integer>(n.getDegree());
-		
+
 		Iterator<Node> nNeighIt = n.getNeighborNodeIterator();
 
 		//1 + disp(u,v) in order to mix DG with ADB
 		nNeighIt.forEachRemaining(p -> nodeScores.put(p, 1+ Dispersion.getDispersion(p, n, dist)));
-
+		
 		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<>(partitionMap.getK());
 		nodeScores.entrySet().parallelStream()
-			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))
-			.filter(p -> partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
+			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) &&
+					partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Integer>>() {
 				public void accept(Entry<Node, Integer> t) {
 					Node v = t.getKey();
-
+	
 					Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
 					Integer partitionSize = partitionMap.getPartitionSize(partitionIndex);
-					
 					if (partitionsScores.containsKey(partitionIndex)){
-						//TODO check out a solution for do this in an efficient way
 						//x1*w+x2*w+...+xn*w = w*(x1+x2+..+xn)
 						partitionsScores.put(partitionIndex, (partitionsScores.get(partitionIndex)) + t.getValue() 
 						* getWeight((double)partitionSize, c));
@@ -62,8 +59,9 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		});
 		
 		if (partitionsScores.isEmpty()) {
-			return new LinearWeightedDeterministicGreedy().getIndex(partitionMap, n);
+			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
+		
 		Integer maxPart = partitionsScores.entrySet().parallelStream()
 				.max(new Comparator<Entry<Integer, Double>>() {
 					public int compare(Entry<Integer, Double> e1, Entry<Integer, Double> e2) {
@@ -82,9 +80,9 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 				}).get().getKey();
 
 		return maxPart;
-		
+
 	}
-	
+
 
 
 	public abstract Double getWeight(Double partitionSize, Integer c);

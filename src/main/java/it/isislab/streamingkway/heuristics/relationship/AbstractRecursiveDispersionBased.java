@@ -7,12 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
-import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
@@ -40,8 +37,8 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 
 		Map<Integer, Double> partitionsScore = new ConcurrentHashMap<>(partitionMap.getK());
 		xNodes.entrySet().parallelStream()
-			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))
-			.filter(p -> partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
+			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) &&
+				partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Double>>() {
 				public void accept(Entry<Node, Double> t) {
 					Node v = t.getKey();
@@ -59,7 +56,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		});
 
 		if (partitionsScore.isEmpty()) {
-			return new LinearWeightedDeterministicGreedy().getIndex(partitionMap, n);
+			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 
 		Integer maxPartIndex = partitionsScore.entrySet()
@@ -85,14 +82,22 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 	public abstract String getHeuristicName();
 	public abstract Double getWeight(Double intersectNumber, Integer c);
 
-	private Map<Node,Double> getDispersion(List<Node> uNeighbour, Node u) {
-		Map<Node, Double> xNodes = new ConcurrentHashMap<>(u.getDegree());
+	private Map<Node,Double> getDispersion(List<Node> uNeighbour, Node n) {
+		Map<Node, Double> xNodes = new ConcurrentHashMap<>(n.getDegree());
+		Map<Node, List<Node>> cuvs = new ConcurrentHashMap<>(n.getDegree());
+
 		for (int iteration = 0; iteration < ITERATION_TIME; iteration++) {
 			uNeighbour.parallelStream().forEach(new Consumer<Node>() {
 
 				public void accept(Node v) 	{
 					//cuv contains all uv common neighbour
-					List<Node> cuv = Dispersion.cuvCalculator(u, v);
+					List<Node> cuv = null;
+					if (cuvs.containsKey(v)) {
+						cuv = cuvs.get(v);
+					} else {
+						cuv = Dispersion.cuvCalculator(v, n);
+						cuvs.put(v, cuv);
+					}
 
 					//calculate pt.1
 					Double pt1 = 0.0;
@@ -123,7 +128,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 							} else{
 								xNodes.put(t, 1.0);
 							}
-							pt2 += (dist.getDistance(cuv.get(i), cuv.get(i), u, v) * xs * xt);
+							pt2 += (dist.getDistance(cuv.get(i), cuv.get(i), n, v) * xs * xt);
 						}
 					}
 					//calculate all

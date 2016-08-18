@@ -12,7 +12,6 @@ import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
-import it.isislab.streamingkway.heuristics.LinearWeightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
@@ -22,8 +21,8 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 public abstract class AbstractNormDispersionBased implements SGPHeuristic, WeightedHeuristic {
 
 	private Double A = 0.61;
-	private Double B = 0.0;
-	private Double C = 5.0;
+	private Double B = 1.0;
+	private Double C = 0.0;
 
 	private DistanceFunction dist = new SimpleDistanceFunction();
 	
@@ -55,8 +54,8 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		});
 		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<>(partitionMap.getK());
 		nodeScores.entrySet().parallelStream()
-			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))
-			.filter(p -> partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
+			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) &&
+				partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Double>>() {
 	
 				public void accept(Entry<Node, Double> t) {
@@ -77,7 +76,7 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		});
 
 		if (partitionsScores.isEmpty()) {
-			return new LinearWeightedDeterministicGreedy().getIndex(partitionMap, n);
+			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 		Integer maxPart = partitionsScores.entrySet().parallelStream().max(new Comparator<Entry<Integer, Double>>() {
 			public int compare(Entry<Integer, Double> p1, Entry<Integer, Double> p2) {
