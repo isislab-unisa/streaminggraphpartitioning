@@ -1,6 +1,8 @@
 package it.isislab.streamingkway.heuristics.relationship;
 
-public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBased{
+import it.isislab.streamingkway.heuristics.weight.LinearWeightedHeuristic;
+
+public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBased implements LinearWeightedHeuristic{
 
 	public LinearNormWeightedDispersionBased() {super();}
 	
@@ -9,7 +11,7 @@ public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBas
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {
-		return 1 - partitionSize / c;
+		return getWeightLin(partitionSize, c);
 	}
 
 	public String getHeuristicName() {

@@ -1,9 +1,11 @@
 package it.isislab.streamingkway.heuristics.relationship;
 
-public class LinearAbsWeightedDispersionBased extends AbstractAbsDispersionBased {
+import it.isislab.streamingkway.heuristics.weight.LinearWeightedHeuristic;
+
+public class LinearAbsWeightedDispersionBased extends AbstractAbsDispersionBased implements LinearWeightedHeuristic {
 
 	public Double getWeight(Double partitionSize, Integer c) {
-		return 1 - partitionSize/c;
+		return getWeightLin(partitionSize, c);
 	}
 
 	public String getHeuristicName() {

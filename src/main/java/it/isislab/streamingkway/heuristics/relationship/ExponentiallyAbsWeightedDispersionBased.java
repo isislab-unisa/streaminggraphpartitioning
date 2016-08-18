@@ -1,9 +1,11 @@
 package it.isislab.streamingkway.heuristics.relationship;
 
-public class ExponentiallyAbsWeightedDispersionBased extends AbstractAbsDispersionBased {
+import it.isislab.streamingkway.heuristics.weight.ExponentiallyWeightedHeuristic;
+
+public class ExponentiallyAbsWeightedDispersionBased extends AbstractAbsDispersionBased implements ExponentiallyWeightedHeuristic {
 
 	public Double getWeight(Double partitionSize, Integer c) {
-		return 1 - Math.exp(partitionSize - c);
+		return getWeightEx(partitionSize, c);
 	}
 
 	public String getHeuristicName() {

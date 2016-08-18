@@ -1,6 +1,8 @@
 package it.isislab.streamingkway.heuristics.relationship;
 
-public class ExponentiallyNormWeightedDispersionBased extends AbstractNormDispersionBased {
+import it.isislab.streamingkway.heuristics.weight.ExponentiallyWeightedHeuristic;
+
+public class ExponentiallyNormWeightedDispersionBased extends AbstractNormDispersionBased implements ExponentiallyWeightedHeuristic {
 
 	public ExponentiallyNormWeightedDispersionBased() {super();}
 	
@@ -9,7 +11,7 @@ public class ExponentiallyNormWeightedDispersionBased extends AbstractNormDisper
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {
-		return 1 - Math.exp(partitionSize - c);
+		return getWeightEx(partitionSize, c);
 	}
 
 	public String getHeuristicName() {
