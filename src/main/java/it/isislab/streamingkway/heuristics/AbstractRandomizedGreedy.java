@@ -6,9 +6,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 import it.isislab.streamingkway.utils.DistributedRandomNumberGenerator;
@@ -50,17 +48,19 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 				.mapToDouble( p -> p.doubleValue())
 				.sum();
 		if (Z > 0) {
-			probs.entrySet().parallelStream().forEach(new Consumer<Entry<Integer, Double>>() {
+			probs.entrySet().parallelStream().forEach(
+			new Consumer<Entry<Integer, Double>>() {
 				public void accept(Entry<Integer,Double> t) {
 					probs.put(t.getKey(), t.getValue() / Z);
 				}
-			});			
+			}
+		);			
 		} else if (Z == 0) {
 			return new BalancedHeuristic().getIndex(partitionMap, n);
 		}
 		
 		//populate 
-		prob.setDistribution(probs, Z);
+		prob.setDistribution(probs, Double.MIN_VALUE);
 		
 		int index = -1;
 		do {
