@@ -12,7 +12,7 @@ public class UnweightedCompNormDispersionBased extends AbstractCompleteNormDispe
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Normalized Dispersion Based";
+		return "Unweighted Complete Normalized Dispersion Based";
 	}
 
 }

@@ -12,7 +12,7 @@ public class LinearCompNormWeightedDispersionBased extends AbstractCompleteNormD
 	}
 
 	public String getHeuristicName() {
-		return "Linear Normalized Weighted Dispersion Based";
+		return "Linear Complete Normalized Weighted Dispersion Based";
 	}
 
 }
