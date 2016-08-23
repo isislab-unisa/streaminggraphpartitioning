@@ -30,7 +30,7 @@ public class App {
 	Integer C;
 	@Option(name="-g", usage="Input graph file", metaVar="INPUT GRAPH", required=true)
 	String inputFn;
-	@Option(name="-o", usage="Output file. If not present the name will be [input-graph-file].res",metaVar="OUTPUT FILE", required=false)
+	@Option(name="-o", usage="Output file. If not present the name will be [input-graph-file].part.[k]",metaVar="OUTPUT FILE", required=false)
 	String outputFn;
 	@Option(name="-t", usage="Sets traversing order", required=false)
 	String gt;
@@ -65,7 +65,7 @@ public class App {
 			if (outputFn != null) {
 				fpOut = new FileOutputStream(new File(outputFn));
 			} else {
-				fpOut = new FileOutputStream(new File(inputFn + ".res"));
+				fpOut = new FileOutputStream(new File(inputFn + ".part." + k));
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
