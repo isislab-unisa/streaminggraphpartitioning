@@ -8,12 +8,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
+
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.NodeFactory;
+
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.graphpartitionator.StramingGraphPartitionator;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
@@ -104,25 +104,24 @@ public class SimpleGraphLoader implements GraphLoader {
 		this.graphPartitionator = new StramingGraphPartitionator(K, heuristic, capacity);
 		this.gr = graphPartitionator.getGraph();
 		//read the whole graph
-		NodeFactory<? extends Node> nf = gr.nodeFactory();
 		while(scanner.hasNextLine()) {
+			
 			String line = scanner.nextLine().trim();
 			if (line.startsWith("%")) { //it is a comment
-				continue;			
+				continue;
 			}
-			//tokeninzing first line and extracting the node and all its edges
-			StringTokenizer strTok = new StringTokenizer(line, " ");
+			if (line.equals("") || line.equals(" ") || line.equals('\n')) { //empty
+				continue;
+			}
+			String[] nNodes = line.split(" ");
+			Node v = gr.addNode(Integer.toString(nodeCount++));
+			gr.addNode(v.getId());
 
-			Node v = nf.newInstance(Integer.toString(nodeCount++), gr);
-			ArrayList<Node> gammaVAL = new ArrayList<Node>();
-			while (strTok.hasMoreTokens()) {
-				String uId = (String) strTok.nextElement();
-				gammaVAL.add(nf.newInstance(uId,gr));
+			for (String s : nNodes) {
+				gr.addEdge(v.getId()+"-"+s, v.getId(), s);
 			}
-			Node[] gammaV = new Node[gammaVAL.size()];
-			gammaVAL.toArray(gammaV);
-			Integer uPartition = graphPartitionator.addNode(v, gammaV);
-			printerOut.println(uPartition); //writes the partition number
+			int uPartition = graphPartitionator.getPartitionNode(v);
+			printerOut.println(uPartition);
 		}
 
 		printerOut.flush();
@@ -135,12 +134,12 @@ public class SimpleGraphLoader implements GraphLoader {
 	}
 
 	public int getNodeNumbers() {
-		return nodeNumbers;
+		return nodeNumbers == gr.getNodeCount() ? nodeNumbers : -1;
 	}
 	
 
 	public int getEdgeNumbers() {
-		return edgeNumbers;
+		return edgeNumbers == gr.getEdgeCount() ? edgeNumbers : -1;
 	}
 
 

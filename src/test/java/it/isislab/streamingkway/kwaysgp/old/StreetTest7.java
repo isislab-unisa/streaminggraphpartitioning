@@ -1,4 +1,4 @@
-package it.isislab.streamingkway.kwaysgp;
+package it.isislab.streamingkway.kwaysgp.old;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +15,7 @@ import it.isislab.streamingkway.graphloaders.factory.Ordering;
 import it.isislab.streamingkway.graphloaders.factory.OrderingFactory;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
+import it.isislab.streamingkway.kwaysgp.finaltest.HeuristicsTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -22,19 +23,19 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class StreetTest 
+public class StreetTest7 
 extends TestCase implements HeuristicsTest
 {
 
 	private Logger log = Logger.getGlobal();
 
 	private CSVWriter writer;
-
+	
 	public static final Double MES_TOLERANCE = 0.06;
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
-	public static final String TEST_STREET_GRAPH = "resources/delaunay_n10.graph";
+	public static final String TEST_STREET_GRAPH = "resources/t60k.graph";
 	@SuppressWarnings("unused")
 	private static final Double DISPLACEMENT_TOLERANCE = 10.0;
 
@@ -42,13 +43,14 @@ extends TestCase implements HeuristicsTest
 
 	private static final int MAX_PARTITION_SIZE = 128;
 
+
 	/** 
 	 * Create the test case
 	 *
 	 * @param testName name of the test case
 	 * @throws IOException 
 	 */
-	public StreetTest( String testName ) throws IOException
+	public StreetTest7( String testName ) throws IOException
 	{
 		super( testName );
 		writer = new CSVWriter(new FileWriter(CSV_FILENAME,true));
@@ -61,9 +63,9 @@ extends TestCase implements HeuristicsTest
 	 */
 	public static Test suite()
 	{
-		return new TestSuite( StreetTest.class );
+		return new TestSuite( StreetTest7.class );
 	}
-
+	
 	/******************************************************************************
 	 * 
 	 * 		TEST FOR GRAPH
@@ -116,7 +118,7 @@ extends TestCase implements HeuristicsTest
 	 * 
 	 * *****************************************************************************
 	 */
-
+	
 	/*
 	 * **
 	 * ** 		UTILITY METHODS
@@ -125,11 +127,7 @@ extends TestCase implements HeuristicsTest
 	private void myAllHeuristicsTestCompare(File fpIn, File fpOut, Integer k, Integer C, String glType, 
 			String graphName) throws HeuristicNotFound, IOException, InterruptedException {
 		
-		
 		allHeuristicsTestCompare(fpIn, fpOut, k, C, glType, graphName, log);
-
-
-
 	}
 
 
@@ -150,7 +148,5 @@ extends TestCase implements HeuristicsTest
 	public void myAssertEquals(int intValue, int nodeNumbers) {
 		assertEquals(intValue, nodeNumbers);
 	}
-
-
-
+	
 }

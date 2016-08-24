@@ -1,4 +1,4 @@
-package it.isislab.streamingkway.kwaysgp;
+package it.isislab.streamingkway.kwaysgp.old;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +14,7 @@ import it.isislab.streamingkway.graphloaders.factory.Ordering;
 import it.isislab.streamingkway.graphloaders.factory.OrderingFactory;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
+import it.isislab.streamingkway.kwaysgp.finaltest.HeuristicsTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

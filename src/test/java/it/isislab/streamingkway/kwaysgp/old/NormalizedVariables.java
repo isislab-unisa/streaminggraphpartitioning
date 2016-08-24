@@ -1,4 +1,4 @@
-package it.isislab.streamingkway.kwaysgp;
+package it.isislab.streamingkway.kwaysgp.old;
 
 import java.io.File;
 import java.io.FileInputStream;

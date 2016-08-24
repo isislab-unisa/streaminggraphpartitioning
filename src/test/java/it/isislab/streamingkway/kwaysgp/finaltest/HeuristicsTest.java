@@ -1,4 +1,4 @@
-package it.isislab.streamingkway.kwaysgp;
+package it.isislab.streamingkway.kwaysgp.finaltest;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,19 +19,23 @@ import junit.framework.Test;
 public interface HeuristicsTest extends Test {
 
 	Integer ITERATION_TIME = 10;
-	Long CPU_REFRESH_TIME = 0l;
+	Long CPU_REFRESH_TIME = 250l;
 	String[] HEADER =  {
-			"Graph Name",
-			"Total nodes", 	
-			"Total edges",
-			"Ordering Type",
+			"GraphName",
+			"Totalnodes", 	
+			"Totaledges",
+			"OrderingType",
 			"K",
-			"Heuristic Name",  
+			"HeuristicName",  
 			"Displacement", 	
-			"Cutted Edges",
-			"Cutted Edges Ratio",
-			"Total time",
-			"Iteration time"
+			"CuttedEdges",
+			"MaxCuttedEdgesRatio",
+			"MinCuttedEdgesRatio",
+			"CuttedEdgesRatio",
+			"MaxTime",
+			"MinTime",
+			"TotalTime",
+			"IterationTime"
 	};
 
 	default void allHeuristicsTestCompare(File fpIn, File fpOut, Integer k, Integer C, String glType, 
@@ -82,6 +86,10 @@ public interface HeuristicsTest extends Test {
 			Integer totalNodes = 0;
 			Integer totalEdges = 0;
 			SGPHeuristic heuristic = null;
+			double max = Double.MIN_VALUE;
+			double min =Double.MAX_VALUE;
+			long maxTime = Long.MIN_VALUE;
+			long minTime = Long.MAX_VALUE;
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				heuristic = HeuristicFactory.getHeuristic(i);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,false);
@@ -89,8 +97,21 @@ public interface HeuristicsTest extends Test {
 				Long startTime = System.currentTimeMillis();
 				gl.run(); 
 				Long endTime = System.currentTimeMillis();
-				totalTime += (endTime - startTime);
+				long time = endTime - startTime;
+				totalTime += time;
+				if (maxTime <= time) {
+					maxTime = time;
+				}
+				if (minTime >= time) {
+					minTime = time;
+				}
 				heuristicEdgesRatio += qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph());
+				if (max <= heuristicEdgesRatio) {
+					max = heuristicEdgesRatio;
+				}
+				if (min >= heuristicEdgesRatio) {
+					min = heuristicEdgesRatio;
+				}
 				cuttedEdges += qc.getCuttingEdgesCount(gl.getGraphPartitionator().getGraph());
 				//count total partitioned nodes
 				totalNodes = gl.getGraphPartitionator().getTotalPartitionedNodes();
@@ -116,12 +137,16 @@ public interface HeuristicsTest extends Test {
 					totalEdges.toString(), 			//total	edges
 					glType,							//gl type
 					k.toString(),					//k
-					heuristic.getHeuristicName(),  //heuristic name
+					heuristic.getHeuristicName().replace(' ', '_'),  //heuristic name
 					displacement.toString(), 		//displacement
 					cuttedEdges.toString(),			//cutted edges
+					Double.toString(max),			//max edges ratio
+					Double.toString(min),			//min edges ratio
 					heuristicEdgesRatio.toString(),	//edges ratio
-					totalTime.toString(),
-					ITERATION_TIME.toString()
+					Long.toString(maxTime),			//max time
+					Long.toString(minTime),			//min time
+					Long.toString(totalTime/ITERATION_TIME), //time
+					ITERATION_TIME.toString()			//iteration time
 			};
 			log.info("Metrics: " + metrics);
 			saveCSV(metrics);

@@ -21,7 +21,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 
 	public DistanceFunction dist = new SimpleDistanceFunction();
 
-	public Integer getIndex(PartitionMap partitionMap, Node n) {
+	public final Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {

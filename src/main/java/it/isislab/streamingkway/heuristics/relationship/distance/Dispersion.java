@@ -39,7 +39,7 @@ public class Dispersion {
 		Integer dispValue = 0;
 		int l = cuv.size();
 		for (int i = 0; i < l; i++) {
-			for (int j = i+1; j < l; j++) {
+			for (int j = i+1; j < l;j++) {
 				dispValue += dist.getDistance(cuv.get(i), cuv.get(j), u, v);
 			}
 		}

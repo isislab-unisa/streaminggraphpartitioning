@@ -36,9 +36,9 @@ public class App {
 	String gt;
 	@Option(name="--view", usage="Display the graph", required=false)
 	Boolean view = false;
-	
+
 	public static void main(String[] args)  {
-		
+
 		new App().start(args);
 	}
 
@@ -76,6 +76,8 @@ public class App {
 		try {
 			if (gt != null) {
 				gto = OrderingFactory.getOrdering(gt);
+			}
+			if (gto != null) {
 				gl = new TraversingGraphLoader(fpIn, fpOut, k, heuristic, C, thereIsC, gto);
 			} else {
 				gl = new SimpleGraphLoader(fpIn, fpOut, k, heuristic, C, thereIsC);
@@ -89,7 +91,7 @@ public class App {
 		Long endTime = System.currentTimeMillis();
 		System.out.println("Done!");
 		qualityCheck(gl, (endTime- startTime),heuristic, System.out);
-		
+
 		if (view) {
 			gl.getGraphPartitionator().getGraph().display();
 		}
@@ -97,7 +99,7 @@ public class App {
 
 	private void qualityCheck(GraphLoader gl, Long timeSpent,SGPHeuristic heuristic, PrintStream outStream) {
 		QualityChecker qc = new ParallelQualityChecker();
-		
+
 		outStream.println(heuristic.getHeuristicName());
 		outStream.println("Time spent: " + timeSpent + "ms");
 		outStream.println("Total edges: " + gl.getEdgeNumbers());
@@ -107,5 +109,5 @@ public class App {
 		outStream.println("Maximimum Normalized Load: " + qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), gl.getGraphPartitionator().getGraph()));
 	}
 
-	
+
 }

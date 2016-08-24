@@ -34,7 +34,7 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		this.C = C;
 	}
 	
-	public Integer getIndex(PartitionMap partitionMap, Node n) {
+	public final Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {

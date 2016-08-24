@@ -211,7 +211,7 @@ public class SetPartitionMap implements PartitionMap {
 			}
 		}
 		Integer N = gammaNIntersect.size();
-		Integer binCoeff = N == 1 || N == 0 ? 0 : N*(N-1)/2;
+		Integer binCoeff = N == 1 || N == 0 ? 0 : N*(N-1)>>1; //>>1 = /2
 		if (binCoeff == 0) {  //hardcoded 0.0 because totalEdges must be 0 too. check it out
 			return 0.0;
 		}

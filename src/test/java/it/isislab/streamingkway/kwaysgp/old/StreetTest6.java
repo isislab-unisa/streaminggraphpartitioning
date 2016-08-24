@@ -1,4 +1,4 @@
-package it.isislab.streamingkway.kwaysgp;
+package it.isislab.streamingkway.kwaysgp.old;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +15,7 @@ import it.isislab.streamingkway.graphloaders.factory.Ordering;
 import it.isislab.streamingkway.graphloaders.factory.OrderingFactory;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
+import it.isislab.streamingkway.kwaysgp.finaltest.HeuristicsTest;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -22,7 +23,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class StreetTest5 
+public class StreetTest6 
 extends TestCase implements HeuristicsTest
 {
 
@@ -34,7 +35,7 @@ extends TestCase implements HeuristicsTest
 	public static final String PLACEHOLDER_B = "B";
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
-	public static final String TEST_STREET_GRAPH = "resources/data.graph";
+	public static final String TEST_STREET_GRAPH = "resources/4elt.graph";
 	@SuppressWarnings("unused")
 	private static final Double DISPLACEMENT_TOLERANCE = 10.0;
 
@@ -49,7 +50,7 @@ extends TestCase implements HeuristicsTest
 	 * @param testName name of the test case
 	 * @throws IOException 
 	 */
-	public StreetTest5( String testName ) throws IOException
+	public StreetTest6( String testName ) throws IOException
 	{
 		super( testName );
 		writer = new CSVWriter(new FileWriter(CSV_FILENAME,true));
@@ -62,7 +63,7 @@ extends TestCase implements HeuristicsTest
 	 */
 	public static Test suite()
 	{
-		return new TestSuite( StreetTest5.class );
+		return new TestSuite( StreetTest6.class );
 	}
 	
 	/******************************************************************************

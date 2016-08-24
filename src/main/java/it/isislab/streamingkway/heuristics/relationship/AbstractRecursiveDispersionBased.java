@@ -23,7 +23,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 	private static final int ITERATION_TIME = 4;
 	private DistanceFunction dist = new SimpleDistanceFunction();
 
-	public Integer getIndex(PartitionMap partitionMap, Node n) {
+	public final Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
@@ -86,7 +86,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		Map<Node, Double> xNodes = new ConcurrentHashMap<>(n.getDegree());
 		Map<Node, List<Node>> cuvs = new ConcurrentHashMap<>(n.getDegree());
 
-		for (int iteration = 0; iteration < ITERATION_TIME; iteration++) {
+		for (int iteration = ITERATION_TIME; iteration-- > 0;) {
 			uNeighbour.parallelStream().forEach(new Consumer<Node>() {
 
 				public void accept(Node v) 	{
