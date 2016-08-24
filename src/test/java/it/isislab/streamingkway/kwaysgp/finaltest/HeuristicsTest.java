@@ -19,7 +19,7 @@ import junit.framework.Test;
 public interface HeuristicsTest extends Test {
 
 	Integer ITERATION_TIME = 10;
-	Long CPU_REFRESH_TIME = 250l;
+	Long CPU_REFRESH_TIME = 0l;
 	String[] HEADER =  {
 			"GraphName",
 			"Totalnodes", 	

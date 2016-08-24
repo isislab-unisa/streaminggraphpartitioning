@@ -33,7 +33,7 @@ extends TestCase implements HeuristicsTest
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
 	private static final String CSV_SUFFIX = "-res.csv";
-	private static final int MAX_PARTITION_SIZE = 2;
+	private static final int MAX_PARTITION_SIZE = 128;
 	private static final String FOLDER = "resources/";
 
 
