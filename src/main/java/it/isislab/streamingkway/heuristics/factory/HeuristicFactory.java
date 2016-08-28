@@ -36,37 +36,41 @@ import it.isislab.streamingkway.heuristics.relationship.UnweightedNormDispersion
 import it.isislab.streamingkway.heuristics.relationship.UnweightedRecDispersionBased;
 
 public class HeuristicFactory {
-
+	
 	public static SGPHeuristic getHeuristic(Integer index) throws HeuristicNotFound {
+		return getHeuristic(index, true);
+	}
+
+	public static SGPHeuristic getHeuristic(Integer index, Boolean parallel) throws HeuristicNotFound {
 		if (index <= 0) throw new HeuristicNotFound("Index cannot be less than 0");
 		SGPHeuristic heuristic = null;
 
 		switch(index) {
-		case Heuristic.BALANCED: heuristic = new BalancedHeuristic();
+		case Heuristic.BALANCED: heuristic = new BalancedHeuristic(parallel);
 		break;
 		case Heuristic.CHUNKING : heuristic = new ChunkingHeuristic();
 		break;
 		case Heuristic.HASHING : heuristic = new HashingHeuristic();
 		break;
-		case Heuristic.U_DETERMINISTIC_GREEDY: heuristic = new UnweightedDeterministicGreedy();
+		case Heuristic.U_DETERMINISTIC_GREEDY: heuristic = new UnweightedDeterministicGreedy(parallel);
 		break;
-		case Heuristic.L_DETERMINISTIC_GREEDY: heuristic = new LinearWeightedDeterministicGreedy();
+		case Heuristic.L_DETERMINISTIC_GREEDY: heuristic = new LinearWeightedDeterministicGreedy(parallel);
 		break;
-		case Heuristic.E_DETERMINISTIC_GREEDY: heuristic = new ExponentiallyWeightedDeterministicGreedy();
+		case Heuristic.E_DETERMINISTIC_GREEDY: heuristic = new ExponentiallyWeightedDeterministicGreedy(parallel);
 		break;
-		case Heuristic.U_RANDOMIZED_GREEDY: heuristic = new UnweightedRandomizedGreedy();
+		case Heuristic.U_RANDOMIZED_GREEDY: heuristic = new UnweightedRandomizedGreedy(parallel);
 		break;
-		case Heuristic.L_RANDOMIZED_GREEDY: heuristic = new LinearWeightedRandomizedGreedy();
+		case Heuristic.L_RANDOMIZED_GREEDY: heuristic = new LinearWeightedRandomizedGreedy(parallel);
 		break;
-		case Heuristic.E_RANDOMIZED_GREEDY: heuristic = new ExponentiallyWeightedRandomizedGreedy();
+		case Heuristic.E_RANDOMIZED_GREEDY: heuristic = new ExponentiallyWeightedRandomizedGreedy(parallel);
 		break;
-		case Heuristic.U_TRIANGLES: heuristic = new UnweightedTriangles();
+		case Heuristic.U_TRIANGLES: heuristic = new UnweightedTriangles(parallel);
 		break;
-		case Heuristic.L_TRIANGLES: heuristic = new LinearWeightedTriangles();
+		case Heuristic.L_TRIANGLES: heuristic = new LinearWeightedTriangles(parallel);
 		break;
-		case Heuristic.E_TRIANGLES: heuristic = new ExponentiallyWeightedTriangles();
+		case Heuristic.E_TRIANGLES: heuristic = new ExponentiallyWeightedTriangles(parallel);
 		break;
-		case Heuristic.BALANCE_BIG : heuristic = new BalanceBig();
+		case Heuristic.BALANCE_BIG : heuristic = new BalanceBig(parallel);
 		break;
 
 		case MyRelationshipHeuristics.U_C_ABS_DISPERSION_BASED : heuristic = new UnweightedCompAbsDispersionBased();
@@ -82,27 +86,27 @@ public class HeuristicFactory {
 		case MyRelationshipHeuristics.E_C_NORM_DISPERSION_BASED : heuristic = new ExponentiallyCompNormWeightedDispersionBased();
 		break;
 		
-		case RelationshipHeuristics.U_REC_DISPERSION_BASED: heuristic = new  UnweightedRecDispersionBased();
+		case RelationshipHeuristics.U_REC_DISPERSION_BASED: heuristic = new  UnweightedRecDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.L_REC_DISPERSION_BASED: heuristic = new  LinearRecWeightedDispersionBased();
+		case RelationshipHeuristics.L_REC_DISPERSION_BASED: heuristic = new  LinearRecWeightedDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.E_REC_DISPERSION_BASED: heuristic = new  ExponentiallyRecWeightedDispersionBased();
+		case RelationshipHeuristics.E_REC_DISPERSION_BASED: heuristic = new  ExponentiallyRecWeightedDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.U_ABS_DISPERSION_BASED: heuristic = new  UnweightedAbsDispersionBased();
+		case RelationshipHeuristics.U_ABS_DISPERSION_BASED: heuristic = new  UnweightedAbsDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.L_ABS_DISPERSION_BASED: heuristic = new  LinearAbsWeightedDispersionBased();
+		case RelationshipHeuristics.L_ABS_DISPERSION_BASED: heuristic = new  LinearAbsWeightedDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.E_ABS_DISPERSION_BASED: heuristic = new  ExponentiallyAbsWeightedDispersionBased();
+		case RelationshipHeuristics.E_ABS_DISPERSION_BASED: heuristic = new  ExponentiallyAbsWeightedDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.U_NORM_DISPERSION_BASED: heuristic = new  UnweightedNormDispersionBased();
+		case RelationshipHeuristics.U_NORM_DISPERSION_BASED: heuristic = new  UnweightedNormDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.L_NORM_DISPERSION_BASED: heuristic = new  LinearNormWeightedDispersionBased();
+		case RelationshipHeuristics.L_NORM_DISPERSION_BASED: heuristic = new  LinearNormWeightedDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.E_NORM_DISPERSION_BASED: heuristic = new  ExponentiallyNormWeightedDispersionBased();
+		case RelationshipHeuristics.E_NORM_DISPERSION_BASED: heuristic = new  ExponentiallyNormWeightedDispersionBased(parallel);
 		break;
 
 
-		default: heuristic = new BalancedHeuristic();
+		default: heuristic = new BalancedHeuristic(parallel);
 		break;
 		}
 		return heuristic;

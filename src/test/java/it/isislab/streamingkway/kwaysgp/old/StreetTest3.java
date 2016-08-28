@@ -126,7 +126,7 @@ extends TestCase implements HeuristicsTest
 	private void myAllHeuristicsTestCompare(File fpIn, File fpOut, Integer k, Integer C, String glType, 
 			String graphName) throws HeuristicNotFound, IOException, InterruptedException {
 		
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, glType, graphName, log);
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, glType, graphName, log, true);
 	}
 
 

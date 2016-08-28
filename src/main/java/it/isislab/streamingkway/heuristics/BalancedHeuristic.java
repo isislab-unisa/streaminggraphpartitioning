@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
 
 import org.graphstream.graph.Node;
 
@@ -12,12 +13,22 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 
 
 public class BalancedHeuristic implements SGPHeuristic {
+	
+	private boolean parallel;
+	public BalancedHeuristic(boolean parallel) {
+		this.parallel = parallel;
+	}
 
 	public Integer getIndex(PartitionMap partitionMap, Node n) {		
 		Map<Integer, Collection<Node>> partitions = partitionMap.getPartitions();
 		int c = partitionMap.getC();
 		
-		Integer minimumSizeIndex = partitions.entrySet().parallelStream()
+		Stream<Entry<Integer, Collection<Node>>> str = partitions.entrySet().stream();
+		if (parallel) {
+			str = str.parallel();
+		}
+		
+		Integer minimumSizeIndex = str
 				.filter(p -> p.getValue().size() <= c)
 				.min(new Comparator<Entry<Integer,Collection<Node>>>() {
 					public int compare(Entry<Integer, Collection<Node>> p1,Entry<Integer, Collection<Node>> p2) {
@@ -37,7 +48,7 @@ public class BalancedHeuristic implements SGPHeuristic {
 
 
 	public String getHeuristicName() {
-		return "Balanced";
+		return "Balanced" + (parallel ? " Parallel" : "");
 	}
 	
 	

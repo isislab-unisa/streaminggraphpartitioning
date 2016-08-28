@@ -4,8 +4,12 @@ import it.isislab.streamingkway.heuristics.weight.UnweightedHeuristic;
 
 public class UnweightedRecDispersionBased extends AbstractRecursiveDispersionBased implements UnweightedHeuristic {
 
+	public UnweightedRecDispersionBased(boolean parallel) {
+		super(parallel);
+	}
+
 	public String getHeuristicName() {
-		return "Unweighted Recursive Dispersion Based";
+		return "Unweighted Recursive Dispersion Based"+ (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

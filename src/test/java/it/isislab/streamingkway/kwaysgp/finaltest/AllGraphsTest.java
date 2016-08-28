@@ -63,6 +63,7 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		Field[] ords = Ordering.class.getFields();
 		File fold = new File(FOLDER);
+		//seq
 		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
 			File fpout = new File(FOLDER +"toremove-out");
 			writer = new CSVWriter(new FileWriter(new File(FOLDER + fpin.getName() + CSV_SUFFIX)),' ');
@@ -74,7 +75,24 @@ extends TestCase implements HeuristicsTest
 					log.info("Test for: " + fpin.getName() + " with "+k+
 							"partitions using " + ord +" started");
 					myAllHeuristicsTestCompare(fpin, fpout, k, C, ord, 
-							fpin.getName());
+							fpin.getName(), false);
+				}
+			}
+			writer.close();
+		}
+		//par
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith("a.graph"))) {
+			File fpout = new File(FOLDER +"toremove-out");
+			writer = new CSVWriter(new FileWriter(new File(FOLDER + fpin.getName() + CSV_SUFFIX)),' ');
+			Integer C = -1;
+			for (int oi = ords.length-1; oi >= 0; oi--) {
+				writer.writeNext(HEADER);
+				String ord = (String)ords[oi].get(new Ordering());
+				for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
+					log.info("Test for: " + fpin.getName() + " with "+k+
+							"partitions using " + ord +" started");
+					myAllHeuristicsTestCompare(fpin, fpout, k, C, ord, 
+							fpin.getName(),true);
 				}
 			}
 			writer.close();
@@ -82,20 +100,16 @@ extends TestCase implements HeuristicsTest
 	}
 
 
-	/*
-	 * **
-	 * ** 		UTILITY METHODS
-	 * ** 
-	 */
 	private void myAllHeuristicsTestCompare(File fpIn, File fpOut, Integer k, Integer C, String glType, 
-			String graphName) throws HeuristicNotFound, IOException, InterruptedException {
+			String graphName, boolean par) throws HeuristicNotFound, IOException, InterruptedException {
 		
 		
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, glType, graphName, log);
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, glType, graphName, log, par);
 
 
 
 	}
+	
 
 
 	public GraphLoader getGraphLoader(String glType, File fileIn, File fileOut, Integer k, 

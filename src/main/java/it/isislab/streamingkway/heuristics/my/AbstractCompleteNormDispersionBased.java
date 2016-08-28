@@ -28,7 +28,7 @@ public abstract class AbstractCompleteNormDispersionBased  implements SGPHeurist
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(true).getIndex(partitionMap, n);
 		}
 		//score for each neighbour 
 		Map<Node, Integer> nodeScores = new HashMap<Node, Integer>(n.getDegree());
@@ -75,7 +75,7 @@ public abstract class AbstractCompleteNormDispersionBased  implements SGPHeurist
 		});
 		
 		if (partitionsScores.isEmpty()) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(true).getIndex(partitionMap, n);
 		}
 		Integer maxPart = partitionsScores.entrySet().parallelStream()
 				.max(new Comparator<Entry<Integer, Double>>() {

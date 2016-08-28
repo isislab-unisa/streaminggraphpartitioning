@@ -3,6 +3,8 @@ package it.isislab.streamingkway.heuristics;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import org.graphstream.graph.Node;
 
@@ -11,13 +13,24 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 
 public abstract class AbstractDeterministicGreedy implements SGPHeuristic, WeightedHeuristic {
 
+	protected boolean parallel;
+	
+	public AbstractDeterministicGreedy(boolean parallel) {
+		this.parallel = parallel;
+	}
 
 	public Integer getIndex(PartitionMap partitionMap, Node n)  {
 		
 		Map<Integer,Collection<Node>> partitions = partitionMap.getPartitions();
 		Integer c = partitionMap.getC();
 
-		Integer maxIndex = partitions.entrySet().parallelStream()
+		Stream<Entry<Integer, Collection<Node>>> str = partitions.entrySet().stream();
+		
+		if (parallel) {
+			str = str.parallel();
+		}
+		
+		Integer maxIndex = str
 				.filter(p -> p.getValue().size() <= c)
 				.max(new Comparator<Map.Entry<Integer,Collection<Node>>>() {
 					public int compare(Map.Entry<Integer,Collection<Node>> p1,

@@ -4,10 +4,12 @@ import it.isislab.streamingkway.heuristics.weight.LinearWeightedHeuristic;
 
 public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBased implements LinearWeightedHeuristic{
 
-	public LinearNormWeightedDispersionBased() {super();}
+	public LinearNormWeightedDispersionBased(boolean parallel) {
+		super(parallel);
+	}
 	
-	public LinearNormWeightedDispersionBased(Double A, Double B, Double C) {
-		super(A, B, C);
+	public LinearNormWeightedDispersionBased(Double A, Double B, Double C, boolean parallel) {
+		super(A, B, C, parallel);
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {
@@ -15,7 +17,7 @@ public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBas
 	}
 
 	public String getHeuristicName() {
-		return "Linear Normalized Weighted Dispersion Based";
+		return "Linear Normalized Weighted Dispersion Based"+ (parallel ? " Parallel" : "");
 	}
 
 }

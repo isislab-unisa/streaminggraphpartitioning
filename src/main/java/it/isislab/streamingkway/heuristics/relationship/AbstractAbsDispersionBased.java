@@ -7,7 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
@@ -19,13 +22,19 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 
 public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, WeightedHeuristic{
 
+	protected boolean parallel;
+	public AbstractAbsDispersionBased(boolean parallel) {
+		this.parallel = parallel;
+	}
+	
 	public DistanceFunction dist = new SimpleDistanceFunction();
+	
 
 	public final Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
 		//score for each neighbour 
 		Map<Node, Integer> nodeScores = new HashMap<Node, Integer>(n.getDegree());
@@ -36,7 +45,12 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		nNeighIt.forEachRemaining(p -> nodeScores.put(p, 1+ Dispersion.getDispersion(p, n, dist)));
 		
 		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<>(partitionMap.getK());
-		nodeScores.entrySet().parallelStream()
+		Stream<Entry<Node,Integer>> str = nodeScores.entrySet().stream();
+		if (parallel) {
+			str = str.parallel();
+		}
+		
+		str
 			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) &&
 					partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Integer>>() {
@@ -57,10 +71,14 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		});
 		
 		if (partitionsScores.isEmpty()) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
+		}
+		Stream<Entry<Integer, Double>> strScore = partitionsScores.entrySet().stream();
+		if (parallel) {
+			strScore = strScore.parallel();
 		}
 		
-		Integer maxPart = partitionsScores.entrySet().parallelStream()
+		Integer maxPart = strScore
 				.max(new Comparator<Entry<Integer, Double>>() {
 					public int compare(Entry<Integer, Double> e1, Entry<Integer, Double> e2) {
 						Integer size1 = partitionMap.getPartitionSize(e1.getKey());

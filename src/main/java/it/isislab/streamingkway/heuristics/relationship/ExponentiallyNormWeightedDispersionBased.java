@@ -4,10 +4,12 @@ import it.isislab.streamingkway.heuristics.weight.ExponentiallyWeightedHeuristic
 
 public class ExponentiallyNormWeightedDispersionBased extends AbstractNormDispersionBased implements ExponentiallyWeightedHeuristic {
 
-	public ExponentiallyNormWeightedDispersionBased() {super();}
+	public ExponentiallyNormWeightedDispersionBased(boolean parallel) {
+		super(parallel);
+	}
 	
-	public ExponentiallyNormWeightedDispersionBased(Double A, Double B, Double C) {
-		super(A, B, C);
+	public ExponentiallyNormWeightedDispersionBased(Double A, Double B, Double C,boolean parallel) {
+		super(A, B, C, parallel);
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {
@@ -15,7 +17,7 @@ public class ExponentiallyNormWeightedDispersionBased extends AbstractNormDisper
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Normalized Weighted Dispersion Based";
+		return "Exponentially Normalized Weighted Dispersion Based"+ (parallel ? " Parallel" : "");
 	}
 
 }

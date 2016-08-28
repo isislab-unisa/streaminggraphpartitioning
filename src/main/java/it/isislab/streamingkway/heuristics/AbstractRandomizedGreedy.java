@@ -6,13 +6,20 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 import it.isislab.streamingkway.utils.DistributedRandomNumberGenerator;
 
 public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedHeuristic {
 	
+	protected boolean parallel;
+	
+	public AbstractRandomizedGreedy(boolean parallel) {
+		this.parallel = parallel;
+	}
 
 	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		double Z;
@@ -25,8 +32,11 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		Map<Integer, Double> probs = new ConcurrentHashMap<Integer, Double>(k);
 		
 		//populate first probs
-		Stream<Entry<Integer,Collection<Node>>> parallelStream = partitions.entrySet().parallelStream();
-		parallelStream
+		Stream<Entry<Integer,Collection<Node>>> str = partitions.entrySet().stream();
+		if (parallel) {
+			str = str.parallel();
+		}
+		str
 			.filter(p -> p.getValue().size() <= c)
 			.forEach(
 				new Consumer<Entry<Integer, Collection<Node>>>() {
@@ -40,23 +50,32 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		);
 		
 		if (probs.isEmpty()) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
 		
 		//calculate Z
-		Z = probs.values().parallelStream()
+		Stream<Double> zStr = probs.values().stream();
+		if (parallel) {
+			zStr = zStr.parallel();
+		}
+		Z = zStr
 				.mapToDouble( p -> p.doubleValue())
 				.sum();
 		if (Z > 0) {
-			probs.entrySet().parallelStream().forEach(
-			new Consumer<Entry<Integer, Double>>() {
-				public void accept(Entry<Integer,Double> t) {
-					probs.put(t.getKey(), t.getValue() / Z);
-				}
+			Stream<Entry<Integer, Double>> scoreStream = probs.entrySet().stream();
+			if (parallel) {
+				scoreStream = scoreStream.parallel();
 			}
+			scoreStream
+				.forEach(
+					new Consumer<Entry<Integer, Double>>() {
+						public void accept(Entry<Integer,Double> t) {
+							probs.put(t.getKey(), t.getValue() / Z);
+						}
+					}
 		);			
 		} else if (Z == 0) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
 		
 		//populate 
@@ -71,7 +90,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 			}
 		} while(!prob.isEmpty() && partitionMap.getPartitionSize(index) > c);
 		
-		return index == -1? new BalancedHeuristic().getIndex(partitionMap, n) : index;
+		return index == -1? new BalancedHeuristic(parallel).getIndex(partitionMap, n) : index;
 	}
 
 	public abstract Double getWeight(Double partitionSize, Integer c);

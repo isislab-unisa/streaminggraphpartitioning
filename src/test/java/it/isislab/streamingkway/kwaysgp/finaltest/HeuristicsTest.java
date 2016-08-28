@@ -39,7 +39,7 @@ public interface HeuristicsTest extends Test {
 	};
 
 	default void allHeuristicsTestCompare(File fpIn, File fpOut, Integer k, Integer C, String glType, 
-			String graphName, Logger log) throws HeuristicNotFound, IOException, InterruptedException {
+			String graphName, Logger log, boolean par) throws HeuristicNotFound, IOException, InterruptedException {
 		Double heuristicEdgesRatio = 0.0;
 		Double cuttedEdges = 0.0;
 		Double displacement = 0.0;
@@ -82,7 +82,7 @@ public interface HeuristicsTest extends Test {
 			normalizedMaxLoad = 0.0;
 			heuristicEdgesRatio = 0.0; //init entry
 
-			log.info("Executing: " + HeuristicFactory.getHeuristic(i).getHeuristicName());
+			log.info("Executing: " + HeuristicFactory.getHeuristic(i,par).getHeuristicName());
 			Integer totalNodes = 0;
 			Integer totalEdges = 0;
 			SGPHeuristic heuristic = null;
@@ -91,7 +91,7 @@ public interface HeuristicsTest extends Test {
 			long maxTime = Long.MIN_VALUE;
 			long minTime = Long.MAX_VALUE;
 			for (int j = 0; j < ITERATION_TIME; j++) {
-				heuristic = HeuristicFactory.getHeuristic(i);
+				heuristic = HeuristicFactory.getHeuristic(i,par);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,false);
 				Thread.sleep(CPU_REFRESH_TIME);
 				Long startTime = System.currentTimeMillis();
@@ -150,7 +150,7 @@ public interface HeuristicsTest extends Test {
 			};
 			log.info("Metrics: " + metrics);
 			saveCSV(metrics);
-			log.info("Test for " + HeuristicFactory.getHeuristic(i).getHeuristicName() + " done.");
+			log.info("Test for " + HeuristicFactory.getHeuristic(i,par).getHeuristicName() + " done.");
 		}
 		
 	}

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+
 import org.graphstream.graph.Node;
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
@@ -19,6 +21,10 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 
 public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, WeightedHeuristic {
 
+	protected boolean parallel;
+	public AbstractRecursiveDispersionBased(boolean parallel) {
+		this.parallel = parallel;
+	}
 
 	private static final int ITERATION_TIME = 4;
 	private DistanceFunction dist = new SimpleDistanceFunction();
@@ -27,7 +33,7 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
 
 		List<Node> nNeighbours = new ArrayList<Node>(n.getDegree());
@@ -36,7 +42,11 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		Map<Node, Double> xNodes = getDispersion(nNeighbours, n);
 
 		Map<Integer, Double> partitionsScore = new ConcurrentHashMap<>(partitionMap.getK());
-		xNodes.entrySet().parallelStream()
+		Stream<Entry<Node,Double>> str = xNodes.entrySet().stream();
+		if (parallel) {
+			str = str.parallel();
+		}
+		str
 			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) &&
 				partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Double>>() {
@@ -56,11 +66,15 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		});
 
 		if (partitionsScore.isEmpty()) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
 
-		Integer maxPartIndex = partitionsScore.entrySet()
-				.parallelStream().max(new Comparator<Entry<Integer, Double>>() {
+		Stream<Entry<Integer,Double>> scoreStr = partitionsScore.entrySet().stream();
+		if (parallel) {
+			scoreStr = scoreStr.parallel();
+		}
+		Integer maxPartIndex = scoreStr
+				.max(new Comparator<Entry<Integer, Double>>() {
 
 					public int compare(Entry<Integer, Double> o1, Entry<Integer, Double> o2) {
 						Double p1score = o1.getValue();
@@ -87,7 +101,12 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		Map<Node, List<Node>> cuvs = new ConcurrentHashMap<>(n.getDegree());
 
 		for (int iteration = ITERATION_TIME; iteration-- > 0;) {
-			uNeighbour.parallelStream().forEach(new Consumer<Node>() {
+			Stream<Node> str = uNeighbour.stream();
+			if (parallel) {
+				str = str.parallel();
+			}
+			str
+			.forEach(new Consumer<Node>() {
 
 				public void accept(Node v) 	{
 					//cuv contains all uv common neighbour

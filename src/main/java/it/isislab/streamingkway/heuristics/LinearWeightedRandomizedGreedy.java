@@ -8,13 +8,18 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 public class LinearWeightedRandomizedGreedy extends AbstractRandomizedGreedy implements LinearWeightedHeuristic {
 	
 
+	public LinearWeightedRandomizedGreedy(boolean parallel) {
+		super(parallel);
+	}
+
+
 	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		return super.getIndex(partitionMap, n);
 	}
 
 	
 	public String getHeuristicName() {
-		return "Linear Weighted Randomized Greedy";
+		return "Linear Weighted Randomized Greedy"+ (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

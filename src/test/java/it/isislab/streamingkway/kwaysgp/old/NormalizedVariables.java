@@ -54,7 +54,7 @@ public class NormalizedVariables {
 						for (double C = 0.1; C < 10.0; C+=STEP) {
 							log.info("Testing for A: " + A + ", B: " + B + " , C: " + C);
 							for (int i = 0; i < ITER_TIME; i++) {
-								SGPHeuristic heuristic = new LinearNormWeightedDispersionBased(A, B,C);
+								SGPHeuristic heuristic = new LinearNormWeightedDispersionBased(A, B,C, true);
 								GraphLoader gl = new TraversingGraphLoader(new FileInputStream(f), new FileOutputStream(f+"-r"),
 										k, heuristic, -1, false, new BFSTraversing());
 								gl.run();

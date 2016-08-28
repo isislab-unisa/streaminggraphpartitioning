@@ -4,10 +4,12 @@ import it.isislab.streamingkway.heuristics.weight.UnweightedHeuristic;
 
 public class UnweightedNormDispersionBased extends AbstractNormDispersionBased implements UnweightedHeuristic {
 
-	public UnweightedNormDispersionBased() {super();}
+	public UnweightedNormDispersionBased(boolean parallel) {
+		super(parallel);
+	}
 	
-	public UnweightedNormDispersionBased(Double A, Double B, Double C) {
-		super(A, B, C);
+	public UnweightedNormDispersionBased(Double A, Double B, Double C, boolean parallel) {
+		super(A, B, C, parallel);
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {
@@ -15,7 +17,7 @@ public class UnweightedNormDispersionBased extends AbstractNormDispersionBased i
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Normalized Dispersion Based";
+		return "Unweighted Normalized Dispersion Based"+ (parallel ? " Parallel" : "");
 	}
 
 }

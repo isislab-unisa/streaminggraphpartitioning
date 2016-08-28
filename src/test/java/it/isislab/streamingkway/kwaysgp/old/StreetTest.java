@@ -127,7 +127,7 @@ extends TestCase implements HeuristicsTest
 			String graphName) throws HeuristicNotFound, IOException, InterruptedException {
 		
 		
-		allHeuristicsTestCompare(fpIn, fpOut, k, C, glType, graphName, log);
+		allHeuristicsTestCompare(fpIn, fpOut, k, C, glType, graphName, log, true);
 
 
 

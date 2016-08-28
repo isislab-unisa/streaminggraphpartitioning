@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.graphstream.graph.Node;
 
@@ -23,22 +24,26 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 	private Double A = 0.61;
 	private Double B = 1.0;
 	private Double C = 0.0;
+	protected boolean parallel;
 
 	private DistanceFunction dist = new SimpleDistanceFunction();
 	
-	public AbstractNormDispersionBased() {}
+	public AbstractNormDispersionBased(boolean parallel) {
+		this.parallel = parallel;
+	}
 
-	public AbstractNormDispersionBased(Double A, Double B, Double C) {
+	public AbstractNormDispersionBased(Double A, Double B, Double C, boolean parallel) {
 		this.A = A;
 		this.B = B;
 		this.C = C;
+		this.parallel = parallel;
 	}
 	
 	public final Integer getIndex(PartitionMap partitionMap, Node n) {
 		Integer c = partitionMap.getC();
 
 		if (n.getDegree() == 0) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
 
 		Map<Node, Double> nodeScores = new ConcurrentHashMap<>();
@@ -53,7 +58,11 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 			}
 		});
 		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<>(partitionMap.getK());
-		nodeScores.entrySet().parallelStream()
+		Stream<Entry<Node,Double>> str = nodeScores.entrySet().stream();
+		if (parallel) {
+			str = str.parallel();
+		}
+		str
 			.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) &&
 				partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) <= c)
 			.forEach(new Consumer<Entry<Node,Double>>() {
@@ -76,21 +85,26 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		});
 
 		if (partitionsScores.isEmpty()) {
-			return new BalancedHeuristic().getIndex(partitionMap, n);
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
-		Integer maxPart = partitionsScores.entrySet().parallelStream().max(new Comparator<Entry<Integer, Double>>() {
-			public int compare(Entry<Integer, Double> p1, Entry<Integer, Double> p2) {
-				Double p1score = p1.getValue();
-				Double p2score = p2.getValue();
-				if (Double.max(p1score, p2score) == p1score) {
-					return 1;
-				} else if (Double.max(p1score, p2score) == p2score) {
-					return -1;
-				} else { //inverse tie break
-					return partitionMap.getPartitionSize(p2.getKey()) - 
-							partitionMap.getPartitionSize(p1.getKey());
+		Stream<Entry<Integer,Double>> strScore = partitionsScores.entrySet().stream();
+		if (parallel) {
+			strScore = strScore.parallel();
+		}
+		Integer maxPart = strScore
+			.max(new Comparator<Entry<Integer, Double>>() {
+				public int compare(Entry<Integer, Double> p1, Entry<Integer, Double> p2) {
+					Double p1score = p1.getValue();
+					Double p2score = p2.getValue();
+					if (Double.max(p1score, p2score) == p1score) {
+						return 1;
+					} else if (Double.max(p1score, p2score) == p2score) {
+						return -1;
+					} else { //inverse tie break
+						return partitionMap.getPartitionSize(p2.getKey()) - 
+								partitionMap.getPartitionSize(p1.getKey());
+					}
 				}
-			}
 
 		}).get().getKey();
 

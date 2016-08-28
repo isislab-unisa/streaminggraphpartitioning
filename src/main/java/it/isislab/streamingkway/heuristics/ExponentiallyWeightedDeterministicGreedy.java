@@ -8,12 +8,16 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 public class ExponentiallyWeightedDeterministicGreedy extends AbstractDeterministicGreedy implements ExponentiallyWeightedHeuristic {
 
 
+	public ExponentiallyWeightedDeterministicGreedy(boolean parallel) {
+		super(parallel);
+	}
+
 	public Integer getIndex(PartitionMap partitionMap, Node n) {
 		return super.getIndex(partitionMap, n);
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Weighted Deterministic Greedy";
+		return "Exponentially Weighted Deterministic Greedy" + (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

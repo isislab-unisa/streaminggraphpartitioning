@@ -5,11 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-
 import it.isislab.streamingkway.graphloaders.GraphLoader;
 import it.isislab.streamingkway.graphloaders.SimpleGraphLoader;
 import it.isislab.streamingkway.graphloaders.TraversingGraphLoader;
@@ -36,6 +34,8 @@ public class App {
 	String gt;
 	@Option(name="--view", usage="Display the graph", required=false)
 	Boolean view = false;
+	@Option(name="-p", usage="Run the heuristics in parallel", required=false)
+	Boolean parallel = false;
 
 	public static void main(String[] args)  {
 
@@ -70,7 +70,7 @@ public class App {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		SGPHeuristic heuristic = HeuristicFactory.getHeuristic(heuristicNumber);
+		SGPHeuristic heuristic = HeuristicFactory.getHeuristic(heuristicNumber, parallel);
 		GraphTraversingOrdering gto = null;
 		GraphLoader gl = null;
 		try {
