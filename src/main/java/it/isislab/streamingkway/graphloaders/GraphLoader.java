@@ -1,5 +1,7 @@
 package it.isislab.streamingkway.graphloaders;
 
+import java.io.IOException;
+
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 
 /**
@@ -42,6 +44,8 @@ public interface GraphLoader  {
 	/**
 	 * Run the partitioning of the graph given in input according to the specified graph traversing order and
 	 * the given heuristic. 
+	 * @throws IOException 
+	 * @throws NumberFormatException 
 	 */
-	public void run();
+	public void run() throws NumberFormatException, IOException;
 }

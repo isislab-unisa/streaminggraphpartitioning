@@ -87,7 +87,15 @@ public class App {
 			e.printStackTrace();
 		}
 		Long startTime = System.currentTimeMillis();
-		gl.run();
+		try {
+			gl.run();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Long endTime = System.currentTimeMillis();
 		System.out.println("Done!");
 		qualityCheck(gl, (endTime- startTime),heuristic, System.out);

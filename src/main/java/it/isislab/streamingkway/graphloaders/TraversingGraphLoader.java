@@ -1,28 +1,18 @@
 package it.isislab.streamingkway.graphloaders;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 import java.util.StringTokenizer;
-
 import org.graphstream.algorithm.ConnectedComponents;
 import org.graphstream.algorithm.Toolkit;
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.BFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.DFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
-import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 import it.isislab.streamingkway.graphpartitionator.StramingGraphPartitionator;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 
@@ -42,43 +32,16 @@ import it.isislab.streamingkway.heuristics.SGPHeuristic;
  * @author Dario Di Pasquale
  *
  */
-public class TraversingGraphLoader implements GraphLoader {
+public class TraversingGraphLoader extends AbstractGraphLoader {
 
-	private GraphPartitionator graphPartitionator;
-	private SGPHeuristic heuristic;
-	private Integer K;
-	private Scanner scanner;
-	private PrintWriter printerOut;
-	private Graph gr;
-	private int nodeNumbers;
-	private int edgeNumbers;
-	private Integer capacity;
-	private boolean thereIsC;
-	private GraphTraversingOrdering gto;
 
-	/**
-	 * Creates a traversing graph loader according to the given parameters.
-	 * @param fpIn the {@link FileInputStream} in which read the graph. It can be associated to a {@link File} or a {@link Socket}.
-	 * @param fpOut the {@link FileOutputStream} on which write the result of the partitioning. It can be associated to a {@link File} or a {@link Socket}.
-	 * @param k the number of partitions in which the graph should be partitioned.
-	 * @param heuristic the {@link SGPHeuristic} used for partitioning the graph.
-	 * @param c the capacity of every partition.
-	 * @param thereIsC a boolean value that indicates if the capacity is defined by the user of should be evaluate according to the graph size. If this value is false, c will be (n/k)+1 where n is the count of the nodes and k is the count of partitions.
-	 * @throws IOException if there is an error opening the input or output streams throw {@link IOException}
-	 */
-	public TraversingGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k, 
-			SGPHeuristic heuristic, Integer c, boolean thereIsC, GraphTraversingOrdering gto) throws IOException{
-		this.heuristic = heuristic;
-		this.K = k;
-		this.thereIsC = thereIsC;
-		if (thereIsC) {
-			this.capacity = c;			
-		}
-		this.gto = gto;
-		//file
-		this.scanner = new Scanner(new BufferedInputStream(fpIn));
-		this.printerOut = new PrintWriter(new BufferedOutputStream(fpOut));
+	public TraversingGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k, SGPHeuristic heuristic,
+			Integer c, boolean thereIsC, GraphTraversingOrdering gto) throws IOException {
+		super(fpIn, fpOut, k, heuristic, c, thereIsC, gto);
 	}
+
+
+
 	/**
 	 * Performs the partitioning of the graph given by the {@link FileInputStream} in the constructor.
 	 * It first tries to read the number of nodes and edges that the graph should contains, then
@@ -86,8 +49,10 @@ public class TraversingGraphLoader implements GraphLoader {
 	 * After that, visits the nodes according to the given {@link GraphTraversingOrdering} and assigns them to
 	 * the respective partitions using the given {@link SGPHeuristic}.
 	 * Whenever it assigns a node to a partition, it write the partition index in the {@link FileOutputStream}.
+	 * @throws IOException 
+	 * @throws NumberFormatException 
 	 */
-	public void run() {
+	public void run() throws NumberFormatException, IOException {
 
 		nodeNumbers = -1;
 		edgeNumbers = -1;
@@ -95,12 +60,15 @@ public class TraversingGraphLoader implements GraphLoader {
 
 		//read the first line
 		//go on until there are no comments
-		while (scanner.hasNextLine()) {
-			String firstLine = scanner.nextLine().trim();
-			if (firstLine.startsWith("%")) { //it is a comment
+		String line = "";
+		while ((line = scanner.readLine()) != null
+				&&	line.length() != 0) {
+			//String firstLine = scanner.nextLine().trim();
+			line = line.trim();
+			if (line.startsWith("%")) { //it is a comment
 				continue;
 			} else {
-				StringTokenizer strTok = new StringTokenizer(firstLine, " ");
+				StringTokenizer strTok = new StringTokenizer(line, " ");
 				//read the number of nodes
 				if (strTok.hasMoreTokens()) {
 					String token = strTok.nextToken();
@@ -124,22 +92,19 @@ public class TraversingGraphLoader implements GraphLoader {
 		this.graphPartitionator = new StramingGraphPartitionator(K, heuristic, capacity);
 		this.gr = graphPartitionator.getGraph();
 		//read the whole graph from file
-		while(scanner.hasNextLine()) {
-			String line = scanner.nextLine().trim();
+		while((line = scanner.readLine()) != null &&
+				line.length() != 0) {
+			line = line.trim();
+			//String line = scanner.nextLine().trim();
 			if (line.startsWith("%")) { //it is a comment
-				continue;
-			}
-			if (line.equals("") || line.equals(" ") || line.equals('\n')) { //empty
 				continue;
 			}
 			String[] nNodes = line.split(" ");
 			Node v = gr.addNode(Integer.toString(nodeCount++));
-			gr.addNode(v.getId());
 
 			for (String s : nNodes) {
 				gr.addEdge(v.getId()+"-"+s, v.getId(), s);
 			}
-
 		}
 		//scanning the graph
 		ConnectedComponents cc = new ConnectedComponents();
@@ -176,22 +141,5 @@ public class TraversingGraphLoader implements GraphLoader {
 		printerOut.close();
 		scanner.close();
 	}
-
-
-
-	public GraphPartitionator getGraphPartitionator() {
-		return graphPartitionator;
-	}
-
-	public int getNodeNumbers() {
-		return nodeNumbers == gr.getNodeCount() ? nodeNumbers : -1;
-	}
-
-	public int getEdgeNumbers() {
-		return edgeNumbers == gr.getEdgeCount() ? edgeNumbers : -1;
-	}
-
-
-
 
 }

@@ -78,10 +78,16 @@ extends TestCase implements HeuristicsTest
 							fpin.getName(), false);
 				}
 			}
+			for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
+				log.info("Test for: " + fpin.getName() + " with "+k+
+						"partitions using default file ordering started");
+				writer.writeNext(HEADER);
+				allHeuristicsTestCompareSimple(fpin, fpout, k, C, fpin.getName(), log, false);
+			}
 			writer.close();
 		}
 		//par
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith("a.graph"))) {
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
 			File fpout = new File(FOLDER +"toremove-out");
 			writer = new CSVWriter(new FileWriter(new File(FOLDER + fpin.getName() + CSV_SUFFIX)),' ');
 			Integer C = -1;
@@ -94,6 +100,12 @@ extends TestCase implements HeuristicsTest
 					myAllHeuristicsTestCompare(fpin, fpout, k, C, ord, 
 							fpin.getName(),true);
 				}
+			}
+			for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
+				log.info("Test for: " + fpin.getName() + " with "+k+
+						"partitions using default file ordering started");
+				writer.writeNext(HEADER);
+				allHeuristicsTestCompareSimple(fpin, fpout, k, C, fpin.getName(), log, false);
 			}
 			writer.close();
 		}
