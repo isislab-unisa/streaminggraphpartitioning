@@ -76,36 +76,16 @@ extends TestCase implements HeuristicsTest
 							"partitions using " + ord +" started");
 					myAllHeuristicsTestCompare(fpin, fpout, k, C, ord, 
 							fpin.getName(), false);
-				}
-			}
-			for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
-				log.info("Test for: " + fpin.getName() + " with "+k+
-						"partitions using default file ordering started");
-				writer.writeNext(HEADER);
-				allHeuristicsTestCompareSimple(fpin, fpout, k, C, fpin.getName(), log, false);
-			}
-			writer.close();
-		}
-		//par
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
-			File fpout = new File(FOLDER +"toremove-out");
-			writer = new CSVWriter(new FileWriter(new File(FOLDER + fpin.getName() + CSV_SUFFIX)),' ');
-			Integer C = -1;
-			for (int oi = ords.length-1; oi >= 0; oi--) {
-				writer.writeNext(HEADER);
-				String ord = (String)ords[oi].get(new Ordering());
-				for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
-					log.info("Test for: " + fpin.getName() + " with "+k+
-							"partitions using " + ord +" started");
 					myAllHeuristicsTestCompare(fpin, fpout, k, C, ord, 
 							fpin.getName(),true);
 				}
 			}
+			writer.writeNext(HEADER);
 			for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
 				log.info("Test for: " + fpin.getName() + " with "+k+
 						"partitions using default file ordering started");
-				writer.writeNext(HEADER);
 				allHeuristicsTestCompareSimple(fpin, fpout, k, C, fpin.getName(), log, false);
+				allHeuristicsTestCompareSimple(fpin, fpout, k, C, fpin.getName(), log, true);
 			}
 			writer.close();
 		}
