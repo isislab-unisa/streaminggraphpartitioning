@@ -1,19 +1,23 @@
-package it.isislab.streamingkway.graphloaders;
+package it.isislab.streamingkway.kwaysgp.finaltest;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+
 import org.graphstream.algorithm.ConnectedComponents;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Node;
-import it.isislab.streamingkway.graphloaders.graphtraversingordering.BFSTraversing;
-import it.isislab.streamingkway.graphloaders.graphtraversingordering.DFSTraversing;
+import org.graphstream.graph.implementations.SingleGraph;
+
+import it.isislab.streamingkway.graphloaders.AbstractGraphLoader;
+import it.isislab.streamingkway.graphloaders.GraphLoader;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
-import it.isislab.streamingkway.graphpartitionator.StramingGraphPartitionator;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 
 /**
@@ -32,12 +36,13 @@ import it.isislab.streamingkway.heuristics.SGPHeuristic;
  * @author Dario Di Pasquale
  *
  */
-public class TraversingGraphLoader extends AbstractGraphLoader {
+public class OrdinatorGraphLoader extends AbstractGraphLoader {
 
+	ArrayList<Node> nodesTrav = new ArrayList<Node>();
+	Map<Node, Integer> mapNode = new HashMap<>();
 
-	public TraversingGraphLoader(FileInputStream fpIn, FileOutputStream fpOut, Integer k, SGPHeuristic heuristic,
-			Integer c, boolean thereIsC, GraphTraversingOrdering gto) throws IOException {
-		super(fpIn, fpOut, k, heuristic, c, thereIsC, gto);
+	public OrdinatorGraphLoader(FileInputStream fpIn, FileOutputStream fpOut,GraphTraversingOrdering gto) throws IOException {
+		super(fpIn, fpOut, 0, null, 0, false, gto);
 	}
 
 
@@ -53,7 +58,7 @@ public class TraversingGraphLoader extends AbstractGraphLoader {
 	 * @throws NumberFormatException 
 	 */
 	public void runPartition() throws NumberFormatException, IOException {
-
+		nodesTrav.add(null);
 		nodeNumbers = -1;
 		edgeNumbers = -1;
 		Integer nodeCount = 1;
@@ -68,6 +73,7 @@ public class TraversingGraphLoader extends AbstractGraphLoader {
 			if (line.startsWith("%")) { //it is a comment
 				continue;
 			} else {
+				printerOut.print(line);
 				StringTokenizer strTok = new StringTokenizer(line, " ");
 				//read the number of nodes
 				if (strTok.hasMoreTokens()) {
@@ -79,18 +85,13 @@ public class TraversingGraphLoader extends AbstractGraphLoader {
 					String token = strTok.nextToken();
 					edgeNumbers = Integer.parseInt(token);
 				}
-				if (!thereIsC) {
-					capacity = nodeNumbers / K + 1;
-				}
 				break;
 			}
 		}
-		if (!thereIsC) {
-			capacity = nodeNumbers / K + 1;
-		}
 		//graph
-		this.graphPartitionator = new StramingGraphPartitionator(K, heuristic, capacity);
-		this.gr = graphPartitionator.getGraph();
+		this.gr = new SingleGraph("grafo");
+		gr.setStrict(false);
+	
 		//read the whole graph from file
 		while((line = scanner.readLine()) != null &&
 				line.length() != 0) {
@@ -111,9 +112,9 @@ public class TraversingGraphLoader extends AbstractGraphLoader {
 		cc.init(gr);
 		cc.compute();
 		cc.setCountAttribute(GraphLoader.CONNECTED_COMPONENT_ATTR);
+		nodeCount = 1;
 		int connectedComponents = cc.getConnectedComponentsCount();
-		if (connectedComponents > 1 &&
-				(gto.getClass().equals(BFSTraversing.class) || gto.getClass().equals(DFSTraversing.class))) { //there are at least 2 connected components
+		if (connectedComponents > 1) {
 			//the algorithm requires to visit them and are not enabled to do
 			List<Integer> connComps = new ArrayList<>(connectedComponents);
 			while (connComps.size() < connectedComponents) {
@@ -123,23 +124,43 @@ public class TraversingGraphLoader extends AbstractGraphLoader {
 					connComps.add(ccIndex);
 					Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
 					while (traversingGraph.hasNext()) {
-						Integer part = graphPartitionator.getPartitionNode(traversingGraph.next());
-						printerOut.println(part);
+						populateStructs(traversingGraph.next(), nodeCount++);
 					}
 				}
 			}
 		} else {
-			//choose a random node
 			Node vRand = Toolkit.randomNode(gr);
 			Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
 			while (traversingGraph.hasNext()) {
-				Integer part = graphPartitionator.getPartitionNode(traversingGraph.next());
-				printerOut.println(part);
-			}			
+				populateStructs(traversingGraph.next(),nodeCount++);
+			}		
 		}
-		printerOut.flush();
-		printerOut.close();
-		scanner.close();
+		writeFile();
+			printerOut.flush();
+			printerOut.close();
+			scanner.close();
+		}
+
+
+
+	private void populateStructs(Node next, int nIndex) {
+		nodesTrav.add(nIndex,next);
+		mapNode.put(next, nIndex);
+	}
+	private void writeFile() {
+		nodesTrav.remove(0);
+		for (Node node : nodesTrav) {
+			String s = "";
+			Iterator<Node> nNeigh = node.getNeighborNodeIterator();
+			while(nNeigh.hasNext()) {
+				Node u = nNeigh.next();
+				s += " " + mapNode.get(u);
+			}
+			printerOut.print('\n' + s);
+		}
 	}
 
-}
+
+
+	
+	}

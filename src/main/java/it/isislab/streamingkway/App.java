@@ -88,7 +88,7 @@ public class App {
 		}
 		Long startTime = System.currentTimeMillis();
 		try {
-			gl.run();
+			gl.runPartition();
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

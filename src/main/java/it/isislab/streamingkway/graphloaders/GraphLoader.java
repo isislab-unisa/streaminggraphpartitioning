@@ -47,5 +47,5 @@ public interface GraphLoader  {
 	 * @throws IOException 
 	 * @throws NumberFormatException 
 	 */
-	public void run() throws NumberFormatException, IOException;
+	public void runPartition() throws NumberFormatException, IOException;
 }

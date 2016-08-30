@@ -40,7 +40,7 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 	 * @throws ElementNotFoundException 
 	 * @throws IdAlreadyInUseException 
 	 */
-	public void run() throws IdAlreadyInUseException, ElementNotFoundException, EdgeRejectedException, IOException {
+	public void runPartition() throws IdAlreadyInUseException, ElementNotFoundException, EdgeRejectedException, IOException {
 
 		nodeNumbers = -1;
 		edgeNumbers = -1;

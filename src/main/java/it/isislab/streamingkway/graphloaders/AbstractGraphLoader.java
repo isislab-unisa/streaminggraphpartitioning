@@ -77,7 +77,7 @@ public abstract class AbstractGraphLoader implements GraphLoader {
 	 * @throws IOException 
 	 * @throws NumberFormatException 
 	 */
-	public abstract void run() throws NumberFormatException, IOException;
+	public abstract void runPartition() throws NumberFormatException, IOException;
 
 
 

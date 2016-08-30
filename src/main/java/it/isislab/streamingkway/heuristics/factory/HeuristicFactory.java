@@ -72,19 +72,19 @@ public class HeuristicFactory {
 		break;
 		case Heuristic.BALANCE_BIG : heuristic = new BalanceBig(parallel);
 		break;
-
-		case MyRelationshipHeuristics.U_C_ABS_DISPERSION_BASED : heuristic = new UnweightedCompAbsDispersionBased();
-		break;
-		case MyRelationshipHeuristics.L_C_ABS_DISPERSION_BASED : heuristic = new LinearCompAbsWeightedDispersionBased();
-		break;
-		case MyRelationshipHeuristics.E_C_ABS_DISPERSION_BASED : heuristic = new ExponentiallyCompAbsWeightedDispersionBased();
-		break;
-		case MyRelationshipHeuristics.U_C_NORM_DISPERSION_BASED : heuristic = new UnweightedCompNormDispersionBased();
-		break;
-		case MyRelationshipHeuristics.L_C_NORM_DISPERSION_BASED : heuristic = new LinearCompNormWeightedDispersionBased();
-		break;
-		case MyRelationshipHeuristics.E_C_NORM_DISPERSION_BASED : heuristic = new ExponentiallyCompNormWeightedDispersionBased();
-		break;
+//
+//		case MyRelationshipHeuristics.U_C_ABS_DISPERSION_BASED : heuristic = new UnweightedCompAbsDispersionBased();
+//		break;
+//		case MyRelationshipHeuristics.L_C_ABS_DISPERSION_BASED : heuristic = new LinearCompAbsWeightedDispersionBased();
+//		break;
+//		case MyRelationshipHeuristics.E_C_ABS_DISPERSION_BASED : heuristic = new ExponentiallyCompAbsWeightedDispersionBased();
+//		break;
+//		case MyRelationshipHeuristics.U_C_NORM_DISPERSION_BASED : heuristic = new UnweightedCompNormDispersionBased();
+//		break;
+//		case MyRelationshipHeuristics.L_C_NORM_DISPERSION_BASED : heuristic = new LinearCompNormWeightedDispersionBased();
+//		break;
+//		case MyRelationshipHeuristics.E_C_NORM_DISPERSION_BASED : heuristic = new ExponentiallyCompNormWeightedDispersionBased();
+//		break;
 		
 		case RelationshipHeuristics.U_REC_DISPERSION_BASED: heuristic = new  UnweightedRecDispersionBased(parallel);
 		break;
