@@ -16,7 +16,7 @@ public class UnweightedDeterministicGreedy extends AbstractDeterministicGreedy i
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Deterministic Greedy"+ (parallel ? " Parallel" : "");
+		return "Unweighted "+super.getHeuristicName()+ (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

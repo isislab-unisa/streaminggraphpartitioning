@@ -92,6 +92,8 @@ public abstract class AbstractCompleteAbsDispersionBased  implements SGPHeuristi
 
 
 	public abstract Double getWeight(Double partitionSize, Integer c);
-	public abstract String getHeuristicName();
+	public String getHeuristicName() {
+		return "Complete Absolute Dispersion Based";
+	}
 
 }

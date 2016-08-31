@@ -9,7 +9,7 @@ public class UnweightedRecDispersionBased extends AbstractRecursiveDispersionBas
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Recursive Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Unweighted "+ super.getHeuristicName() +(parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

@@ -16,7 +16,7 @@ public class LinearWeightedTriangles extends AbstractTriangles implements Linear
 	}	
 	
 	public String getHeuristicName() {
-		return "Linear Weighted Triangles"+ (parallel ? " Parallel" : "");
+		return "Linear "+super.getHeuristicName()+ (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

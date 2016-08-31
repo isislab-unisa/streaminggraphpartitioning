@@ -57,7 +57,7 @@ public class NormalizedVariables {
 								SGPHeuristic heuristic = new LinearNormWeightedDispersionBased(A, B,C, true);
 								GraphLoader gl = new TraversingGraphLoader(new FileInputStream(f), new FileOutputStream(f+"-r"),
 										k, heuristic, -1, false, new BFSTraversing());
-								gl.run();
+								gl.runPartition();
 								QualityChecker qc = new ParallelQualityChecker();
 								String[] res = {
 										f.getName(),

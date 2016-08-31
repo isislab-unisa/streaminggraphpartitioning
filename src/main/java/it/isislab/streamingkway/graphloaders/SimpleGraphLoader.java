@@ -3,7 +3,7 @@ package it.isislab.streamingkway.graphloaders;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.StringTokenizer;
+
 import org.graphstream.graph.EdgeRejectedException;
 import org.graphstream.graph.ElementNotFoundException;
 import org.graphstream.graph.IdAlreadyInUseException;
@@ -49,26 +49,8 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 		//read the first line
 		//go on until there are no comments
 		String line = "";
-		while ((line = scanner.readLine()) != null
-				&&	line.length() != 0) {
-			line = line.trim();
-			if (line.startsWith("%")) { //it is a comment
-				continue;
-			} else {
-				StringTokenizer strTok = new StringTokenizer(line, " ");
-				//read the number of nodes
-				if (strTok.hasMoreTokens()) {
-					String token = strTok.nextToken();
-					nodeNumbers = Integer.parseInt(token);
-				}
-				//read the number of edges
-				if (strTok.hasMoreTokens()) {
-					String token = strTok.nextToken();
-					edgeNumbers = Integer.parseInt(token);
-				}
-				break;
-			}
-		}
+		readFirstLine();
+		
 		if (!thereIsC) {
 			capacity = nodeNumbers / K + 1;
 		}
@@ -76,8 +58,8 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 		this.graphPartitionator = new StramingGraphPartitionator(K, heuristic, capacity);
 		this.gr = graphPartitionator.getGraph();
 		//read the whole graph
-		while((line = scanner.readLine()) != null
-				&&	line.length() != 0) {
+		
+		while((line = scanner.readLine()) != null &&	line.length() != 0) {
 			
 			line = line.trim();
 			if (line.startsWith("%")) { //it is a comment
@@ -86,6 +68,8 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 			if (line.equals("") || line.equals(" ") || line.equals('\n')) { //empty
 				continue;
 			}
+
+			Long startTime = System.currentTimeMillis();
 			String[] nNodes = line.split(" ");
 			Node v = gr.addNode(Integer.toString(nodeCount++));
 			gr.addNode(v.getId());
@@ -94,6 +78,8 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 				gr.addEdge(v.getId()+"-"+s, v.getId(), s);
 			}
 			int uPartition = graphPartitionator.getPartitionNode(v);
+			Long endTime = System.currentTimeMillis();
+			partTime += (endTime - startTime);
 			printerOut.println(uPartition);
 		}
 

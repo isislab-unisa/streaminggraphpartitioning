@@ -16,7 +16,7 @@ public class UnweightedTriangles extends AbstractTriangles implements Unweighted
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Triangles"+ (parallel ? " Parallel" : "");
+		return "Unweighted "+ super.getHeuristicName() +(parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

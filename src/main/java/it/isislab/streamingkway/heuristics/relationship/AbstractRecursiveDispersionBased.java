@@ -93,7 +93,9 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 		return maxPartIndex;
 	}
 
-	public abstract String getHeuristicName();
+	public String getHeuristicName() {
+		return "Recursive Dispersion Based";
+	};
 	public abstract Double getWeight(Double intersectNumber, Integer c);
 
 	private Map<Node,Double> getDispersion(List<Node> uNeighbour, Node n) {

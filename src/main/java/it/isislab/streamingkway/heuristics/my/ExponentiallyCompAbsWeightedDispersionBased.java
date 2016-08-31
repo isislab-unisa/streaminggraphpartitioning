@@ -9,7 +9,7 @@ public class ExponentiallyCompAbsWeightedDispersionBased extends AbstractComplet
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Complete Weighted Dispersion Based";
+		return "Exponentially " + super.getHeuristicName();
 	}
 
 }

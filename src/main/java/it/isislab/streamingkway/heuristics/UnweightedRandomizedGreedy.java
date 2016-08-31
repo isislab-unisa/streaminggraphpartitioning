@@ -19,7 +19,7 @@ public class UnweightedRandomizedGreedy extends AbstractRandomizedGreedy impleme
 
 	
 	public String getHeuristicName() {
-		return "Unweighted Randomized Greedy"+ (parallel ? " Parallel" : "");
+		return "Unweighted "+super.getHeuristicName()+ (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

@@ -5,9 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
-
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
@@ -58,6 +56,8 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic, Weigh
 	}
 
 	public abstract Double getWeight(Double partitionSize, Integer c);
-	public abstract String getHeuristicName();
+	public String getHeuristicName() {
+		return "Deterministic Greedy";
+	}
 
 }

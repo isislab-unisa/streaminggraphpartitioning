@@ -19,7 +19,7 @@ public class ExponentiallyWeightedRandomizedGreedy extends AbstractRandomizedGre
 
 	
 	public String getHeuristicName() {
-		return "Exponentially Weighted Randomized Greedy"+ (parallel ? " Parallel" : "");
+		return "Exponentially "+ super.getHeuristicName() + (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

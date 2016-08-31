@@ -7,7 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
@@ -39,10 +42,10 @@ extends TestCase implements HeuristicsTest
 	public static final String PLACEHOLDER_D = "D";
 	public static final String PLACEHOLDER_R = "R";
 	private static final String CSV_SUFFIX = "-res.csv";
-	private static final int MAX_PARTITION_SIZE = 32;
+	private static final int MAX_PARTITION_SIZE = 128;
 	private static final String FOLDER = "resources/";
-
-
+	private static final String CSV_FOLDER ="/csv/";
+	private static final String OUTPUT_FILE = "toremove.file";
 	private Logger log = Logger.getGlobal();
 	private CSVWriter writer;
 	/** 
@@ -69,23 +72,23 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith("k.graph"))) {
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
 			String graphName = FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",""};
 			
-			File fpout = new File(FOLDER +"toremove-out");
-			writer = new CSVWriter(new FileWriter(new File(FOLDER + "/csv/" +fpin.getName() + CSV_SUFFIX)),' ');
+			File fpout = new File(FOLDER + OUTPUT_FILE);
+			writer = new CSVWriter(new FileWriter(new File(FOLDER + CSV_FOLDER +fpin.getName() + CSV_SUFFIX)),' ');
 			Integer C = -1;
 			for (int i = 0; i < ITERATION_TIME; i++) {
 				File graphNameBfs = new File(graphName + ".bfs." + i);
 				File graphNameDfs = new File(graphName + ".dfs." + i);
 				
-				log.info("Sto creando il grafo BFS " + i);
+				log.info("Making BSF graph: " + i);
 				OrdinatorGraphLoader ogl = new OrdinatorGraphLoader(new FileInputStream(fpin), new FileOutputStream(graphNameBfs),
 						new BFSTraversing());
 				ogl.runPartition();
-				log.info("Sto creando il grafo DFS" + i);
+				log.info("Making DFS graph: " + i);
 				OrdinatorGraphLoader ogld = new OrdinatorGraphLoader(new FileInputStream(fpin), new FileOutputStream(graphNameDfs),
 						new DFSTraversing());
 				ogld.runPartition();
@@ -98,10 +101,8 @@ extends TestCase implements HeuristicsTest
 				for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
 					log.info("Test for: " + graphFile.getName() + " with "+k+
 							"partitions using " + ord +" started");
-					//allHeuristicsTestCompareSimple(graphFile, fpout, k, C, 
-						//	fpin.getName(), log, true, ord == "" ? "rnd" : ord);
 					allHeuristicsTestCompareSimple(graphFile, fpout, k, C, 
-							fpin.getName(), log, false, ord == "" ? "rnd" : ord);
+							fpin.getName(), log, true, ord == "" ? "rnd" : ord);
 				}
 			}
 			writer.close();
@@ -137,6 +138,8 @@ extends TestCase implements HeuristicsTest
 		ArrayList<Double> displacement = null;
 		ArrayList<Double> normalizedMaxLoad = null;
 		ArrayList<Long> totalTime = null;
+		ArrayList<Long> partTime = null;
+		ArrayList<Long> iotime = null;
 
 		
 		Field[] heuristics = Heuristic.class.getDeclaredFields();
@@ -163,18 +166,21 @@ extends TestCase implements HeuristicsTest
 
 		log.info("Testing for k= "+k );
 		
+		GraphLoader gl = null; 
+		ParallelQualityChecker qc = new ParallelQualityChecker();
+		SGPHeuristic heuristic = null;
+		
 		for (Integer i : allHeuristics) {
 			heuristicEdgesRatio = new ArrayList<Double>();
 			cuttedEdges = new ArrayList<Double>();
 			displacement = new ArrayList<Double>();
 			normalizedMaxLoad = new ArrayList<Double>();
 			totalTime = new ArrayList<Long>();
-			GraphLoader gl = null; 
-			ParallelQualityChecker qc = new ParallelQualityChecker();
-
+			partTime = new ArrayList<Long>();
+			iotime = new ArrayList<Long>();
+			
 			Integer totalNodes = 0;
 			Integer totalEdges = 0;
-			SGPHeuristic heuristic = null;
 			File fpInTest = null;
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				if (!ord.equals("rnd")) {
@@ -189,12 +195,18 @@ extends TestCase implements HeuristicsTest
 				gl = new SimpleGraphLoader(new FileInputStream(fpInTest), new FileOutputStream(fpOut),
 						k, heuristic, C, false);
 				qc = new ParallelQualityChecker();
-				Thread.sleep(250 + CPU_REFRESH_TIME);
 				Long startTime = System.currentTimeMillis();
 				gl.runPartition(); 
 				Long endTime = System.currentTimeMillis();
 				long time = endTime - startTime;
+				//total time
 				totalTime.add(time);
+				//io & part time
+				Long onePartTime = gl.getPartitioningTime();
+				Long oneIoTime = time - onePartTime;
+				partTime.add(onePartTime);
+				iotime.add(oneIoTime);
+				//edge ratio
 				heuristicEdgesRatio.add(qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph()));
 				cuttedEdges.add(0.0 + qc.getCuttingEdgesCount(gl.getGraphPartitionator().getGraph()));
 				//count total partitioned nodes
@@ -208,41 +220,137 @@ extends TestCase implements HeuristicsTest
 				myAssertEquals(totalEdges.intValue(), gl.getGraphPartitionator().getGraph().getEdgeCount());
 				//check displacement
 				displacement.add(qc.getDisplacement(gl.getGraphPartitionator().getPartitionMap()));
-				//assertTrue(displacement <= DISPLACEMENT_TOLERANCE);
 				//check normalized maximum load
 				normalizedMaxLoad.add(qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), 
 						gl.getGraphPartitionator().getGraph()));
 			}
-			Double avgheuristicEdgesRatio = heuristicEdgesRatio.stream().mapToDouble(p -> p.doubleValue()).average().getAsDouble(); 
-			Double maxheuristicEdgesRatio = heuristicEdgesRatio.stream().mapToDouble(p -> p.doubleValue()).max().getAsDouble();
-			Double minheuristicEdgesRatio = heuristicEdgesRatio.stream().mapToDouble(p -> p.doubleValue()).min().getAsDouble();
-			Double avgcuttedEdges = cuttedEdges.stream().mapToDouble(p -> p.doubleValue()).average().getAsDouble();
-			Double avgdisplacement = displacement.stream().mapToDouble(p -> p.doubleValue()).average().getAsDouble(); 
-			Double avgnormalizedMaxLoad = normalizedMaxLoad.stream().mapToDouble(p -> p.doubleValue()).average().getAsDouble();
-			Double avgtime = totalTime.stream().mapToDouble(p -> p.longValue()).average().getAsDouble();
-			Long mintime = totalTime.stream().mapToLong(p -> p.longValue()).min().getAsLong();
-			Long maxtime = totalTime.stream().mapToLong(p -> p.longValue()).max().getAsLong();
-			String[] metrics = {
-					graphName,						//graph name
-					totalNodes.toString(), 			//total nodes
-					totalEdges.toString(), 			//total	edges
-					ord,		//gl type
-					k.toString(),					//k
-					heuristic.getHeuristicName().replace(' ', '_'),  //heuristic name
-					avgdisplacement.toString(), 		//displacement
-					avgcuttedEdges.toString(),			//cutted edges
-					maxheuristicEdgesRatio.toString(),
-					minheuristicEdgesRatio.toString(),
-					avgheuristicEdgesRatio.toString(),	//edges ratio
-					maxtime.toString(),
-					mintime.toString(),
-					avgtime.toString(),
-					ITERATION_TIME.toString()			//iteration time
-			};
+			String[] metrics = getMetrics(k, graphName, ord, heuristicEdgesRatio, cuttedEdges, displacement,
+					normalizedMaxLoad, totalTime, heuristic, totalNodes, totalEdges, iotime, partTime);
 			saveCSV(metrics);
 			log.info("Test for " + HeuristicFactory.getHeuristic(i,par).getHeuristicName() + " done.");
 		}
 		
+	}
+
+
+	/**
+	 * @param k
+	 * @param graphName
+	 * @param ord
+	 * @param heuristicEdgesRatio
+	 * @param cuttedEdges
+	 * @param displacement
+	 * @param normalizedMaxLoad
+	 * @param totalTime
+	 * @param heuristic
+	 * @param totalNodes
+	 * @param totalEdges
+	 * @return
+	 */
+	private String[] getMetrics(Integer k, String graphName, String ord, ArrayList<Double> heuristicEdgesRatio,
+			ArrayList<Double> cuttedEdges, ArrayList<Double> displacement, ArrayList<Double> normalizedMaxLoad,
+			ArrayList<Long> totalTime, SGPHeuristic heuristic, Integer totalNodes, Integer totalEdges, 
+			ArrayList<Long> iotime, ArrayList<Long> parttime) {
+		Double avgheuristicEdgesRatio = getDoubleAverage(heuristicEdgesRatio); 
+		Double maxheuristicEdgesRatio = getDoubleMax(heuristicEdgesRatio);
+		Double minheuristicEdgesRatio = getDoubleMin(heuristicEdgesRatio);
+		Double avgcuttedEdges = getDoubleAverage(cuttedEdges);
+		@SuppressWarnings("unused")
+		Double avgdisplacement = getDoubleAverage(displacement); 
+		Double avgnormalizedMaxLoad = getDoubleAverage(normalizedMaxLoad);
+		Double avgtime = totalTime.stream().mapToDouble(p -> p.doubleValue()).average().getAsDouble();
+		Long mintime = getLongMin(totalTime);
+		Long maxtime = getLongMax(totalTime);
+		Long maxiotime = getLongMax(iotime);
+		Long miniotime = getLongMin(iotime);
+		Double avgiotime = iotime.stream().mapToLong(p -> p.longValue()).average().getAsDouble();
+		Long maxparttime = getLongMax(parttime);
+		Long minparttime = getLongMax(parttime);
+		Double avgparttime = parttime.stream().mapToLong(p -> p.longValue()).average().getAsDouble();
+		
+		String[] metrics = {
+				graphName,						//graph name
+				totalNodes.toString(), 			//total nodes
+				totalEdges.toString(), 			//total	edges
+				ord,		//gl type
+				k.toString(),					//k
+				heuristic.getHeuristicName().replace(' ', '_'),  //heuristic name
+				shortHeuristicName(heuristic.getHeuristicName()),
+				avgnormalizedMaxLoad.toString(), 		//displacement
+				avgcuttedEdges.toString(),			//cutted edges
+				maxheuristicEdgesRatio.toString(),
+				minheuristicEdgesRatio.toString(),
+				avgheuristicEdgesRatio.toString(),	//edges ratio
+				maxtime.toString(),
+				mintime.toString(),
+				avgtime.toString(),
+				maxiotime.toString(),
+				miniotime.toString(),
+				avgiotime.toString(),
+				maxparttime.toString(),
+				minparttime.toString(),
+				avgparttime.toString(),
+				ITERATION_TIME.toString()			//iteration time
+		};
+		return metrics;
+	}
+
+
+	/**
+	 * @param totalTime
+	 * @return
+	 */
+	private long getLongMax(ArrayList<Long> totalTime) {
+		return totalTime.stream().mapToLong(p -> p.longValue()).max().getAsLong();
+	}
+
+
+	/**
+	 * @param totalTime
+	 * @return
+	 */
+	private long getLongMin(ArrayList<Long> totalTime) {
+		return totalTime.stream().mapToLong(p -> p.longValue()).min().getAsLong();
+	}
+
+
+	/**
+	 * @param heuristicEdgesRatio
+	 * @return
+	 */
+	private double getDoubleMin(ArrayList<Double> heuristicEdgesRatio) {
+		return heuristicEdgesRatio.stream().mapToDouble(p -> p.doubleValue()).min().getAsDouble();
+	}
+
+
+	/**
+	 * @param heuristicEdgesRatio
+	 * @return
+	 */
+	private double getDoubleMax(ArrayList<Double> heuristicEdgesRatio) {
+		return heuristicEdgesRatio.stream().mapToDouble(p -> p.doubleValue()).max().getAsDouble();
+	}
+
+
+	/**
+	 * @param heuristicEdgesRatio
+	 * @return
+	 */
+	private double getDoubleAverage(ArrayList<Double> heuristicEdgesRatio) {
+		return heuristicEdgesRatio.stream().mapToDouble(p -> p.doubleValue()).average().getAsDouble();
+	}
+
+
+	private String shortHeuristicName(String heuristicName) {
+		String[] shortenHN = heuristicName.split(" ");
+		String res = Arrays.stream(shortenHN)
+			.map(p -> Character.toString(p.charAt(0)))
+			.map(p -> p.toUpperCase())
+			.collect(Collectors.joining(""));
+		if (res.charAt(res.length() -1 ) == 'P') {
+			res = res.substring(0, res.length() -1);
+		}
+		return res;
 	}
 
 

@@ -1,18 +1,13 @@
 package it.isislab.streamingkway.kwaysgp.finaltest;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import java.util.stream.DoubleStream;
-import java.util.stream.LongStream;
 
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
-import it.isislab.streamingkway.graphloaders.SimpleGraphLoader;
 import it.isislab.streamingkway.heuristics.Heuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
@@ -27,19 +22,26 @@ public interface HeuristicsTest extends Test {
 	Long CPU_REFRESH_TIME = 0l;
 	String[] HEADER =  {
 			"GraphName",
-			"Totalnodes", 	
-			"Totaledges",
+			"TotalNodes", 	
+			"TotalEdges",
 			"OrderingType",
 			"K",
-			"HeuristicName",  
-			"Displacement", 	
+			"CompleteHeuristicName",  
+			"HeuristicName",
+			"NormalizedLoad", 	
 			"CuttedEdges",
 			"MaxCuttedEdgesRatio",
 			"MinCuttedEdgesRatio",
 			"CuttedEdgesRatio",
 			"MaxTime",
 			"MinTime",
-			"TotalTime",
+			"AvgTime",
+			"MaxIOTime",
+			"MinIOTime",
+			"AvgIOTime",
+			"MaxPartitioningTime",
+			"MinPartitioningTime",
+			"AvgPartitioningTime",
 			"IterationTime"
 	};
 

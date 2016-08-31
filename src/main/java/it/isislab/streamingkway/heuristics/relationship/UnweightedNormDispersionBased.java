@@ -17,7 +17,7 @@ public class UnweightedNormDispersionBased extends AbstractNormDispersionBased i
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Normalized Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Unweighted "+super.getHeuristicName()+ (parallel ? " Parallel" : "");
 	}
 
 }

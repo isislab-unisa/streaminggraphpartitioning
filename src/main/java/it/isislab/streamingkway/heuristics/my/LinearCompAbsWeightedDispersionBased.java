@@ -9,7 +9,7 @@ public class LinearCompAbsWeightedDispersionBased extends AbstractCompleteAbsDis
 	}
 
 	public String getHeuristicName() {
-		return "Linear Complete Weighted Absolute Dispersion Based";
+		return "Linear " + super.getHeuristicName();
 	}
 
 }

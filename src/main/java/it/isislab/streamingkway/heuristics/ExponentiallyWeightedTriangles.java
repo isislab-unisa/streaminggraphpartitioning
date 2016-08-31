@@ -16,7 +16,7 @@ public class ExponentiallyWeightedTriangles extends AbstractTriangles implements
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Weighted Triangles"+ (parallel ? " Parallel" : "");
+		return "Exponentially "+ super.getHeuristicName()+(parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

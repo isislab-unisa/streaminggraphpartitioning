@@ -13,7 +13,7 @@ public class UnweightedAbsDispersionBased extends AbstractAbsDispersionBased imp
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Absolute Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Unweighted " + super.getHeuristicName() + (parallel ? " Parallel" : "");
 	}
 
 }

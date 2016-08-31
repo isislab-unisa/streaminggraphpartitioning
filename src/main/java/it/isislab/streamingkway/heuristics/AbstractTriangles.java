@@ -54,6 +54,8 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 
 
 	public abstract Double getWeight(Double intersectNumber, Integer c);
-	public abstract String getHeuristicName();
+	public String getHeuristicName() {
+		return "Triangles";
+	}
 
 }

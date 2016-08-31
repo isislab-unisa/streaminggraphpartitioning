@@ -129,6 +129,8 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 		C = c;
 	}
 	public abstract Double getWeight(Double intersectNumber, Integer c);
-	public abstract String getHeuristicName();
+	public String getHeuristicName() {
+		return "Normalized Dispersion Based";
+	}
 
 }

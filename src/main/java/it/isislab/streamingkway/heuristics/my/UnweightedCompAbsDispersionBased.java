@@ -9,7 +9,7 @@ public class UnweightedCompAbsDispersionBased extends AbstractCompleteAbsDispers
 	}
 
 	public String getHeuristicName() {
-		return "Unweighted Complete Absolute Dispersion Based";
+		return "Unweighted " + super.getHeuristicName();
 	}
 
 }

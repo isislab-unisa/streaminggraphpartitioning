@@ -13,7 +13,7 @@ public class LinearAbsWeightedDispersionBased extends AbstractAbsDispersionBased
 	}
 
 	public String getHeuristicName() {
-		return "Linear Weighted Absolute Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Linear " + super.getHeuristicName() + (parallel ? " Parallel" : "");
 	}
 
 }

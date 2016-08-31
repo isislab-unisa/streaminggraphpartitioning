@@ -17,7 +17,7 @@ public class ExponentiallyWeightedDeterministicGreedy extends AbstractDeterminis
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Weighted Deterministic Greedy" + (parallel ? " Parallel" : "");
+		return "Exponentially "+ super.getHeuristicName() + (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

@@ -6,10 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
+
 import org.graphstream.algorithm.ConnectedComponents;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.BFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.DFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
@@ -61,30 +62,8 @@ public class TraversingGraphLoader extends AbstractGraphLoader {
 		//read the first line
 		//go on until there are no comments
 		String line = "";
-		while ((line = scanner.readLine()) != null
-				&&	line.length() != 0) {
-			//String firstLine = scanner.nextLine().trim();
-			line = line.trim();
-			if (line.startsWith("%")) { //it is a comment
-				continue;
-			} else {
-				StringTokenizer strTok = new StringTokenizer(line, " ");
-				//read the number of nodes
-				if (strTok.hasMoreTokens()) {
-					String token = strTok.nextToken();
-					nodeNumbers = Integer.parseInt(token);
-				}
-				//read the number of edges
-				if (strTok.hasMoreTokens()) {
-					String token = strTok.nextToken();
-					edgeNumbers = Integer.parseInt(token);
-				}
-				if (!thereIsC) {
-					capacity = nodeNumbers / K + 1;
-				}
-				break;
-			}
-		}
+		readFirstLine();
+		
 		if (!thereIsC) {
 			capacity = nodeNumbers / K + 1;
 		}

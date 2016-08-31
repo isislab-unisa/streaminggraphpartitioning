@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.StringTokenizer;
 import org.graphstream.graph.Graph;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
 import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
@@ -43,6 +44,7 @@ public abstract class AbstractGraphLoader implements GraphLoader {
 	protected Integer capacity;
 	protected boolean thereIsC;
 	protected GraphTraversingOrdering gto;
+	protected Long partTime;
 
 	/**
 	 * Creates a traversing graph loader according to the given parameters.
@@ -58,6 +60,7 @@ public abstract class AbstractGraphLoader implements GraphLoader {
 			SGPHeuristic heuristic, Integer c, boolean thereIsC, GraphTraversingOrdering gto) throws IOException{
 		this.heuristic = heuristic;
 		this.K = k;
+		this.partTime = 0L;
 		this.thereIsC = thereIsC;
 		if (thereIsC) {
 			this.capacity = c;			
@@ -91,6 +94,36 @@ public abstract class AbstractGraphLoader implements GraphLoader {
 
 	public int getEdgeNumbers() {
 		return edgeNumbers == gr.getEdgeCount() ? edgeNumbers : -1;
+	}
+	/**
+	 * @throws IOException
+	 */
+	protected void readFirstLine() throws IOException {
+		String line;
+		while ((line = scanner.readLine()) != null
+				&&	line.length() != 0) {
+			line = line.trim();
+			if (line.startsWith("%")) { //it is a comment
+				continue;
+			} else {
+				StringTokenizer strTok = new StringTokenizer(line, " ");
+				//read the number of nodes
+				if (strTok.hasMoreTokens()) {
+					String token = strTok.nextToken();
+					nodeNumbers = Integer.parseInt(token);
+				}
+				//read the number of edges
+				if (strTok.hasMoreTokens()) {
+					String token = strTok.nextToken();
+					edgeNumbers = Integer.parseInt(token);
+				}
+				break;
+			}
+		}
+	}
+	
+	public Long getPartitioningTime() {
+		return this.partTime;
 	}
 
 

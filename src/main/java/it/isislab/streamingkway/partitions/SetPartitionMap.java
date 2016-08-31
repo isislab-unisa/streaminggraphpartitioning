@@ -9,11 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
-
 import org.graphstream.graph.Node;
-
 import it.isislab.streamingkway.exceptions.InvalidCapacity;
 import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
 
@@ -22,7 +18,7 @@ public class SetPartitionMap implements PartitionMap {
 	@SuppressWarnings("unused")
 	private static final int DEGREE_DENOM = 2;
 	private Map<Integer, Collection<Node>> chm;
-	private Map<Integer, Integer> partitionsSize; //TODO to remove?
+	private Map<Integer, Integer> partitionsSize; 
 	private Map<Integer,Integer> degreeMap; 
 	private Integer size = 0;
 	private Integer K;
@@ -117,14 +113,10 @@ public class SetPartitionMap implements PartitionMap {
 		checkIndex(partitionIndex);
 		Collection<Node> partition = this.chm.get(partitionIndex);
 		Integer intersection = 0;
-		
-		intersection = partition.parallelStream().mapToInt(new ToIntFunction<Node>() {
-
-			public int applyAsInt(Node value) {
-				return value.hasEdgeBetween(v.getId())? 1 : 0;
-			}
-			
-		}).sum();
+	
+		intersection = (int) partition.parallelStream()
+				.filter(p -> p.hasEdgeBetween(v))
+				.count();
 		
 		return intersection;
 	}
@@ -138,14 +130,9 @@ public class SetPartitionMap implements PartitionMap {
 		Collection<Node> partition = this.chm.get(partitionIndex);
 		Integer intersection = 0;
 		
-		partition.stream().mapToInt(new ToIntFunction<Node>() {
-
-			public int applyAsInt(Node value) {
-				return value.hasEdgeBetween(v.getId())? 1 : 0;
-			}
-			
-		}).sum();
-		
+		intersection = (int) partition.stream()
+			.filter(p -> p.hasEdgeBetween(v))
+			.count();
 		return intersection;
 	}
 
@@ -154,21 +141,21 @@ public class SetPartitionMap implements PartitionMap {
 			return 0.0;
 		}
 		
-		double ex=  degreeMap.entrySet().parallelStream().mapToDouble(
-			p -> p.getValue() * p.getKey()
-		).sum();
+		double ex=  degreeMap.entrySet().parallelStream()
+				.mapToDouble(p -> p.getValue() * p.getKey())
+				.sum();
 		
-		int total = degreeMap.keySet().parallelStream().mapToInt(
-			p -> p.intValue()
-		).sum();
+		int total = degreeMap.keySet().parallelStream()
+				.mapToInt(p -> p.intValue())
+				.sum();
 		
 		return ex/total;
 	}
 
 	public Integer getTotalPartitionedNodes() {
-		Integer totalNodes = partitionsSize.entrySet().parallelStream().mapToInt(
-				p -> p.getValue()
-		).sum();
+		Integer totalNodes = partitionsSize.entrySet().parallelStream()
+				.mapToInt(p -> p.getValue()	)
+				.sum();
 		return totalNodes;
 	}
 
@@ -178,16 +165,21 @@ public class SetPartitionMap implements PartitionMap {
 		Collection<Node> partition = this.chm.get(partitionIndex);
 		List<Node> gammaVintersect = Collections.synchronizedList(new ArrayList<>());
 		
-		partition.parallelStream().forEach(new Consumer<Node>() {
-			public void accept(Node t) {
-				if (v.hasEdgeBetween(t)) {
-					gammaVintersect.add(t);
-				}
-			}
-		});
+//		partition.parallelStream().forEach(new Consumer<Node>() {
+//			public void accept(Node t) {
+//				if (v.hasEdgeBetween(t)) {
+//					gammaVintersect.add(t);
+//				}
+//			}
+//		});
+		
+		partition.parallelStream()
+			.filter(p -> p.hasEdgeBetween(v))
+			.forEach(p -> gammaVintersect.add(p));
 		return gammaVintersect;
 	}
 
+	@Deprecated
 	public Integer getNodePartition(Node v) {
 		for (Entry<Integer, Collection<Node>> part : this.chm.entrySet()) {
 			if (part.getValue().isEmpty()) continue;

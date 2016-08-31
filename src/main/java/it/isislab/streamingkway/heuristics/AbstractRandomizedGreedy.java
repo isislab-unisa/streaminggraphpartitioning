@@ -94,6 +94,8 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 	}
 
 	public abstract Double getWeight(Double partitionSize, Integer c);
-	public abstract String getHeuristicName();
+	public String getHeuristicName() {
+		return "Randomized Greedy";
+	}
 
 }

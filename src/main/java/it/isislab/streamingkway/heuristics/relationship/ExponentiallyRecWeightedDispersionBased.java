@@ -9,7 +9,7 @@ public class ExponentiallyRecWeightedDispersionBased extends AbstractRecursiveDi
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Recursive Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Exponentially "+ super.getHeuristicName() +(parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

@@ -48,4 +48,6 @@ public interface GraphLoader  {
 	 * @throws NumberFormatException 
 	 */
 	public void runPartition() throws NumberFormatException, IOException;
+	
+	public Long getPartitioningTime();
 }

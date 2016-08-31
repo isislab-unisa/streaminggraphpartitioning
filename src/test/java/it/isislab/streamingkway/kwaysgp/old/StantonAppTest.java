@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-
 import au.com.bytecode.opencsv.CSVReader;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
@@ -195,8 +194,8 @@ extends TestCase
 				FileInputStream fpIn = new FileInputStream(fileIn);
 				FileOutputStream fpOut = new FileOutputStream(fileOut);
 				gl = getGraphLoader(glType, fpIn,fpOut,k,HeuristicFactory.getHeuristic(i),C,true);
-				Thread.sleep(500);
-				gl.run();    
+				Thread.sleep(1);
+				gl.runPartition();    
 				double edgesRatio = qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph());
 				edgesRatio += heuristicEdgesRatio.get(i);
 				heuristicEdgesRatio.put(i, edgesRatio);

@@ -17,7 +17,7 @@ public class ExponentiallyNormWeightedDispersionBased extends AbstractNormDisper
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Normalized Weighted Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Exponentially " + super.getHeuristicName() + (parallel ? " Parallel" : "");
 	}
 
 }

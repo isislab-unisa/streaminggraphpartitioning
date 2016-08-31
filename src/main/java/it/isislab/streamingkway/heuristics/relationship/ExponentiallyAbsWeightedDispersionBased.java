@@ -13,7 +13,7 @@ public class ExponentiallyAbsWeightedDispersionBased extends AbstractAbsDispersi
 	}
 
 	public String getHeuristicName() {
-		return "Exponentially Weighted Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Exponentially " + super.getHeuristicName() + (parallel ? " Parallel" : "");
 	}
 
 }

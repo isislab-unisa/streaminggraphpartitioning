@@ -17,7 +17,7 @@ public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBas
 	}
 
 	public String getHeuristicName() {
-		return "Linear Normalized Weighted Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Linear "+ super.getHeuristicName() +(parallel ? " Parallel" : "");
 	}
 
 }

@@ -19,7 +19,7 @@ public class LinearWeightedRandomizedGreedy extends AbstractRandomizedGreedy imp
 
 	
 	public String getHeuristicName() {
-		return "Linear Weighted Randomized Greedy"+ (parallel ? " Parallel" : "");
+		return "Linear "+super.getHeuristicName()+ (parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

@@ -9,7 +9,7 @@ public class LinearRecWeightedDispersionBased extends AbstractRecursiveDispersio
 	}
 
 	public String getHeuristicName() {
-		return "Linear Recursive Dispersion Based"+ (parallel ? " Parallel" : "");
+		return "Linear "+ super.getHeuristicName() +(parallel ? " Parallel" : "");
 	}
 
 	public Double getWeight(Double partitionSize, Integer c) {

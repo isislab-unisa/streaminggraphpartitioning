@@ -1,4 +1,2 @@
-/4elt.graph-*
-/4elt.graph.*
-/tiny_01.graph-*
-/tiny_01.graph.*
+/*.graph.*
+/toremove*

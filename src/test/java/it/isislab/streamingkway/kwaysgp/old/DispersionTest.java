@@ -208,7 +208,7 @@ extends TestCase
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,true);
 				Thread.sleep(500);
 				Long startTime = System.currentTimeMillis();
-				gl.run(); 
+				gl.runPartition(); 
 				Long endTime = System.currentTimeMillis();
 				totalTime += (endTime - startTime);
 				heuristicEdgesRatio += qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph());
@@ -272,7 +272,7 @@ extends TestCase
 				gl = getGraphLoader(glType, fpIn,fpOut,k,heuristic,C,true);
 				Thread.sleep(1500);
 				Long startTime = System.currentTimeMillis();
-				gl.run(); 
+				gl.runPartition();
 				Long endTime = System.currentTimeMillis();
 				totalTime += (endTime - startTime);
 				heuristicEdgesRatio += qc.getCuttingEdgeRatio(gl.getGraphPartitionator().getGraph());
