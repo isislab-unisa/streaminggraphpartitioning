@@ -89,11 +89,11 @@ public abstract class AbstractGraphLoader implements GraphLoader {
 	}
 
 	public int getNodeNumbers() {
-		return nodeNumbers == gr.getNodeCount() ? nodeNumbers : -1;
+		return nodeNumbers;
 	}
 
 	public int getEdgeNumbers() {
-		return edgeNumbers == gr.getEdgeCount() ? edgeNumbers : -1;
+		return edgeNumbers;
 	}
 	/**
 	 * @throws IOException

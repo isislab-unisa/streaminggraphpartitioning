@@ -21,7 +21,7 @@ public class AllGraphDetails extends TestCase{
 		File fold = new File(FOLDER);
 		CSVWriter wr = new CSVWriter(new FileWriter(new File(FOLDER + GRAPH_DETAILS)));
 		printHeader(wr);
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith("uto.graph"))) { 
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) { 
 			//if (fpin.getName().equals("auto.graph")) continue;
 			log.info("Analyzing graph : " + fpin.getName());
 			GraphAnalyser ga = new GraphAnalyser(new FileInputStream(fpin), wr, log);
@@ -29,7 +29,6 @@ public class AllGraphDetails extends TestCase{
 			ga.runLoad(grName);
 			ga = null;
 			System.gc();
-			Thread.sleep(400l);
 		}
 		
 		wr.close();

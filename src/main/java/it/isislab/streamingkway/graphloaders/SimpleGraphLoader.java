@@ -59,13 +59,10 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 		this.gr = graphPartitionator.getGraph();
 		//read the whole graph
 		
-		while((line = scanner.readLine()) != null &&	line.length() != 0) {
+		while((line = scanner.readLine()) != null) {
 			
 			line = line.trim();
 			if (line.startsWith("%")) { //it is a comment
-				continue;
-			}
-			if (line.equals("") || line.equals(" ") || line.equals('\n')) { //empty
 				continue;
 			}
 
