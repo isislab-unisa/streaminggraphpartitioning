@@ -1,5 +1,5 @@
 plotallord <- function(file, fileName, step, start1,start2,start3) {
-	for (i in c(0:6)) {
+  for (i in c(0:6)) {
 		hNames <- file$HeuristicName[1:step]
 		bfsStartIndex <- (i*step) +start1
 		bfsEndIndex <- (i*step) + step
@@ -15,8 +15,9 @@ plotallord <- function(file, fileName, step, start1,start2,start3) {
 		a <- vector()
 		for (j in c(step:1)) {a <- append(c(bfsArr[j],dfsArr[j],rndArr[j]), a) }
 		maxX <- c(0,a[which.max(as.list(a))] + 0.2)
-		tiff(mainText, width = 1366, height = 768, units = 'px')
-		barplot(t(matrix(a,ncol=3,byrow = TRUE, dimnames = list(hNames, c("BFS","DFS","RANDOM")))),main =mainText, col=cols, beside = TRUE, legend.text = TRUE,args.legend = list(x = "topright"), ylim=maxX, las=2,space=c(0,2), ylab="Edge Cut Ratio")
+		tiff(paste(paste(mainText,"allbp",sep="-"),"tiff",sep="."), width = 1366, height = 768, units = 'px')
+		mp <- barplot(t(matrix(a,ncol=3,byrow = TRUE, dimnames = list(hNames, c("BFS","DFS","RANDOM")))),main =mainText, col=cols, beside = TRUE, legend.text = TRUE,args.legend = list(x = "topright"), ylim=maxX, las=2,space=c(0,2), ylab="Edge Cut Ratio")
+  ##		mtext(side = 3, at = mp, text = a, las=3)
 		dev.off()
 	}
 }

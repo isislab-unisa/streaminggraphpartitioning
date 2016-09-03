@@ -14,7 +14,7 @@ avgplot <- function(file, fileName, step, start1,start2,start3) {
 		a <- vector()
 		for (j in c(step:1)) {a <- append((mean(c(bfsArr[j],dfsArr[j],rndArr[j]))), a) }
 		maxX <- c(0,max(a) + 0.2)
-		tiff(mainText, width = 1366, height = 768, units = 'px')
+		tiff(paste(paste(mainText,"avgbp",sep="-"),"tiff",sep="."), width = 1366, height = 768, units = 'px')
 		barplot(t(matrix(a,ncol=1,byrow = TRUE,dimnames = list(hNames, c("AVG")))),main =mainText,beside = TRUE, legend.text = TRUE,args.legend = list(x = "topright"),col="blue", ylim=maxX, las=2,space=c(0,2), ylab="Edge Cut Ratio")
 		dev.off()
 	}
