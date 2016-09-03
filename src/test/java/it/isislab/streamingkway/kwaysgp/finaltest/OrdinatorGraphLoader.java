@@ -91,10 +91,9 @@ public class OrdinatorGraphLoader extends AbstractGraphLoader {
 		//graph
 		this.gr = new SingleGraph("grafo");
 		gr.setStrict(false);
-	
+
 		//read the whole graph from file
-		while((line = scanner.readLine()) != null &&
-				line.length() != 0) {
+		while((line = scanner.readLine()) != null) {
 			line = line.trim();
 			//String line = scanner.nextLine().trim();
 			if (line.startsWith("%")) { //it is a comment
@@ -107,6 +106,7 @@ public class OrdinatorGraphLoader extends AbstractGraphLoader {
 				gr.addEdge(v.getId()+"-"+s, v.getId(), s);
 			}
 		}
+		System.out.println(nodeCount);
 		//scanning the graph
 		ConnectedComponents cc = new ConnectedComponents();
 		cc.init(gr);
@@ -122,9 +122,13 @@ public class OrdinatorGraphLoader extends AbstractGraphLoader {
 				Integer ccIndex = vRand.getAttribute(GraphLoader.CONNECTED_COMPONENT_ATTR, Integer.class);
 				if (!connComps.contains(ccIndex)) {
 					connComps.add(ccIndex);
-					Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
-					while (traversingGraph.hasNext()) {
-						populateStructs(traversingGraph.next(), nodeCount++);
+					if (vRand.getDegree() == 0) {
+						populateStructs(vRand, nodeCount++);
+					} else {
+						Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
+						while (traversingGraph.hasNext()) {
+							populateStructs(traversingGraph.next(), nodeCount++);
+						}						
 					}
 				}
 			}
@@ -136,10 +140,10 @@ public class OrdinatorGraphLoader extends AbstractGraphLoader {
 			}		
 		}
 		writeFile();
-			printerOut.flush();
-			printerOut.close();
-			scanner.close();
-		}
+		printerOut.flush();
+		printerOut.close();
+		scanner.close();
+	}
 
 
 
@@ -151,10 +155,14 @@ public class OrdinatorGraphLoader extends AbstractGraphLoader {
 		nodesTrav.remove(0);
 		for (Node node : nodesTrav) {
 			String s = "";
-			Iterator<Node> nNeigh = node.getNeighborNodeIterator();
-			while(nNeigh.hasNext()) {
-				Node u = nNeigh.next();
-				s += " " + mapNode.get(u);
+			if (node.getDegree() == 0) {
+				s = " ";
+			} else {
+				Iterator<Node> nNeigh = node.getNeighborNodeIterator();
+				while(nNeigh.hasNext()) {
+					Node u = nNeigh.next();
+					s += " " + mapNode.get(u);
+				}				
 			}
 			printerOut.print('\n' + s);
 		}
@@ -162,5 +170,5 @@ public class OrdinatorGraphLoader extends AbstractGraphLoader {
 
 
 
-	
-	}
+
+}

@@ -61,8 +61,7 @@ public class GraphAnalyser {
 		//go on until there are no comments
 		String line = "";
 		log.info("Reading the graph");
-		while ((line = scanner.readLine()) != null
-				&&	line.length() != 0) {
+		while ((line = scanner.readLine()) != null) {
 			//String firstLine = scanner.nextLine().trim();
 			line = line.trim();
 			if (line.startsWith("%")) { //it is a comment
@@ -87,8 +86,7 @@ public class GraphAnalyser {
 		gr.setStrict(false);
 	
 		//read the whole graph from file
-		while((line = scanner.readLine()) != null &&
-				line.length() != 0) {
+		while((line = scanner.readLine()) != null) {
 			line = line.trim();
 			//String line = scanner.nextLine().trim();
 			if (line.startsWith("%")) { //it is a comment
@@ -103,31 +101,28 @@ public class GraphAnalyser {
 		}
 		
 		log.info("Counting nodes and edges");
-		gr.getNodeCount();
-		gr.getEdgeCount();
+		Integer nn = gr.getNodeCount();
+		Integer en = gr.getEdgeCount();
 		log.info("Counting connected components");
 		ConnectedComponents cc = new ConnectedComponents(gr);
 		cc.init(gr);
 		cc.compute();
 		Integer connectedComps = cc.getConnectedComponentsCount();
-		Thread.sleep(10l);
 		log.info("Counting degrees");
 		Double averageDegree = Toolkit.averageDegree(gr);
 		ArrayList<Node> degreeMap = Toolkit.degreeMap(gr); //FIST AND LAST
 		Integer maxDegree = degreeMap.get(0).getDegree();
 		Integer minDegree = degreeMap.get(degreeMap.size() -1).getDegree();
-		Thread.sleep(10l);
 		log.info("Counting density");
 		Double density = Toolkit.density(gr);
-		Thread.sleep(10l);
 		log.info("Cluster coeff density");
 		Double avgClusterCoeff = Toolkit.averageClusteringCoefficient(gr);
 		gr = null;
 		System.gc();
 		String[] details = {
 			grName,
-			Integer.toString(nodeNumbers),
-			Integer.toString(edgeNumbers),
+			Integer.toString(nodeNumbers == nn ? nodeNumbers : -1),
+			Integer.toString(edgeNumbers == en ? edgeNumbers : -1),
 			avgClusterCoeff.toString(),
 			density.toString(),
 			maxDegree.toString(),
