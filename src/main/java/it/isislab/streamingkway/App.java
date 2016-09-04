@@ -54,22 +54,8 @@ public class App {
 		if (C != null) {
 			thereIsC = true;
 		}
-		FileInputStream fpIn = null;
-		try {
-			fpIn = new FileInputStream(new File(inputFn));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		FileOutputStream fpOut = null;
-		try {
-			if (outputFn != null) {
-				fpOut = new FileOutputStream(new File(outputFn));
-			} else {
-				fpOut = new FileOutputStream(new File(inputFn + ".part." + k));
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		FileInputStream fpIn = getInputFile();
+		FileOutputStream fpOut = getOutputFile();
 		SGPHeuristic heuristic = HeuristicFactory.getHeuristic(heuristicNumber, parallel);
 		GraphTraversingOrdering gto = null;
 		GraphLoader gl = null;
@@ -103,6 +89,36 @@ public class App {
 		if (view) {
 			gl.getGraphPartitionator().getGraph().display();
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private FileOutputStream getOutputFile() {
+		FileOutputStream fpOut = null;
+		try {
+			if (outputFn != null) {
+				fpOut = new FileOutputStream(new File(outputFn));
+			} else {
+				fpOut = new FileOutputStream(new File(inputFn + ".part." + k));
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return fpOut;
+	}
+
+	/**
+	 * @return
+	 */
+	private FileInputStream getInputFile() {
+		FileInputStream fpIn = null;
+		try {
+			fpIn = new FileInputStream(new File(inputFn));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return fpIn;
 	}
 
 	private void qualityCheck(GraphLoader gl, Long timeSpent,SGPHeuristic heuristic, PrintStream outStream) {

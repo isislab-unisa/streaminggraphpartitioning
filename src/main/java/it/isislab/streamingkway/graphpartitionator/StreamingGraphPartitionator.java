@@ -8,7 +8,7 @@ import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 import it.isislab.streamingkway.partitions.SetPartitionMap;
 
-public class StramingGraphPartitionator implements GraphPartitionator {
+public class StreamingGraphPartitionator implements GraphPartitionator {
 
 	private Graph graph;
 	@SuppressWarnings("unused")
@@ -17,7 +17,7 @@ public class StramingGraphPartitionator implements GraphPartitionator {
 	private PartitionMap partitionMap;
 
 
-	public StramingGraphPartitionator(Integer k, SGPHeuristic heuristic, Integer capacity) {
+	public StreamingGraphPartitionator(Integer k, SGPHeuristic heuristic, Integer capacity) {
 		String graphId = Integer.toString(ThreadLocalRandom.current().nextInt());
 		this.graph = createSingleGraph(graphId);
 		this.heuristic = heuristic;
