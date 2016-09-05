@@ -1,0 +1,3 @@
+allavgcsv <- function(files) {
+  
+}
