@@ -173,7 +173,7 @@ extends TestCase implements HeuristicsTest
 			File fpInTest = null;
 			for (int j = 0; j < ITERATION_TIME; j++) {
 				if (!ord.equals("rnd")) {
-					String fname = "resources/" + fpIn.getName();
+					String fname = SOCIAL_FOLDER + fpIn.getName();
 					fname+= "."+j;
 					fpInTest = new File(fname);
 				} else {
