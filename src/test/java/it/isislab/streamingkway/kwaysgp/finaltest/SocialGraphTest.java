@@ -45,7 +45,7 @@ extends TestCase implements HeuristicsTest
 	private static final String FOLDER = "resources/";
 	private static final String CSV_FOLDER ="/csv/";
 	private static final String OUTPUT_FILE = "toremove.file";
-	private static final String SOCIAL_FOLDER ="resources/socialGr";
+	private static final String SOCIAL_FOLDER ="resources/socialGr/";
 	private Logger log = Logger.getGlobal();
 	private CSVWriter writer;
 	/** 
@@ -73,7 +73,7 @@ extends TestCase implements HeuristicsTest
 		File fold = new File(SOCIAL_FOLDER);
 		//seq
 		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
-			String graphName = FOLDER + fpin.getName();
+			String graphName = SOCIAL_FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",""};
 			
