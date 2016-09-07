@@ -124,11 +124,11 @@ public class GraphAnalyser {
 			grName,
 			Integer.toString(nodeNumbers == nn ? nodeNumbers : -1),
 			Integer.toString(edgeNumbers == en ? edgeNumbers : -1),
-			new DecimalFormat("#,##").format(avgClusterCoeff),
-			new DecimalFormat("#,##").format(density),
-			new DecimalFormat("#,##").format(maxDegree),
-			new DecimalFormat("#,##").format(minDegree),
-			new DecimalFormat("#,##").format(averageDegree),
+			new DecimalFormat("#.####").format(avgClusterCoeff),
+			new DecimalFormat("#.####").format(density),
+			maxDegree.toString(),
+			minDegree.toString(),
+			new DecimalFormat("#.##").format(averageDegree),
 			connectedComps.toString()
 		};
 		log.info("Writing");
