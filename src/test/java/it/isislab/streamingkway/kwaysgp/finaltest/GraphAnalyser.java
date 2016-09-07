@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -123,11 +124,11 @@ public class GraphAnalyser {
 			grName,
 			Integer.toString(nodeNumbers == nn ? nodeNumbers : -1),
 			Integer.toString(edgeNumbers == en ? edgeNumbers : -1),
-			avgClusterCoeff.toString(),
-			density.toString(),
-			maxDegree.toString(),
-			minDegree.toString(),
-			averageDegree.toString(),
+			new DecimalFormat("#,##").format(avgClusterCoeff),
+			new DecimalFormat("#,##").format(density),
+			new DecimalFormat("#,##").format(maxDegree),
+			new DecimalFormat("#,##").format(minDegree),
+			new DecimalFormat("#,##").format(averageDegree),
 			connectedComps.toString()
 		};
 		log.info("Writing");
