@@ -14,7 +14,7 @@ import org.graphstream.graph.Node;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.BFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.DFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
-import it.isislab.streamingkway.graphpartitionator.StramingGraphPartitionator;
+import it.isislab.streamingkway.graphpartitionator.StreamingGraphPartitionator;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 
 /**
@@ -68,7 +68,7 @@ public class TraversingGraphLoader extends AbstractGraphLoader {
 			capacity = nodeNumbers / K + 1;
 		}
 		//graph
-		this.graphPartitionator = new StramingGraphPartitionator(K, heuristic, capacity);
+		this.graphPartitionator = new StreamingGraphPartitionator(K, heuristic, capacity);
 		this.gr = graphPartitionator.getGraph();
 		//read the whole graph from file
 		while((line = scanner.readLine()) != null &&

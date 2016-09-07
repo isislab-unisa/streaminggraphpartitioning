@@ -8,7 +8,7 @@ import org.graphstream.graph.EdgeRejectedException;
 import org.graphstream.graph.ElementNotFoundException;
 import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.graph.Node;
-import it.isislab.streamingkway.graphpartitionator.StramingGraphPartitionator;
+import it.isislab.streamingkway.graphpartitionator.StreamingGraphPartitionator;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 
 /**
@@ -55,7 +55,7 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 			capacity = nodeNumbers / K + 1;
 		}
 		//create graph
-		this.graphPartitionator = new StramingGraphPartitionator(K, heuristic, capacity);
+		this.graphPartitionator = new StreamingGraphPartitionator(K, heuristic, capacity);
 		this.gr = graphPartitionator.getGraph();
 		//read the whole graph
 		
