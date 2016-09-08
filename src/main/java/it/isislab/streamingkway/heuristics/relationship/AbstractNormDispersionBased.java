@@ -22,8 +22,8 @@ import it.isislab.streamingkway.partitions.PartitionMap;
 public abstract class AbstractNormDispersionBased implements SGPHeuristic, WeightedHeuristic {
 
 	private Double A = 0.61;
-	private Double B = 1.0;
-	private Double C = 0.0;
+	private Double B = 0.0;
+	private Double C = 5.0;
 	protected boolean parallel;
 
 	private DistanceFunction dist = new SimpleDistanceFunction();
