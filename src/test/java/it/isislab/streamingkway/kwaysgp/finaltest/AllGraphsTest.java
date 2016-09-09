@@ -142,27 +142,24 @@ extends TestCase implements HeuristicsTest
 		ArrayList<Long> iotime = null;
 
 		
-		Field[] heuristics = Heuristic.class.getDeclaredFields();
-		Field[] relHeuristics = RelationshipHeuristics.class.getDeclaredFields();
-		ArrayList<Integer> allHeuristics = new ArrayList<Integer>(heuristics.length + relHeuristics.length);
-		for (int i = 0; i < heuristics.length; i++) {
-			try {
-				allHeuristics.add(heuristics[i].getInt(new Heuristic()));
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
-		for (int i = 0; i < relHeuristics.length; i++) {
-			try {
-				allHeuristics.add(relHeuristics[i].getInt(new RelationshipHeuristics()));
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
+		ArrayList<Integer> allHeuristics = new ArrayList<Integer>();
+		allHeuristics.add(Heuristic.HASHING);
+		allHeuristics.add(Heuristic.U_DETERMINISTIC_GREEDY);
+		allHeuristics.add(Heuristic.L_DETERMINISTIC_GREEDY);
+		allHeuristics.add(Heuristic.E_DETERMINISTIC_GREEDY);
+		allHeuristics.add(Heuristic.U_TRIANGLES);
+		allHeuristics.add(Heuristic.L_TRIANGLES);
+		allHeuristics.add(Heuristic.E_TRIANGLES);
+		allHeuristics.add(Heuristic.BALANCE_BIG);
+		allHeuristics.add(RelationshipHeuristics.U_ABS_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.L_ABS_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.E_ABS_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.U_NORM_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.L_NORM_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.E_NORM_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.U_REC_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.L_REC_DISPERSION_BASED);
+		allHeuristics.add(RelationshipHeuristics.E_REC_DISPERSION_BASED);
 
 		log.info("Testing for k= "+k );
 		
