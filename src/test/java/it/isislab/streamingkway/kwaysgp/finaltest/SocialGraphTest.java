@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
 import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
@@ -42,7 +41,6 @@ extends TestCase implements HeuristicsTest
 	public static final String PLACEHOLDER_R = "R";
 	private static final String CSV_SUFFIX = "-res.csv";
 	private static final int MAX_PARTITION_SIZE = 128;
-	private static final String FOLDER = "resources/";
 	private static final String CSV_FOLDER ="/csv/";
 	private static final String OUTPUT_FILE = "toremove.file";
 	private static final String SOCIAL_FOLDER ="resources/socialGr/";
@@ -72,7 +70,8 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(SOCIAL_FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
+		File[] files = fold.listFiles(p -> p.getName().endsWith(".graph"));
+		for (File fpin: files) {
 			String graphName = SOCIAL_FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",""};
