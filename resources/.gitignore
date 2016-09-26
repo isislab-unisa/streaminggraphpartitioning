@@ -2,3 +2,5 @@
 /toremove*
 /.RData
 /.Rhistory
+/*.tiff
+/*.zip
