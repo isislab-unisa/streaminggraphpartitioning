@@ -1,2 +1,4 @@
 /*.graph.*
 /toremove*
+/.RData
+/.Rhistory

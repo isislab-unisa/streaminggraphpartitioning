@@ -14,6 +14,8 @@ public class RelationshipHeuristics {
 	public static final int L_NORM_DISPERSION_BASED = 38;
 	public static final int E_NORM_DISPERSION_BASED = 39;
 	
+	public static final int BB_DISPERSION_BASED = 40;
+	
 	
 	
 	public static final int U_C_ABS_DISPERSION_BASED = 21;

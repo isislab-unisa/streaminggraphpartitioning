@@ -19,7 +19,7 @@ public class AllGraphDetails extends TestCase{
 
 	public void testDetails() throws IOException, InterruptedException {
 		File fold = new File(FOLDER);
-		CSVWriter wr = new CSVWriter(new FileWriter(new File(FOLDER + GRAPH_DETAILS)));
+		CSVWriter wr = new CSVWriter(new FileWriter(new File(FOLDER + GRAPH_DETAILS)),'&');
 		printHeader(wr);
 		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) { 
 			//if (fpin.getName().equals("auto.graph")) continue;

@@ -1,6 +1,6 @@
 ##PLOT 3
 ##gres is a vector with 7 elements
-plotedgecut <- function(x, name, colz, n, step = 28, start1 = 1, start2=198, start3 = 395) {
+plotedgecutsocial <- function(x, name, colz, n, step = 28, start1 = 1, start2=198, start3 = 395) {
   a <- list()
   bestvls <- whichwithk(x,n,step,start1,start2,start3, "i")
   bestmatrix <- whichwithk(x,n,step,start1,start2,start3, "m")

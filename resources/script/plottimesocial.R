@@ -1,6 +1,6 @@
 ##PLOT 3
 ##gres is a vector with 7 elements
-plottime <- function(x, name, colz, n, step = 28, start1 = 1, start2=198, start3 = 395) {
+plottimesocial <- function(x, name, colz, n, step = 28, start1 = 1, start2=198, start3 = 395) {
   a <- list()
   bestvls <- whichwithk(x,n,step,start1,start2,start3, "i")
   avgtimematrix <- avgtime(x,step,start1,start2,start3)
@@ -18,7 +18,7 @@ plottime <- function(x, name, colz, n, step = 28, start1 = 1, start2=198, start3
   }  
   timeMaxY <-timeMaxY + 200
   
-  tiff(paste(paste(name,"tmpl",sep="-"),"tiff",sep="."), width = 1366, height = 768, units = 'px')
+  tiff(paste(paste(name,"tmpl",sep="-"),"tiff",sep="."), width = 1280, height = 600, units = 'px')
   #jpeg(paste(paste(name,"tmpl",sep="-"),"jpeg",sep="."), width = 1366, height = 768, units = 'px')
   for (i in c(1:length(bestvls))) {
     index <- bestvls[i]

@@ -9,7 +9,6 @@ whichwithk <- function(xData, n=10, step, start1, start2,start3, ret="" ) {
     stInd <- (i*step) +start1
     endInd <- stInd + step -1
     xavg1 <- matrix(data=as.numeric(as.character(xData$CuttedEdgesRatio[stInd:endInd])), nrow=step,ncol=1,byrow=TRUE)
-   
      stInd <- (i*step) +start2
     endInd <- stInd + step -1
     xavg2 <- matrix(data=as.numeric(as.character(xData$CuttedEdgesRatio[stInd:endInd])), nrow=step,ncol=1,byrow=TRUE)
@@ -26,7 +25,8 @@ whichwithk <- function(xData, n=10, step, start1, start2,start3, ret="" ) {
     
     totalMatrix[,i+1] <- totavg
   }
-  A <- matrix(data = rowMeans(totalMatrix), nrow=step, ncol=1, byrow = TRUE, dimnames = list(xData$HeuristicName[1:step],c("val")))
+  vvvv <- step
+  A <- matrix(data = rowMeans(totalMatrix), nrow=step, ncol=1, byrow = TRUE, dimnames = list(xData$HeuristicName[1:vvvv],c("val")))
    indexes = which(A <= sort(A,partial=n)[n])
   if (ret == "i") {
     return(indexes)

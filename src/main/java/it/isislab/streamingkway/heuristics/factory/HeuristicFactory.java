@@ -24,6 +24,7 @@ import it.isislab.streamingkway.heuristics.my.LinearCompNormWeightedDispersionBa
 import it.isislab.streamingkway.heuristics.my.MyRelationshipHeuristics;
 import it.isislab.streamingkway.heuristics.my.UnweightedCompAbsDispersionBased;
 import it.isislab.streamingkway.heuristics.my.UnweightedCompNormDispersionBased;
+import it.isislab.streamingkway.heuristics.relationship.BalanceBigDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.ExponentiallyAbsWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.ExponentiallyNormWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.ExponentiallyRecWeightedDispersionBased;
@@ -103,6 +104,9 @@ public class HeuristicFactory {
 		case RelationshipHeuristics.L_NORM_DISPERSION_BASED: heuristic = new  LinearNormWeightedDispersionBased(parallel);
 		break;
 		case RelationshipHeuristics.E_NORM_DISPERSION_BASED: heuristic = new  ExponentiallyNormWeightedDispersionBased(parallel);
+		break;
+		
+		case RelationshipHeuristics.BB_DISPERSION_BASED: heuristic = new BalanceBigDispersionBased(parallel);
 		break;
 
 

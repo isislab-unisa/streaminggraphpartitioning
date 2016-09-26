@@ -1,6 +1,6 @@
-plotallord <- function(file, fileName, step, start1,start2,start3, metisgr) {
+plotallordsocial <- function(file, fileName, step, start1,start2,start3, metisgr) {
   for (i in c(0:6)) {
-		hNames <- as.character(file$HeuristicName[1:step])
+		hNames <- as.character(file$HeuristicName[2:step])
 		bfsStartIndex <- (i*step) +start1
 		bfsEndIndex <- (i*step) + step
 		bfsArr <- as.numeric(as.character(file[bfsStartIndex:bfsEndIndex, c("CuttedEdgesRatio")]))
@@ -13,9 +13,9 @@ plotallord <- function(file, fileName, step, start1,start2,start3, metisgr) {
 		cols <- rep(c("blue","red","green"),step)
 		mainText <- paste(fileName, paste(" k=", 2^(i+1)))
 		a <- vector()
-		for (j in c(length(bfsArr):1)) {a <- append(c(bfsArr[j],dfsArr[j],rndArr[j]), a) }
+		for (j in c(length(bfsArr):2)) {a <- append(c(bfsArr[j],dfsArr[j],rndArr[j]), a) }
 		maxX <- c(0,1)
-		tiff(paste(paste(mainText,"allbp",sep="-"),"tiff",sep="."), width = 1366, height = 768, units = 'px')
+		tiff(paste(paste(mainText,"allbp",sep="-"),"tiff",sep="."), width = 1280, height = 600, units = 'px')
 		#jpeg(paste(paste(mainText,"allbp",sep="-"),"jpeg",sep="."), width = 1366, height = 768, units = 'px')
 		mp <- barplot(t(matrix(a,ncol=3,byrow = TRUE, dimnames = list(hNames, c("BFS","DFS","RANDOM")))),main =mainText, col=cols, beside = TRUE, legend.text = TRUE,args.legend = list(x = "topright"), ylim=maxX, las=2,space=c(0,2), ylab="Edge Cut Ratio")
   ##		mtext(side = 3, at = mp, text = a, las=3)
@@ -23,6 +23,12 @@ plotallord <- function(file, fileName, step, start1,start2,start3, metisgr) {
 		metisInd <- retrievemetis(fileName, 2^i, metisgr)
 		ymetis <- metisgr$CuttedEdgesRatio[metisInd]
 		abline(h = ymetis)
+		par(new = TRUE)
+		abline(h = bfsArr[1], col=cols[1])
+		par(new = TRUE)
+		abline(h = dfsArr[1], col=cols[2])
+		par(new = TRUE)
+		abline(h = rndArr[1], col=cols[3])
 		dev.off()
 	}
 }

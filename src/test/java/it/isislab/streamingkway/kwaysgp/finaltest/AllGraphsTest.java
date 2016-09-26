@@ -20,6 +20,7 @@ import it.isislab.streamingkway.graphloaders.factory.OrderingFactory;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.BFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.DFSTraversing;
 import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
+import it.isislab.streamingkway.graphloaders.graphtraversingordering.RandomTraversing;
 import it.isislab.streamingkway.heuristics.Heuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
@@ -72,7 +73,7 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith("4elt.graph"))) {
 			String graphName = FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",""};
@@ -81,8 +82,13 @@ extends TestCase implements HeuristicsTest
 			writer = new CSVWriter(new FileWriter(new File(FOLDER + CSV_FOLDER +fpin.getName() + CSV_SUFFIX)),' ');
 			Integer C = -1;
 			for (int i = 0; i < ITERATION_TIME; i++) {
+				File graphNameRnd = new File(graphName + ".rnd." + i);
 				File graphNameBfs = new File(graphName + ".bfs." + i);
 				File graphNameDfs = new File(graphName + ".dfs." + i);
+				log.info("Making RND graph: " + i);
+				OrdinatorGraphLoader oglr = new OrdinatorGraphLoader(new FileInputStream(fpin), new FileOutputStream(graphNameRnd),
+						new RandomTraversing());
+				oglr.runPartition();
 				
 				log.info("Making BSF graph: " + i);
 				OrdinatorGraphLoader ogl = new OrdinatorGraphLoader(new FileInputStream(fpin), new FileOutputStream(graphNameBfs),
@@ -94,11 +100,11 @@ extends TestCase implements HeuristicsTest
 				ogld.runPartition();
 				
 			}
-			for (int oi = 0; oi < ords.length; oi++) {
+			for (int oi = 2; oi < ords.length; oi++) {
 				String ord = ords[oi];
 				File graphFile = new File(graphName+ord);
 				writer.writeNext(HEADER);
-				for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
+				for (int k = 4; k <= 4; k*=2) {
 					log.info("Test for: " + graphFile.getName() + " with "+k+
 							"partitions using " + ord +" started");
 					allHeuristicsTestCompareSimple(graphFile, fpout, k, C, 
@@ -220,6 +226,8 @@ extends TestCase implements HeuristicsTest
 				//check normalized maximum load
 				normalizedMaxLoad.add(qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), 
 						gl.getGraphPartitionator().getGraph()));
+				gl.getGraphPartitionator().getPartitionMap().getPartitions().entrySet().stream()
+					.forEach(p -> System.out.println(p.getKey() + " : " + p.getValue().size()));
 			}
 			String[] metrics = getMetrics(k, graphName, ord, heuristicEdgesRatio, cuttedEdges, displacement,
 					normalizedMaxLoad, totalTime, heuristic, totalNodes, totalEdges, iotime, partTime);
