@@ -1,3 +1,5 @@
 /*.graph.bfs.*
 /*.graph.dfs.*
 /*.graph
+/csv/
+/toremove.file
