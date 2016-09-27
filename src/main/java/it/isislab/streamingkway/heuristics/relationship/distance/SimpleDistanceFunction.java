@@ -14,29 +14,30 @@ public class SimpleDistanceFunction implements DistanceFunction {
 	 * Returns {@value DIST_NEG} otherwise
 	 */
 	public Integer getDistance(Node s, Node t, Node u, Node v) {
-		if (!s.hasEdgeBetween(t)) {
-			return DIST_POS;
+		if (s.hasEdgeBetween(t)) {
+			return DIST_NEG;
 		}
 
 		Iterator<Edge> sEdgesIt = s.getEdgeIterator();
-		Iterator<Edge> tEdgesIt = t.getEdgeIterator();
 		while (sEdgesIt.hasNext()) {
-			Node w = sEdgesIt.next().getOpposite(s);
+			Iterator<Edge> tEdgesIt = t.getEdgeIterator();
+			Edge sw = sEdgesIt.next();
+			if (sw.getOpposite(s).equals(u) || sw.getOpposite(s).equals(v)) {
+				continue;
+			}
 			while (tEdgesIt.hasNext()) {
 				Node z = tEdgesIt.next().getOpposite(t);
 				
-				if (u.equals(z) || u.equals(w) || v.equals(z) || v.equals(w)) {
-					continue;
+				if (z.equals(sw.getOpposite(s))) {
+					return DIST_NEG;
 				}
-				if (w.hasEdgeBetween(z)) {
-					return DIST_POS;
-				}
+				
 			}
 		}
 		
 		
 		
-		return DIST_NEG;
+		return DIST_POS;
 	}
 
 }

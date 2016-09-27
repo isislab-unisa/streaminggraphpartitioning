@@ -86,7 +86,6 @@ public class HeuristicFactory {
 		break;
 		case MyRelationshipHeuristics.E_C_NORM_DISPERSION_BASED : heuristic = new ExponentiallyCompNormWeightedDispersionBased();
 		break;
-		
 		case RelationshipHeuristics.U_REC_DISPERSION_BASED: heuristic = new  UnweightedRecDispersionBased(parallel);
 		break;
 		case RelationshipHeuristics.L_REC_DISPERSION_BASED: heuristic = new  LinearRecWeightedDispersionBased(parallel);

@@ -11,7 +11,6 @@ import org.graphstream.graph.Node;
 
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
-import it.isislab.streamingkway.utils.DistributedRandomNumberGenerator;
 
 public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedHeuristic {
 	
@@ -26,7 +25,6 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		int c = partitionMap.getC();
 		int k = partitionMap.getK();
 		
-		DistributedRandomNumberGenerator prob = new DistributedRandomNumberGenerator(k);
 		
 		Map<Integer,Collection<Node>> partitions = partitionMap.getPartitions();
 		Map<Integer, Double> probs = new ConcurrentHashMap<Integer, Double>(k);
@@ -79,16 +77,15 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 		}
 		
 		//populate 
-		prob.setDistribution(probs, Double.MIN_VALUE);
-		
 		int index = -1;
-		do {
-			index = prob.getDistributedRandomNumber();
-			if (partitions.containsKey(index) && partitions.get(index).size() > c) {
-				prob.removeNumber(index);
-				continue;
+		double randomN = Math.random();
+		double cumProbability = 0.0;
+		for (Entry<Integer, Double> part: probs.entrySet()) {
+			cumProbability += part.getValue();
+			if (randomN <= cumProbability && part.getValue() != 0) {
+				index = part.getKey();
 			}
-		} while(!prob.isEmpty() && partitionMap.getPartitionSize(index) > c);
+		}
 		
 		return index == -1? new BalancedHeuristic(parallel).getIndex(partitionMap, n) : index;
 	}

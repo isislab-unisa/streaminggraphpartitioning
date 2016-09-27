@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
 import org.graphstream.graph.Node;
@@ -36,7 +35,7 @@ public class BalancedHeuristic implements SGPHeuristic {
 						Integer part2size = p2.getValue().size();
 						Integer sizeDiff = part1size - part2size;
 						if (sizeDiff == 0) {
-							return ThreadLocalRandom.current().nextInt(-1, 2);
+							return 1;
 						} else {
 							return sizeDiff;
 						}

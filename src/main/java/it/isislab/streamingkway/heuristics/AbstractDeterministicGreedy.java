@@ -42,12 +42,12 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic, Weigh
 						double w2 = getWeight((double)p2size, c);
 						intersect1 *= w1;
 						intersect2 *= w2;
-						if (Double.max(intersect1, intersect2) == intersect1) {
+						if (intersect1 > intersect2) {
 							return 1;
-						} else if (Double.max(intersect1, intersect2) == intersect2) {
+						} else if (intersect1 < intersect2) {
 							return -1;
 						} else { //tie break
-							return p1size - p2size;
+							return p1size >= p2size ? -1 : 1;
 						}
 					}
 				}).get().getKey();

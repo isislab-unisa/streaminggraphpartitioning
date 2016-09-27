@@ -39,12 +39,12 @@ public abstract class AbstractTriangles implements SGPHeuristic,WeightedHeuristi
 						double w2 = getWeight((double)p2size, c);
 						double tri1 = partitionMap.getTrianglesValue(n, p1.getKey()) * w1;
 						double tri2 = partitionMap.getTrianglesValue(n, p2.getKey()) * w2;
-						if (Math.max(tri1, tri2) == tri1) {
+						if (tri1 > tri2) {
 							return 1;
-						} else if (Math.max(tri1, tri2) == tri2) {
+						} else if (tri1 < tri2) {
 							return -1;
 						} else {
-							return p1size - p2size;
+							return p1size >= p2size ? -1 : 1;
 						}
 					}
 				}).get().getKey();

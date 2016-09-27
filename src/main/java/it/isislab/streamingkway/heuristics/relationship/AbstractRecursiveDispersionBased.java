@@ -79,13 +79,13 @@ public abstract class AbstractRecursiveDispersionBased implements SGPHeuristic, 
 					public int compare(Entry<Integer, Double> o1, Entry<Integer, Double> o2) {
 						Double p1score = o1.getValue();
 						Double p2score = o2.getValue();
-						if (Double.max(p1score, p2score) == p1score) {
+						if (p1score > p2score) {
 							return 1;
-						} else if (Double.max(p1score, p2score) == p2score) {
+						} else if (p1score < p2score) {
 							return -1;
-						} else { //inverse tie break
-							return partitionMap.getPartitionSize(o2.getKey()) - 
-									partitionMap.getPartitionSize(o1.getKey());
+						} else { 
+							return partitionMap.getPartition(o1.getKey()).size() >=
+									partitionMap.getPartition(o2.getKey()).size() ? -1 : 1;
 						}
 					}
 				}).get().getKey();

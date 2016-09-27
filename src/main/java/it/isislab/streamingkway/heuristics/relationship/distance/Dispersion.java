@@ -8,7 +8,7 @@ import org.graphstream.graph.Node;
 
 public class Dispersion {
 
-	public static List<Node> cuvCalculator(Node u, Node v) {
+	public static List<Node> cuvCalculator(final Node u, Node v) {
 
 		List<Node> cuv = new ArrayList<>(u.getDegree());
 		Iterator<Node> uIterator = u.getNeighborNodeIterator();

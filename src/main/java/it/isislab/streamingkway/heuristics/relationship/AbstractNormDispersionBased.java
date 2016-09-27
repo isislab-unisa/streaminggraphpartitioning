@@ -96,13 +96,13 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 				public int compare(Entry<Integer, Double> p1, Entry<Integer, Double> p2) {
 					Double p1score = p1.getValue();
 					Double p2score = p2.getValue();
-					if (Double.max(p1score, p2score) == p1score) {
+					if (p1score > p2score) {
 						return 1;
-					} else if (Double.max(p1score, p2score) == p2score) {
+					} else if (p1score < p2score) {
 						return -1;
 					} else { //inverse tie break
-						return partitionMap.getPartitionSize(p2.getKey()) - 
-								partitionMap.getPartitionSize(p1.getKey());
+						return partitionMap.getPartition(p1.getKey()).size() >=
+								partitionMap.getPartition(p2.getKey()).size() ? -1 : 1;
 					}
 				}
 

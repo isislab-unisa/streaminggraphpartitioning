@@ -5,10 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
@@ -70,10 +72,10 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith("4elt.graph"))) {
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
 			String graphName = FOLDER + fpin.getName();
 			
-			String[] ords = {".bfs",".dfs",""};
+			String[] ords = {".bfs",".dfs",".rnd"};
 			
 			File fpout = new File(FOLDER + OUTPUT_FILE);
 			writer = new CSVWriter(new FileWriter(new File(FOLDER + CSV_FOLDER +fpin.getName() + CSV_SUFFIX)),' ');
@@ -81,6 +83,7 @@ extends TestCase implements HeuristicsTest
 			for (int i = 0; i < ITERATION_TIME; i++) {
 				File graphNameBfs = new File(graphName + ".bfs." + i);
 				File graphNameDfs = new File(graphName + ".dfs." + i);
+				File graphNameRnd = new File(graphName + ".rnd." + i);
 				
 				log.info("Making BSF graph: " + i);
 				OrdinatorGraphLoader ogl = new OrdinatorGraphLoader(new FileInputStream(fpin), new FileOutputStream(graphNameBfs),
@@ -91,17 +94,23 @@ extends TestCase implements HeuristicsTest
 						new DFSTraversing());
 				ogld.runPartition();
 				
+				log.info("Making RND graph: " + i);
+				RandomOrdinator ordinatorGraphLoader = new RandomOrdinator(new FileInputStream(fpin), new FileOutputStream(graphNameRnd), null);
+				ordinatorGraphLoader.runPartition();
+				
 			}
-			for (int oi = 2; oi < ords.length; oi++) {
+			for (int oi = 0; oi < ords.length; oi++) {
 				String ord = ords[oi];
+
 				File graphFile = new File(graphName+ord);
 				writer.writeNext(HEADER);
 				for (int k = 2; k <= MAX_PARTITION_SIZE; k*=2) {
 					log.info("Test for: " + graphFile.getName() + " with "+k+
 							"partitions using " + ord +" started");
 					allHeuristicsTestCompareSimple(graphFile, fpout, k, C, 
-							fpin.getName(), log, true, ord == "" ? "rnd" : ord);
+							fpin.getName(), log, true,ord);
 				}
+				
 			}
 			writer.close();
 		}
@@ -145,20 +154,37 @@ extends TestCase implements HeuristicsTest
 		allHeuristics.add(Heuristic.U_DETERMINISTIC_GREEDY);
 		allHeuristics.add(Heuristic.L_DETERMINISTIC_GREEDY);
 		allHeuristics.add(Heuristic.E_DETERMINISTIC_GREEDY);
-		allHeuristics.add(Heuristic.U_TRIANGLES);
+//		allHeuristics.add(Heuristic.U_TRIANGLES);
 		allHeuristics.add(Heuristic.L_TRIANGLES);
 		allHeuristics.add(Heuristic.E_TRIANGLES);
 		allHeuristics.add(Heuristic.BALANCE_BIG);
 		allHeuristics.add(RelationshipHeuristics.U_ABS_DISPERSION_BASED);
 		allHeuristics.add(RelationshipHeuristics.L_ABS_DISPERSION_BASED);
 		allHeuristics.add(RelationshipHeuristics.E_ABS_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.U_NORM_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.L_NORM_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.E_NORM_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.U_REC_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.L_REC_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.E_REC_DISPERSION_BASED);
 
+//		
+//		Field[] heuristics = Heuristic.class.getDeclaredFields();
+//		Field[] relHeuristics = RelationshipHeuristics.class.getDeclaredFields();
+//		for (int i = 0; i < heuristics.length; i++) {
+//			try {
+//				allHeuristics.add(heuristics[i].getInt(new Heuristic()));
+//			} catch (IllegalArgumentException e) {
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		for (int i = 0; i < relHeuristics.length; i++) {
+//			try {
+//				allHeuristics.add(relHeuristics[i].getInt(new RelationshipHeuristics()));
+//			} catch (IllegalArgumentException e) {
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				e.printStackTrace();
+//			}
+//		}
+		
 		log.info("Testing for k= "+k );
 		
 		GraphLoader gl = null; 
@@ -178,13 +204,10 @@ extends TestCase implements HeuristicsTest
 			Integer totalEdges = 0;
 			File fpInTest = null;
 			for (int j = 0; j < ITERATION_TIME; j++) {
-				if (!ord.equals("rnd")) {
 					String fname = "resources/" + fpIn.getName();
 					fname+= "."+j;
 					fpInTest = new File(fname);
-				} else {
-					fpInTest = fpIn;
-				}
+					System.out.println("Works on : " + fname);
 				heuristic = HeuristicFactory.getHeuristic(i,par);
 				log.info("Executing: " + heuristic.getHeuristicName());
 				gl = new SimpleGraphLoader(new FileInputStream(fpInTest), new FileOutputStream(fpOut),
@@ -218,8 +241,7 @@ extends TestCase implements HeuristicsTest
 				//check normalized maximum load
 				normalizedMaxLoad.add(qc.getNormalizedMaximumLoad(gl.getGraphPartitionator().getPartitionMap(), 
 						gl.getGraphPartitionator().getGraph()));
-				gl.getGraphPartitionator().getPartitionMap().getPartitions().entrySet().stream()
-					.forEach(p -> System.out.println(p.getKey() + " : " + p.getValue().size()));
+				
 			}
 			String[] metrics = getMetrics(k, graphName, ord, heuristicEdgesRatio, cuttedEdges, displacement,
 					normalizedMaxLoad, totalTime, heuristic, totalNodes, totalEdges, iotime, partTime);
