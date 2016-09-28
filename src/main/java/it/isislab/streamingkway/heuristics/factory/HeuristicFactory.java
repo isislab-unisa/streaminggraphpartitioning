@@ -2,6 +2,7 @@ package it.isislab.streamingkway.heuristics.factory;
 
 
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
+import it.isislab.streamingkway.heuristics.AbstractDeterministicGreedyExt;
 import it.isislab.streamingkway.heuristics.BalanceBig;
 import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.ChunkingHeuristic;
@@ -106,6 +107,8 @@ public class HeuristicFactory {
 		break;
 		
 		case RelationshipHeuristics.BB_DISPERSION_BASED: heuristic = new BalanceBigDispersionBased(parallel);
+		break;
+		case Heuristic.U_DETERMINISTIC_GREEDY_EXP : heuristic = new AbstractDeterministicGreedyExt(parallel);
 		break;
 
 

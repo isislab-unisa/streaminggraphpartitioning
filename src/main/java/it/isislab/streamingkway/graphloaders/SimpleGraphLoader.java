@@ -72,6 +72,7 @@ public class SimpleGraphLoader extends AbstractGraphLoader {
 			gr.addNode(v.getId());
 
 			for (String s : nNodes) {
+				gr.addNode(s);
 				gr.addEdge(v.getId()+"-"+s, v.getId(), s);
 			}
 			int uPartition = graphPartitionator.getPartitionNode(v);

@@ -17,4 +17,5 @@ public class Heuristic {
 	public static final int BALANCE_BIG = 13;
 
 
+	public static final int U_DETERMINISTIC_GREEDY_EXP = 14;
 }
