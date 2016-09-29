@@ -11,6 +11,7 @@ import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceF
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
@@ -35,8 +37,8 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		this.parallel = parallel;
 	}
 	public final Integer getIndex(PartitionMap partitionMap, Node n) {
-		
-		return getIndexWithDispersion(partitionMap, n);
+
+		return getIndexWithSTC(partitionMap, n);
 	}
 	public final Integer getIndexWithLabel(PartitionMap partitionMap, Node n) {
 		setupNodes(n.getGraph(), partitionMap);
@@ -75,7 +77,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 	private boolean runLabelPropagation(Graph g, Node toSet)
 	{
 		boolean isEnded=true;
-		
+
 		Set<Node> nodes=new HashSet<Node>();
 		Iterator<Node> uIterator = toSet.getNeighborNodeIterator();
 		while (uIterator.hasNext()) {
@@ -84,7 +86,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		}
 		for(Node u : nodes/*g.getNodeSet()*/)
 		{
-			
+
 			if((int)u.getAttribute("label") == -1) continue;
 
 			HashMap<Integer,Integer> labelScores=new HashMap<Integer,Integer>();
@@ -116,9 +118,9 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 			{
 				isEnded=false;
 				u.setAttribute("label", u.getAttribute("tmplabel"));
-				
+
 			}
-			
+
 		}
 		return isEnded;
 	}
@@ -301,10 +303,13 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		return maxPart;
 
 	}
+	int count=0;
+
 	public final Integer getIndexWithDispersion(PartitionMap partitionMap, Node n) {
-		
-		Double T=(double)n.getGraph().getNodeCount()/(double)(partitionMap.getC()*partitionMap.getK());
-		
+
+
+		Double T=(double)++count/(double)(partitionMap.getC()*partitionMap.getK());
+
 		dist = new SimpleDistanceFunction();
 		Integer c = partitionMap.getC();
 
@@ -323,13 +328,12 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 			double disp=(double)Dispersion.getDispersion(n, p, dist);
 			//double ndisp = emb < 2 ? 0 : 2*disp/(emb*(emb-1)); 
 			double ndisp=emb==0?0:Math.min(1,disp/emb);
-//			System.out.println(n.getId()+"->"+p.getId()+" \tNDISP:"+ndisp+" \tDISP:"+Dispersion.getDispersion(n, p, dist)+" \tEMB:"+cuv.size()+"\t SCORE:"+(2-ndisp));
-			
-//			if(Math.pow(2, val) > 1) System.out.println("GESOCRISTO");
-//			else System.out.println("A MARONNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-
 			double beta=1-T;
-			
+			//			System.out.println(n.getId()+"->"+p.getId()+" \tNDISP:"+ndisp+" \tDISP:"+Dispersion.getDispersion(n, p, dist)+" \tEMB:"+cuv.size()+"\t SCORE:"+(T + beta*(1-ndisp))+" temp: "+T);
+
+			//			if(Math.pow(2, val) > 1) System.out.println("GESOCRISTO");
+			//			else System.out.println("A MARONNNNNNNNNNNNNNNNNNNNNNNNNNNN");
+
 			nodeScores.put(p, T + beta*(1-ndisp));
 
 		});
@@ -341,18 +345,18 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 		}
 		nodeStream.filter(p -> p.getKey().hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) && 
 				partitionMap.getPartitionSize(Integer.parseInt(p.getKey().getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE))) < c)
-		.forEach(new Consumer<Entry<Node,Double>>() {
-			public void accept(Entry<Node, Double> t) {
-				Node v = t.getKey();
-				Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
-				if (partitionsScores.containsKey(partitionIndex)){
-					partitionsScores.put(partitionIndex, 
-							((partitionsScores.get(partitionIndex)) + t.getValue()) );
-				} else {
-					partitionsScores.put(partitionIndex, (double) t.getValue());
-				}
-			}
-		});
+				.forEach(new Consumer<Entry<Node,Double>>() {
+					public void accept(Entry<Node, Double> t) {
+						Node v = t.getKey();
+						Integer partitionIndex = Integer.parseInt(v.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE));
+						if (partitionsScores.containsKey(partitionIndex)){
+							partitionsScores.put(partitionIndex, 
+									((partitionsScores.get(partitionIndex)) + t.getValue()) );
+						} else {
+							partitionsScores.put(partitionIndex, (double) t.getValue());
+						}
+					}
+				});
 
 
 		if (partitionsScores.isEmpty()) {
@@ -392,6 +396,131 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 	public abstract Double getWeight(Double partitionSize, Integer c);
 	public String getHeuristicName() {
 		return "Absolute Dispersion Based";
+	}
+
+	private void labelEdgesSTC(PartitionMap partitionMap, Node n,List<Node> nOnI)
+	{
+		
+		List<Node> neighborsOnI = new ArrayList<Node>(nOnI);
+		
+//		Iterator<Node> in=n.getNeighborNodeIterator();
+//		while(in.hasNext()){
+//			Node nv= in.next();
+//			if (!neighborsOnI.contains(nv))
+//				neighborsOnI.add(nv);
+//		}
+		
+		for(Node p:neighborsOnI)
+		{
+			Edge e=n.getEdgeBetween(p);
+			e.setAttribute("stc", new Boolean(true));
+
+		}
+		while(!checkSTCproperty(n,neighborsOnI))
+		{
+			int min=Integer.MAX_VALUE;
+			Node node=null;
+			for(Node p:neighborsOnI)
+			{
+				int degree=0;
+				Edge e=n.getEdgeBetween(p);
+				if(!(boolean)e.getAttribute("stc")) continue;
+				Iterator<Node> ite=p.getNeighborNodeIterator();
+				Node pv=null;
+				while(ite.hasNext())
+				{
+					pv=ite.next();
+					if(neighborsOnI.contains(pv))
+					{
+						degree++;
+					}
+
+				}
+				if(degree < min)
+				{
+					min=degree;
+					node=p;
+				}
+
+			}
+			Edge e=n.getEdgeBetween(node);
+			e.setAttribute("stc", new Boolean(false));
+		}//end while
+	}
+	private boolean checkSTCproperty(Node n,List<Node> neighborsOnI) {
+
+		for(Node u:neighborsOnI)
+		{
+			for(Node v: neighborsOnI)
+			{
+				Edge e1 = u.getEdgeBetween(v);
+				Edge e2 = n.getEdgeBetween(v);
+				Edge e3 = n.getEdgeBetween(u);
+				if(u!=v && e1==null && ((boolean)e2.getAttribute("stc") && (boolean)e3.getAttribute("stc")))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public final Integer getIndexWithSTC(PartitionMap partitionMap, Node n) {
+		double alpha=1,beta=2;
+		Integer c = partitionMap.getC();
+		Map<Integer, Double> partitionsScores = new ConcurrentHashMap<Integer, Double>(partitionMap.getK());
+
+		if (n.getDegree() == 0) {
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
+		}
+		for (int i = 1; i <= partitionMap.getK(); i++) {
+
+			if(partitionMap.getPartition(i).size() >= c) continue;
+			List<Node> neighborsOnI=partitionMap.getIntersectionNodes(n,i);
+			labelEdgesSTC(partitionMap, n, neighborsOnI);
+			
+			double scorei=0.0;
+			for(Node p: neighborsOnI)
+			{
+				scorei+=((boolean)n.getEdgeBetween(p).getAttribute("stc"))?alpha:beta;
+				//System.out.println(n.getEdgeBetween(p)+" ->"+((boolean)n.getEdgeBetween(p).getAttribute("stc")));
+			}
+			partitionsScores.put(i, scorei);
+			
+			//System.out.println(i+ " "+ scorei);
+			
+			
+		}
+
+		if (partitionsScores.isEmpty()) {
+			return new BalancedHeuristic(parallel).getIndex(partitionMap, n);
+		}
+		Stream<Entry<Integer, Double>> strScore = partitionsScores.entrySet().stream();
+		if (parallel) {
+			strScore = strScore.parallel();
+		}
+
+		Integer maxPart = strScore
+				.max(new Comparator<Entry<Integer, Double>>() {
+					public int compare(Entry<Integer, Double> e1, Entry<Integer, Double> e2) {
+						//						Integer intersection1 = partitionMap.getIntersectionValue(n, e1.getKey());
+						//						Integer intersection2 = partitionMap.getIntersectionValue(n, e2.getKey());
+						Integer size1 = partitionMap.getPartitionSize(e1.getKey());
+						Integer size2 = partitionMap.getPartitionSize(e2.getKey());
+						//System.out.println("Score "+e1.getKey()+" "+e1.getValue());
+						Double score1 = getWeight((double)size1, c) *(e1.getValue());
+						Double score2 = getWeight((double)size2, c)*(e2.getValue());
+						if (score1 > score2) {
+							return 1;
+						} else if (score1 < score2) {
+							return -1;
+						} else { 
+							return size1 >= size2 ? -1 : 1;
+						}
+					}
+				}).get().getKey();
+	//	System.out.println("\t"+n +" -> "+maxPart);
+		return maxPart;
+
 	}
 
 }
