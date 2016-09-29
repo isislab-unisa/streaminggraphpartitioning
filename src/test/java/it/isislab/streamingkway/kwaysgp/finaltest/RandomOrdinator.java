@@ -1,5 +1,9 @@
 package it.isislab.streamingkway.kwaysgp.finaltest;
 
+import it.isislab.streamingkway.graphloaders.AbstractGraphLoader;
+import it.isislab.streamingkway.graphloaders.GraphLoader;
+import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,14 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
+
 import org.graphstream.algorithm.ConnectedComponents;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
-import it.isislab.streamingkway.graphloaders.AbstractGraphLoader;
-import it.isislab.streamingkway.graphloaders.GraphLoader;
-import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraversingOrdering;
-import it.isislab.streamingkway.heuristics.SGPHeuristic;
 
 
 public class RandomOrdinator extends AbstractGraphLoader {
@@ -80,7 +81,6 @@ public class RandomOrdinator extends AbstractGraphLoader {
 				gr.addEdge(v.getId()+"-"+s, v.getId(), s);
 			}
 		}
-		System.out.println(nodeCount);
 		//scanning the graph
 		ConnectedComponents cc = new ConnectedComponents();
 		cc.init(gr);
@@ -88,7 +88,7 @@ public class RandomOrdinator extends AbstractGraphLoader {
 		cc.setCountAttribute(GraphLoader.CONNECTED_COMPONENT_ATTR);
 		nodeCount = 1;
 		int connectedComponents = cc.getConnectedComponentsCount();
-		if (connectedComponents > 1) {
+		if ( false && connectedComponents > 1) {
 			//the algorithm requires to visit them and are not enabled to do
 			List<Integer> connComps = new ArrayList<>(connectedComponents);
 			while (connComps.size() < connectedComponents) {
@@ -99,6 +99,7 @@ public class RandomOrdinator extends AbstractGraphLoader {
 					if (vRand.getDegree() == 0) {
 						populateStructs(vRand, nodeCount++);
 					} else {
+						System.out.println(gto+" "+gr+" "+vRand);
 						Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
 						while (traversingGraph.hasNext()) {
 							populateStructs(traversingGraph.next(), nodeCount++);
@@ -107,7 +108,7 @@ public class RandomOrdinator extends AbstractGraphLoader {
 				}
 			}
 		} else {
-			Node vRand = Toolkit.randomNode(gr);
+			//Node vRand = Toolkit.randomNode(gr);
 			//Iterator<Node> traversingGraph = gto.getNodesOrdering(gr, vRand);
 			java.util.Collection<Node> nodesSet = gr.getNodeSet();
 			ArrayList<Node> nodes = new ArrayList(nodesSet);
@@ -121,7 +122,6 @@ public class RandomOrdinator extends AbstractGraphLoader {
 			for (Node n : nodes) {
 				indexMap.put(Integer.parseInt(n.getId()) ,id++);
 			}
-			System.out.println(nodes);
 			//printerOut.println(gr.getNodeCount() + " " + gr.getEdgeCount());
 			for (Node n : nodes) {
 				Iterator<Node> nn = n.getNeighborNodeIterator();

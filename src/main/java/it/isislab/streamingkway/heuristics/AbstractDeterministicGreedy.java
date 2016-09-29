@@ -2,10 +2,16 @@ package it.isislab.streamingkway.heuristics;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
+
 import org.graphstream.graph.Node;
+
+import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
+import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
@@ -16,14 +22,22 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic, Weigh
 	public AbstractDeterministicGreedy(boolean parallel) {
 		this.parallel = parallel;
 	}
-
+	int noAssigned=0;
 	public Integer getIndex(PartitionMap partitionMap, Node n)  {
 		
 		Map<Integer,Collection<Node>> partitions = partitionMap.getPartitions();
 		Integer c = partitionMap.getC();
 
 		Stream<Entry<Integer, Collection<Node>>> str = partitions.entrySet().stream();
-		
+		Iterator<Node> nNeighIt = n.getNeighborNodeIterator();
+//		noAssigned=0;
+//		nNeighIt.forEachRemaining(p -> {
+//
+//			if(!p.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE) ) noAssigned++;
+//
+//		});
+//		System.out.println(noAssigned+" "+n.getDegree());
+//		if(!(noAssigned > n.getDegree()/4.0)) return new BalancedHeuristic(false).getIndex(partitionMap, n); 
 		if (parallel) {
 			str = str.parallel();
 		}

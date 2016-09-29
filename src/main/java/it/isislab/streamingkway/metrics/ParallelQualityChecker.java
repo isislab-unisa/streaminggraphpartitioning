@@ -19,7 +19,6 @@ public class ParallelQualityChecker implements QualityChecker {
 		Collection<Edge> edges = gr.getEdgeSet();
 		Stream<Edge> parallelEdges = edges.stream();
 		cuttingEdges = (int) parallelEdges.filter(EdgePredicates.isCuttingEdge()).count();
-
 		return cuttingEdges;
 	}
 

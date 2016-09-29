@@ -40,7 +40,7 @@ public class BufferedGraphLoader extends AbstractGraphLoader {
 		readFirstLine();
 		
 		if (!thereIsC) {
-			capacity = nodeNumbers / K +1;
+			capacity = (int)Math.ceil((double)(nodeNumbers)/K);//+1;
 		}
 		//create graph
 		this.graphPartitionator = new StreamingGraphPartitionator(K, heuristic, capacity);

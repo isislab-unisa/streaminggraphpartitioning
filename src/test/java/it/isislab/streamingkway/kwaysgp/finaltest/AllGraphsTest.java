@@ -1,17 +1,5 @@
 package it.isislab.streamingkway.kwaysgp.finaltest;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
-import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
 import it.isislab.streamingkway.graphloaders.SimpleGraphLoader;
@@ -25,9 +13,21 @@ import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
 import it.isislab.streamingkway.heuristics.relationship.RelationshipHeuristics;
 import it.isislab.streamingkway.metrics.ParallelQualityChecker;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Unit test for simple App.
@@ -72,7 +72,7 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith("4elt.graph"))) {
 			String graphName = FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",".rnd"};

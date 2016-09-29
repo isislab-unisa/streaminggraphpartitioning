@@ -7,8 +7,7 @@ import org.graphstream.graph.Node;
 
 public class SimpleDistanceFunction implements DistanceFunction {
 
-	private final static Integer DIST_POS = 1;
-	private final static Integer DIST_NEG = 1 - DIST_POS;
+	
 	/**
 	 * Returns {@value DIST_POST} if s has not an edge between t of if s and t have no common neighbors.
 	 * Returns {@value DIST_NEG} otherwise
@@ -38,6 +37,12 @@ public class SimpleDistanceFunction implements DistanceFunction {
 		
 		
 		return DIST_POS;
+	}
+
+	@Override
+	public Integer getDistance(Node s, Node t, Node u, Node v, int emb) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
