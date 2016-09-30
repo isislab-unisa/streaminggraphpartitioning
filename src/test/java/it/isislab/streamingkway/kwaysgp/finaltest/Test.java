@@ -1,18 +1,20 @@
 package it.isislab.streamingkway.kwaysgp.finaltest;
 
-import it.isislab.streamingkway.graphloaders.GraphLoader;
-import it.isislab.streamingkway.graphloaders.SimpleGraphLoader;
-import it.isislab.streamingkway.heuristics.SGPHeuristic;
-import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
-import it.isislab.streamingkway.metrics.ParallelQualityChecker;
-import it.isislab.streamingkway.metrics.QualityChecker;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+
+import it.isislab.streamingkway.graphloaders.GraphLoader;
+import it.isislab.streamingkway.graphloaders.SimpleGraphLoader;
+import it.isislab.streamingkway.graphloaders.graphtraversingordering.BFSTraversing;
+import it.isislab.streamingkway.graphloaders.graphtraversingordering.DFSTraversing;
+import it.isislab.streamingkway.heuristics.SGPHeuristic;
+import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
+import it.isislab.streamingkway.metrics.ParallelQualityChecker;
+import it.isislab.streamingkway.metrics.QualityChecker;
 
 public class Test {
 
@@ -38,16 +40,16 @@ public class Test {
 				System.out.print(i+" .. ");
 				
 				
-//				File graphNameBfs = new File("resources/"+graph + ".bfs." + i);
-//				File graphNameDfs = new File("resources/"+graph + ".dfs." + i);
+				File graphNameBfs = new File("resources/"+graph + ".bfs." + i);
+				File graphNameDfs = new File("resources/"+graph + ".dfs." + i);
 				File graphNameRnd = new File("resources/"+graph + ".rnd." + i);
 
-//				OrdinatorGraphLoader ogl = new OrdinatorGraphLoader(new FileInputStream(fgraph), new FileOutputStream(graphNameBfs),
-//						new BFSTraversing());
-//				ogl.runPartition();
-//				OrdinatorGraphLoader ogld = new OrdinatorGraphLoader(new FileInputStream(fgraph), new FileOutputStream(graphNameDfs),
-//						new DFSTraversing());
-//				ogld.runPartition();
+				OrdinatorGraphLoader ogl = new OrdinatorGraphLoader(new FileInputStream(fgraph), new FileOutputStream(graphNameBfs),
+						new BFSTraversing());
+				ogl.runPartition();
+				OrdinatorGraphLoader ogld = new OrdinatorGraphLoader(new FileInputStream(fgraph), new FileOutputStream(graphNameDfs),
+						new DFSTraversing());
+				ogld.runPartition();
 
 				RandomOrdinator ordinatorGraphLoader = new RandomOrdinator(new FileInputStream(fgraph), new FileOutputStream(graphNameRnd), null);
 				ordinatorGraphLoader.runPartition();

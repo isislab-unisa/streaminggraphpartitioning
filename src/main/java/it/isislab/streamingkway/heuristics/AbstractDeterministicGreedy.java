@@ -2,16 +2,12 @@ package it.isislab.streamingkway.heuristics;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import org.graphstream.graph.Node;
 
-import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
-import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
@@ -29,7 +25,7 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic, Weigh
 		Integer c = partitionMap.getC();
 
 		Stream<Entry<Integer, Collection<Node>>> str = partitions.entrySet().stream();
-		Iterator<Node> nNeighIt = n.getNeighborNodeIterator();
+//		Iterator<Node> nNeighIt = n.getNeighborNodeIterator();
 //		noAssigned=0;
 //		nNeighIt.forEachRemaining(p -> {
 //
@@ -50,8 +46,8 @@ public abstract class AbstractDeterministicGreedy implements SGPHeuristic, Weigh
 						int p1size = p1.getValue().size();
 						int p2size = p2.getValue().size();
 					
-						double intersect1 = partitionMap.getIntersectionValueParallel(n, p1.getKey());
-						double intersect2 = partitionMap.getIntersectionValueParallel(n, p2.getKey());
+						double intersect1 = partitionMap.getIntersectionValue(n, p1.getKey());
+						double intersect2 = partitionMap.getIntersectionValue(n, p2.getKey());
 						double w1 = getWeight((double)p1size, c);
 						double w2 = getWeight((double)p2size, c);
 						intersect1 *= w1;

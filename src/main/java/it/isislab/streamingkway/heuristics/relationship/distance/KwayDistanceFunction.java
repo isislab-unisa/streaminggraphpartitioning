@@ -1,8 +1,8 @@
 package it.isislab.streamingkway.heuristics.relationship.distance;
 
-import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
-
 import org.graphstream.graph.Node;
+
+import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 
 public class KwayDistanceFunction implements DistanceFunction {
 

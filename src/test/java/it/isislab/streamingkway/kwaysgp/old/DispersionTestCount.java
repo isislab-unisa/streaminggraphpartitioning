@@ -17,7 +17,6 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Test;
 
 import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
-import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
 import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
 
 public class DispersionTestCount {

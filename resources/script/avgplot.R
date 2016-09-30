@@ -13,7 +13,7 @@ avgplot <- function(file, fileName, step, start1,start2,start3, metisgr) {
 		mainText <- paste(fileName, paste(" k=", 2^(i+1)))
 		a <- vector()
 		for (j in c(length(bfsArr):1)) {a <- append(mean(c(bfsArr[j],dfsArr[j],rndArr[j])), a) }
-		maxX <- c(0, 1)
+		maxX <- c(0, max(a))
 		tiff(paste(paste(mainText,"avgbp",sep="-"),"tiff",sep="."), width = 1366, height = 768, units = 'px')
 		#jpeg(paste(paste(mainText,"avgbp",sep="-"),"jpeg",sep="."), width = 1366, height = 768, units = 'px')
 		barplot(t(matrix(a,ncol=1,byrow = TRUE,dimnames = list(hNames, c("AVG")))),main =mainText,beside = TRUE, legend.text = TRUE,args.legend = list(x = "topright"), ylim=maxX, las=2,space=c(0,2), ylab="Edge Cut Ratio")

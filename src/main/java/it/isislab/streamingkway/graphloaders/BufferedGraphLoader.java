@@ -7,7 +7,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.graphpartitionator.StreamingGraphPartitionator;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 

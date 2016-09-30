@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Logger;
+
 import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;

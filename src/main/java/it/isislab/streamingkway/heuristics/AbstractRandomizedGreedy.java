@@ -40,7 +40,7 @@ public abstract class AbstractRandomizedGreedy implements SGPHeuristic,WeightedH
 				new Consumer<Entry<Integer, Collection<Node>>>() {
 					public void accept(Entry<Integer, Collection<Node>> t) {
 						int index = t.getKey();
-						double intersectNumber = (double) partitionMap.getIntersectionValueParallel(n, index);
+						double intersectNumber = (double) partitionMap.getIntersectionValue(n, index);
 						double partitionSize = t.getValue().size();
 						probs.put(index, intersectNumber * getWeight(partitionSize, c));
 					}

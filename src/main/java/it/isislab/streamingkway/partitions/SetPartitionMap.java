@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.graphstream.graph.Node;
+
 import it.isislab.streamingkway.exceptions.InvalidCapacity;
 import it.isislab.streamingkway.exceptions.PartitionOutOfBoundException;
+import it.isislab.streamingkway.graphpartitionator.GraphPartitionator;
 
 public class SetPartitionMap implements PartitionMap {
 
@@ -98,11 +101,11 @@ public class SetPartitionMap implements PartitionMap {
 		
 		checkIndex(partitionIndex);
 		Iterator<Node> vNeigh = v.getNeighborNodeIterator();
-		Collection<Node> partition = this.chm.get(partitionIndex);
 		List<Node> intersection = new ArrayList<Node>(1);
 		while (vNeigh.hasNext()) {
 			Node u = vNeigh.next();
-			if (partition.contains(u)) {
+			if (!u.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) continue;
+			if (Integer.parseInt(u.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) == (partitionIndex)) {
 				intersection.add(u);
 			}
 		}
@@ -127,12 +130,15 @@ public class SetPartitionMap implements PartitionMap {
 
 	public Integer getIntersectionValue(Node v, Integer partitionIndex) throws PartitionOutOfBoundException {
 		checkIndex(partitionIndex);
-		Collection<Node> partition = this.chm.get(partitionIndex);
-		Integer intersection = 0;
-		
-		intersection = (int) partition.stream()
-			.filter(p -> p.hasEdgeBetween(v))
-			.count();
+		Iterator<Node> vNeigh = v.getNeighborNodeIterator();
+		int intersection = 0;
+		while (vNeigh.hasNext()) {
+			Node u = vNeigh.next();
+			if (!u.hasAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) continue;
+			if (Integer.parseInt(u.getAttribute(GraphPartitionator.PARTITION_ATTRIBUTE)) == (partitionIndex)) {
+				intersection ++;
+			}
+		}
 		return intersection;
 	}
 
@@ -194,7 +200,7 @@ public class SetPartitionMap implements PartitionMap {
 	public double getTrianglesValue(Node n, Integer partitionIndex) {
 		int totalEdges = 0;
 
-		List<Node> gammaNIntersect = getIntersectionNodesParallel(n, partitionIndex);
+		List<Node> gammaNIntersect = getIntersectionNodes(n, partitionIndex);
 		for (int i = 0; i < gammaNIntersect.size(); i++) {
 			for (int j = i+1; j < gammaNIntersect.size(); j++) {
 				if (gammaNIntersect.get(i).hasEdgeBetween(gammaNIntersect.get(j))) {

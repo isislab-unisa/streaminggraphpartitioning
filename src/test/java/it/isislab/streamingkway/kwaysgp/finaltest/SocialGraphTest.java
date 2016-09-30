@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;

@@ -42,10 +42,11 @@ plotallfiles <- function(files, step, start1,start2,start3, n = 5, metisfile) {
     #plottimeoff(dataFile,graphName,colz,n, step, start1,start2,start3)
      #plottimesocial(dataFile,graphName,colz,n, step, start1,start2,start3)
     #avgplotsocial(dataFile, graphName, step,start1, start2,start3, metisfile)
-   avgplotoffset(dataFile, graphName, step,start1, start2,start3, metisfile)
+  # avgplotoffset(dataFile, graphName, step,start1, start2,start3, metisfile)
+    avgplot(dataFile, graphName, step,start1, start2,start3, metisfile)
   #  plotallord(dataFile, graphName, step,start1, start2,start3, metisfile)
      # plotallordsocial(dataFile, graphName, step,start1, start2,start3, metisfile)
-    plotallordoff(dataFile, graphName, step,start1, start2,start3, metisfile)
+  #  plotallordoff(dataFile, graphName, step,start1, start2,start3, metisfile)
   # plotedgecutsocial(dataFile,graphName,colz,n,step,start1,start2,start3)
  #   plotedgecutoff(dataFile,graphName,colz,n,step,start1,start2,start3)
     

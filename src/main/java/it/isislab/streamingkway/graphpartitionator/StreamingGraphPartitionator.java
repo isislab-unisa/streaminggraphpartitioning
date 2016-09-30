@@ -1,9 +1,11 @@
 package it.isislab.streamingkway.graphpartitionator;
 
 import java.util.concurrent.ThreadLocalRandom;
+
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
+
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 import it.isislab.streamingkway.partitions.SetPartitionMap;

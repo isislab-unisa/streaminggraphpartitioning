@@ -1,5 +1,17 @@
 package it.isislab.streamingkway.kwaysgp.finaltest;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
 import it.isislab.streamingkway.graphloaders.SimpleGraphLoader;
@@ -11,23 +23,12 @@ import it.isislab.streamingkway.graphloaders.graphtraversingordering.GraphTraver
 import it.isislab.streamingkway.heuristics.Heuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
+import it.isislab.streamingkway.heuristics.relationship.NewHeuristics;
 import it.isislab.streamingkway.heuristics.relationship.RelationshipHeuristics;
 import it.isislab.streamingkway.metrics.ParallelQualityChecker;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Unit test for simple App.
@@ -72,7 +73,7 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith("4elt.graph"))) {
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith("dispersion.graph"))) {
 			String graphName = FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",".rnd"};
@@ -154,14 +155,26 @@ extends TestCase implements HeuristicsTest
 		allHeuristics.add(Heuristic.U_DETERMINISTIC_GREEDY);
 		allHeuristics.add(Heuristic.L_DETERMINISTIC_GREEDY);
 		allHeuristics.add(Heuristic.E_DETERMINISTIC_GREEDY);
-//		allHeuristics.add(Heuristic.U_TRIANGLES);
+		allHeuristics.add(Heuristic.U_RANDOMIZED_GREEDY);
+		allHeuristics.add(Heuristic.L_RANDOMIZED_GREEDY);
+		allHeuristics.add(Heuristic.E_RANDOMIZED_GREEDY);
+		allHeuristics.add(Heuristic.U_TRIANGLES);
 		allHeuristics.add(Heuristic.L_TRIANGLES);
 		allHeuristics.add(Heuristic.E_TRIANGLES);
 		allHeuristics.add(Heuristic.BALANCE_BIG);
 		allHeuristics.add(RelationshipHeuristics.U_ABS_DISPERSION_BASED);
 		allHeuristics.add(RelationshipHeuristics.L_ABS_DISPERSION_BASED);
 		allHeuristics.add(RelationshipHeuristics.E_ABS_DISPERSION_BASED);
-
+		Field[] newHeuristics = NewHeuristics.class.getDeclaredFields();
+		for (int i = 0; i < newHeuristics.length; i++) {
+				try {
+					allHeuristics.add(newHeuristics[i].getInt(new NewHeuristics()));
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+		}
 //		
 //		Field[] heuristics = Heuristic.class.getDeclaredFields();
 //		Field[] relHeuristics = RelationshipHeuristics.class.getDeclaredFields();
@@ -184,6 +197,8 @@ extends TestCase implements HeuristicsTest
 //				e.printStackTrace();
 //			}
 //		}
+		
+		
 		
 		log.info("Testing for k= "+k );
 		
