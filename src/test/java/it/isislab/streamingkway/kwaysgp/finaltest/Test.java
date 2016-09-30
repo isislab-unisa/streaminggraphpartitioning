@@ -17,13 +17,13 @@ import java.util.HashMap;
 public class Test {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		String[] graphs={"paperdispersion.graph","CA-HepTh.graph","facebook_combined.graph","4elt.graph","pl1000.graph","CA-AstroPh.graph"};
+		String[] graphs={"4elt.graph","pl1000.graph","paperdispersion.graph","facebook_combined.graph","CA-HepTh.graph","CA-GrQc.graph","CA-AstroPh.graph","CA-HepTh.graph",};
 		HashMap<String, Integer> edges=new HashMap<String,Integer>();
 		SGPHeuristic hdipsersion = HeuristicFactory.getHeuristic(35, false);
 		SGPHeuristic ldg = HeuristicFactory.getHeuristic(5, false);
 		QualityChecker qc = new ParallelQualityChecker();
 		int K=4;
-		int ITE=10;
+		int ITE=5;
 		
 		for(int j=0;j< graphs.length;j++)
 		{
