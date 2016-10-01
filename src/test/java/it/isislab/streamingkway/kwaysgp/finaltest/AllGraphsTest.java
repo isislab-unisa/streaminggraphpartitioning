@@ -73,7 +73,7 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith("dispersion.graph"))) {
+		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
 			String graphName = FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",".rnd"};

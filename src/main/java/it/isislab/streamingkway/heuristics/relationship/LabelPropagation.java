@@ -34,7 +34,7 @@ public class LabelPropagation implements SGPHeuristic {
 			index=new BalancedHeuristic(parallel).getIndex(partitionMap, n);
 		}
 
-		System.out.println(n+" -> "+index);
+		//System.out.println(n+" -> "+index);
 		return index;
 	}
 

@@ -16,6 +16,7 @@ import it.isislab.streamingkway.heuristics.BalancedHeuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.relationship.distance.Dispersion;
 import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunction;
+import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
@@ -25,6 +26,7 @@ public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, Weigh
 	protected boolean parallel;
 	private DistanceFunction dist;
 	public AbstractAbsDispersionBased(boolean parallel) {
+		this.dist = new SimpleDistanceFunction();
 		this.parallel = parallel;
 	}
 	public final Integer getIndex(PartitionMap partitionMap, Node n) {

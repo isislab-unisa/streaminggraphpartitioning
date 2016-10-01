@@ -39,10 +39,8 @@ public class SimpleDistanceFunction implements DistanceFunction {
 		return DIST_POS;
 	}
 
-	@Override
 	public Integer getDistance(Node s, Node t, Node u, Node v, int emb) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getDistance(s, t, u, v);
 	}
 
 }
