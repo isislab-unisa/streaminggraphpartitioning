@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
 import au.com.bytecode.opencsv.CSVWriter;
 import it.isislab.streamingkway.exceptions.HeuristicNotFound;
 import it.isislab.streamingkway.graphloaders.GraphLoader;
@@ -24,7 +23,6 @@ import it.isislab.streamingkway.heuristics.Heuristic;
 import it.isislab.streamingkway.heuristics.SGPHeuristic;
 import it.isislab.streamingkway.heuristics.factory.HeuristicFactory;
 import it.isislab.streamingkway.heuristics.relationship.NewHeuristics;
-import it.isislab.streamingkway.heuristics.relationship.RelationshipHeuristics;
 import it.isislab.streamingkway.metrics.ParallelQualityChecker;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -73,7 +71,10 @@ extends TestCase implements HeuristicsTest
 	public void testStreet() throws HeuristicNotFound, IOException, InterruptedException, IllegalArgumentException, IllegalAccessException {
 		File fold = new File(FOLDER);
 		//seq
-		for (File fpin: fold.listFiles(p -> p.getName().endsWith(".graph"))) {
+		File[] fls = fold.listFiles(p -> p.getName().endsWith(".graph"));
+		Arrays.sort(fls, (p1,p2) -> (int)p1.length() - (int)p2.length());
+		
+		for (File fpin: fls) {
 			String graphName = FOLDER + fpin.getName();
 			
 			String[] ords = {".bfs",".dfs",".rnd"};
@@ -162,9 +163,9 @@ extends TestCase implements HeuristicsTest
 		allHeuristics.add(Heuristic.L_TRIANGLES);
 		allHeuristics.add(Heuristic.E_TRIANGLES);
 		allHeuristics.add(Heuristic.BALANCE_BIG);
-		allHeuristics.add(RelationshipHeuristics.U_ABS_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.L_ABS_DISPERSION_BASED);
-		allHeuristics.add(RelationshipHeuristics.E_ABS_DISPERSION_BASED);
+//		allHeuristics.add(RelationshipHeuristics.U_ABS_DISPERSION_BASED);
+//		allHeuristics.add(RelationshipHeuristics.L_ABS_DISPERSION_BASED);
+//		allHeuristics.add(RelationshipHeuristics.E_ABS_DISPERSION_BASED);
 		Field[] newHeuristics = NewHeuristics.class.getDeclaredFields();
 		for (int i = 0; i < newHeuristics.length; i++) {
 				try {
