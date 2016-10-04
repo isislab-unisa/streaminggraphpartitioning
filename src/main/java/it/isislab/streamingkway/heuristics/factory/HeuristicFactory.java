@@ -82,12 +82,7 @@ public class HeuristicFactory {
 		break;
 		case RelationshipHeuristics.E_ABS_DISPERSION_BASED : heuristic = new ExponentiallyAbsWeightedDispersionBased(parallel);
 		break;
-		case NewHeuristics.U_DISP_KWAY : heuristic = new DispersionForKway(parallel);
-		break;
-		case NewHeuristics.L_DISP_KWAY : heuristic = new LinearDispersionForKway(parallel);
-		break;
-		case NewHeuristics.E_DISP_KWAY : heuristic = new ExponentiallyDispersionForKway(parallel);
-		break;
+
 		case NewHeuristics.U_DISP_PREDICT : heuristic = new DispersionPredict(parallel);
 		break;
 		case NewHeuristics.L_DISP_PREDICT : heuristic = new LinearDispersionPredict(parallel);
@@ -100,8 +95,7 @@ public class HeuristicFactory {
 		break;
 		case NewHeuristics.E_DISP_IND : heuristic = new ExponentiallyIndexWithDispersion(parallel);
 		break;
-		case NewHeuristics.L_PROPAG : heuristic = new LabelPropagation(parallel);
-		break;
+
 		case NewHeuristics.U_STC : heuristic = new STCHeuristic(parallel);
 		break;
 		case NewHeuristics.L_STC : heuristic = new LinearSTCHeuristic(parallel);
