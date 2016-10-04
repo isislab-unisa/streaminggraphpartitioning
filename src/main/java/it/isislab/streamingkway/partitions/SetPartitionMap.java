@@ -26,7 +26,7 @@ public class SetPartitionMap implements PartitionMap {
 	private Integer size = 0;
 	private Integer K;
 	private Integer C;
-
+	
 	public SetPartitionMap(Integer k, Integer capacity) {
 		this.K = k;
 		chm = new ConcurrentHashMap<Integer, Collection<Node>>(k);
@@ -170,15 +170,7 @@ public class SetPartitionMap implements PartitionMap {
 		checkIndex(partitionIndex);
 		Collection<Node> partition = this.chm.get(partitionIndex);
 		List<Node> gammaVintersect = Collections.synchronizedList(new ArrayList<>());
-		
-//		partition.parallelStream().forEach(new Consumer<Node>() {
-//			public void accept(Node t) {
-//				if (v.hasEdgeBetween(t)) {
-//					gammaVintersect.add(t);
-//				}
-//			}
-//		});
-		
+
 		partition.parallelStream()
 			.filter(p -> p.hasEdgeBetween(v))
 			.forEach(p -> gammaVintersect.add(p));
