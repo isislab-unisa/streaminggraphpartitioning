@@ -2,9 +2,9 @@ package it.isislab.streamingkway.heuristics.relationship;
 
 public class NewHeuristics {
 
-	public static final int U_ABS_DISPERSION_BASED = 34;
-	public static final int L_ABS_DISPERSION_BASED = 35;
-	public static final int E_ABS_DISPERSION_BASED = 36;
+	public static final int U_NORM_DISPERSION_BASED = 34;
+	public static final int L_NORM_DISPERSION_BASED = 35;
+	public static final int E_NORM_DISPERSION_BASED = 36;
 	public static final int BB_DISPERSION_BASED = 40;
 //	public static final int U_DISP_KWAY = 41;
 //	public static final int L_DISP_KWAY = 42;

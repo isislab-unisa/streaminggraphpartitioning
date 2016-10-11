@@ -2,13 +2,13 @@ package it.isislab.streamingkway.heuristics.relationship;
 
 import it.isislab.streamingkway.heuristics.weight.UnweightedHeuristic;
 
-public class UnweightedNormDispersionBased extends AbstractNormDispersionBased implements UnweightedHeuristic {
+public class UnweightedAbsoluteDispersionBased extends AbstractAbsoluteDispersionBased implements UnweightedHeuristic {
 
-	public UnweightedNormDispersionBased(boolean parallel) {
+	public UnweightedAbsoluteDispersionBased(boolean parallel) {
 		super(parallel);
 	}
 	
-	public UnweightedNormDispersionBased(Double A, Double B, Double C, boolean parallel) {
+	public UnweightedAbsoluteDispersionBased(Double A, Double B, Double C, boolean parallel) {
 		super(A, B, C, parallel);
 	}
 

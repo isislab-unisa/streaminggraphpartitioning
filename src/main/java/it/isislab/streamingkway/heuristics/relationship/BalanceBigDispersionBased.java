@@ -16,7 +16,7 @@ public class BalanceBigDispersionBased implements SGPHeuristic {
 		if (Double.max((double) n.getDegree(), partitionMap.getDegreeAverage()) == (double)n.getDegree()) {
 			return new BalancedHeuristic(parallel).getIndex(partitionMap,n);
 		} else {
-			return new LinearAbsWeightedDispersionBased(parallel).getIndex(partitionMap, n);
+			return new LinearNormalizedWeightedDispersionBased(parallel).getIndex(partitionMap, n);
 		}
 
 	}

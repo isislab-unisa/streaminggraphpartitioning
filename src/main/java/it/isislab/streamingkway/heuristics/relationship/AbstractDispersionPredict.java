@@ -74,11 +74,8 @@ public abstract class AbstractDispersionPredict implements SGPHeuristic, Weighte
 		Integer maxPart = strScore
 				.min(new Comparator<Entry<Integer, Double>>() {
 					public int compare(Entry<Integer, Double> e1, Entry<Integer, Double> e2) {
-						//						Integer intersection1 = partitionMap.getIntersectionValue(n, e1.getKey());
-						//						Integer intersection2 = partitionMap.getIntersectionValue(n, e2.getKey());
 						Integer size1 = partitionMap.getPartitionSize(e1.getKey());
 						Integer size2 = partitionMap.getPartitionSize(e2.getKey());
-						//System.out.println("Score "+e1.getKey()+" "+e1.getValue());
 						Double score1 = getWeight((double)size1, c) *(e1.getValue());
 						Double score2 = getWeight((double)size2, c)*(e2.getValue());
 						if (score1 > score2) {
@@ -90,7 +87,6 @@ public abstract class AbstractDispersionPredict implements SGPHeuristic, Weighte
 						}
 					}
 				}).get().getKey();
-//		System.out.println(n+"->"+maxPart);
 		return maxPart;
 		
 	}
@@ -103,7 +99,6 @@ public abstract class AbstractDispersionPredict implements SGPHeuristic, Weighte
 		if(indexTieBrek==-1 || partitionMap.getIntersectionValue(v, index)==0){
 			return 0;
 		}
-//		if(partitionMap.getIntersectionValue(v, index)==0) return 0;
 		int totedges=0;
 		int x=partitionMap.getIntersectionValue(v,i);
 		int y=0;

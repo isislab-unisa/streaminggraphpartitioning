@@ -12,6 +12,6 @@ public class STCHeuristic extends AbstractSTCHeuristic {
 		return 1.0;
 	}
 	public String getHeuristicName() {
-		return "Linear" + super.getHeuristicName();
+		return "Unweighted" + super.getHeuristicName();
 	}	
 }

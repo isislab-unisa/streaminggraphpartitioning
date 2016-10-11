@@ -2,13 +2,13 @@ package it.isislab.streamingkway.heuristics.relationship;
 
 import it.isislab.streamingkway.heuristics.weight.LinearWeightedHeuristic;
 
-public class LinearNormWeightedDispersionBased extends AbstractNormDispersionBased implements LinearWeightedHeuristic{
+public class LinearAbsoluteWeightedDispersionBased extends AbstractAbsoluteDispersionBased implements LinearWeightedHeuristic{
 
-	public LinearNormWeightedDispersionBased(boolean parallel) {
+	public LinearAbsoluteWeightedDispersionBased(boolean parallel) {
 		super(parallel);
 	}
 	
-	public LinearNormWeightedDispersionBased(Double A, Double B, Double C, boolean parallel) {
+	public LinearAbsoluteWeightedDispersionBased(Double A, Double B, Double C, boolean parallel) {
 		super(A, B, C, parallel);
 	}
 

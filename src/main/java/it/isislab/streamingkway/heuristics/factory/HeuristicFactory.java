@@ -19,20 +19,16 @@ import it.isislab.streamingkway.heuristics.UnweightedDeterministicGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedRandomizedGreedy;
 import it.isislab.streamingkway.heuristics.UnweightedTriangles;
 import it.isislab.streamingkway.heuristics.relationship.BalanceBigDispersionBased;
-import it.isislab.streamingkway.heuristics.relationship.ExponentiallyAbsWeightedDispersionBased;
-import it.isislab.streamingkway.heuristics.relationship.LabelPropagation;
-import it.isislab.streamingkway.heuristics.relationship.LinearAbsWeightedDispersionBased;
+import it.isislab.streamingkway.heuristics.relationship.ExponentiallyNormalizedWeightedDispersionBased;
+import it.isislab.streamingkway.heuristics.relationship.LinearNormalizedWeightedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.NewHeuristics;
 import it.isislab.streamingkway.heuristics.relationship.RelationshipHeuristics;
-import it.isislab.streamingkway.heuristics.relationship.UnweightedAbsDispersionBased;
-import it.isislab.streamingkway.heuristics.relationship.newh.DispersionForKway;
+import it.isislab.streamingkway.heuristics.relationship.UnweightedNormalizedDispersionBased;
 import it.isislab.streamingkway.heuristics.relationship.newh.DispersionPredict;
-import it.isislab.streamingkway.heuristics.relationship.newh.ExponentiallyDispersionForKway;
 import it.isislab.streamingkway.heuristics.relationship.newh.ExponentiallyDispersionPredict;
 import it.isislab.streamingkway.heuristics.relationship.newh.ExponentiallyIndexWithDispersion;
 import it.isislab.streamingkway.heuristics.relationship.newh.ExponentiallySTCHeuristic;
 import it.isislab.streamingkway.heuristics.relationship.newh.IndexWithDispersion;
-import it.isislab.streamingkway.heuristics.relationship.newh.LinearDispersionForKway;
 import it.isislab.streamingkway.heuristics.relationship.newh.LinearDispersionPredict;
 import it.isislab.streamingkway.heuristics.relationship.newh.LinearIndexWithDispersion;
 import it.isislab.streamingkway.heuristics.relationship.newh.LinearSTCHeuristic;
@@ -76,11 +72,11 @@ public class HeuristicFactory {
 		case Heuristic.BALANCE_BIG : heuristic = new BalanceBig(parallel);
 		break;
 
-		case RelationshipHeuristics.U_ABS_DISPERSION_BASED : heuristic = new UnweightedAbsDispersionBased(parallel);
+		case NewHeuristics.U_NORM_DISPERSION_BASED : heuristic = new UnweightedNormalizedDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.L_ABS_DISPERSION_BASED : heuristic = new LinearAbsWeightedDispersionBased(parallel);
+		case NewHeuristics.L_NORM_DISPERSION_BASED : heuristic = new LinearNormalizedWeightedDispersionBased(parallel);
 		break;
-		case RelationshipHeuristics.E_ABS_DISPERSION_BASED : heuristic = new ExponentiallyAbsWeightedDispersionBased(parallel);
+		case NewHeuristics.E_NORM_DISPERSION_BASED : heuristic = new ExponentiallyNormalizedWeightedDispersionBased(parallel);
 		break;
 
 		case NewHeuristics.U_DISP_PREDICT : heuristic = new DispersionPredict(parallel);

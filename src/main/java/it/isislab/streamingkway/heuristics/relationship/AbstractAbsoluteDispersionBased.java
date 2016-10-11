@@ -19,7 +19,7 @@ import it.isislab.streamingkway.heuristics.relationship.distance.DistanceFunctio
 import it.isislab.streamingkway.heuristics.relationship.distance.SimpleDistanceFunction;
 import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
-public abstract class AbstractNormDispersionBased implements SGPHeuristic, WeightedHeuristic {
+public abstract class AbstractAbsoluteDispersionBased implements SGPHeuristic, WeightedHeuristic {
 
 	private Double A = 0.61;
 	private Double B = 0.0;
@@ -28,11 +28,11 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 
 	private DistanceFunction dist = new SimpleDistanceFunction();
 	
-	public AbstractNormDispersionBased(boolean parallel) {
+	public AbstractAbsoluteDispersionBased(boolean parallel) {
 		this.parallel = parallel;
 	}
 
-	public AbstractNormDispersionBased(Double A, Double B, Double C, boolean parallel) {
+	public AbstractAbsoluteDispersionBased(Double A, Double B, Double C, boolean parallel) {
 		this.A = A;
 		this.B = B;
 		this.C = C;
@@ -130,7 +130,7 @@ public abstract class AbstractNormDispersionBased implements SGPHeuristic, Weigh
 	}
 	public abstract Double getWeight(Double intersectNumber, Integer c);
 	public String getHeuristicName() {
-		return "Normalized Dispersion Based";
+		return "Absolute Dispersion Based";
 	}
 
 }

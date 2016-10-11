@@ -43,13 +43,8 @@ public abstract class AbstractSTCHeuristic implements SGPHeuristic, WeightedHeur
 			for(Node p: neighborsOnI)
 			{
 				scorei+=((boolean)n.getEdgeBetween(p).getAttribute("stc"))?alpha:beta;
-				//System.out.println(n.getEdgeBetween(p)+" ->"+((boolean)n.getEdgeBetween(p).getAttribute("stc")));
 			}
 			partitionsScores.put(i, scorei);
-
-			//System.out.println(i+ " "+ scorei);
-
-
 		}
 
 		if (partitionsScores.isEmpty()) {
@@ -63,11 +58,8 @@ public abstract class AbstractSTCHeuristic implements SGPHeuristic, WeightedHeur
 		Integer maxPart = strScore
 				.max(new Comparator<Entry<Integer, Double>>() {
 					public int compare(Entry<Integer, Double> e1, Entry<Integer, Double> e2) {
-						//						Integer intersection1 = partitionMap.getIntersectionValue(n, e1.getKey());
-						//						Integer intersection2 = partitionMap.getIntersectionValue(n, e2.getKey());
 						Integer size1 = partitionMap.getPartitionSize(e1.getKey());
 						Integer size2 = partitionMap.getPartitionSize(e2.getKey());
-						//System.out.println("Score "+e1.getKey()+" "+e1.getValue());
 						Double score1 = getWeight((double)size1, c) *(e1.getValue());
 						Double score2 = getWeight((double)size2, c)*(e2.getValue());
 						if (score1 > score2) {
@@ -79,7 +71,6 @@ public abstract class AbstractSTCHeuristic implements SGPHeuristic, WeightedHeur
 						}
 					}
 				}).get().getKey();
-		//	System.out.println("\t"+n +" -> "+maxPart);
 		return maxPart;
 	}
 
@@ -88,12 +79,6 @@ public abstract class AbstractSTCHeuristic implements SGPHeuristic, WeightedHeur
 
 		List<Node> neighborsOnI = new ArrayList<Node>(nOnI);
 
-		//		Iterator<Node> in=n.getNeighborNodeIterator();
-		//		while(in.hasNext()){
-		//			Node nv= in.next();
-		//			if (!neighborsOnI.contains(nv))
-		//				neighborsOnI.add(nv);
-		//		}
 
 		for(Node p:neighborsOnI)
 		{

@@ -2,13 +2,13 @@ package it.isislab.streamingkway.heuristics.relationship;
 
 import it.isislab.streamingkway.heuristics.weight.ExponentiallyWeightedHeuristic;
 
-public class ExponentiallyNormWeightedDispersionBased extends AbstractNormDispersionBased implements ExponentiallyWeightedHeuristic {
+public class ExponentiallyAbsoluteWeightedDispersionBased extends AbstractAbsoluteDispersionBased implements ExponentiallyWeightedHeuristic {
 
-	public ExponentiallyNormWeightedDispersionBased(boolean parallel) {
+	public ExponentiallyAbsoluteWeightedDispersionBased(boolean parallel) {
 		super(parallel);
 	}
 	
-	public ExponentiallyNormWeightedDispersionBased(Double A, Double B, Double C,boolean parallel) {
+	public ExponentiallyAbsoluteWeightedDispersionBased(Double A, Double B, Double C,boolean parallel) {
 		super(A, B, C, parallel);
 	}
 

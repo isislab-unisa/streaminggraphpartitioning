@@ -21,11 +21,11 @@ import it.isislab.streamingkway.heuristics.weight.WeightedHeuristic;
 import it.isislab.streamingkway.partitions.PartitionMap;
 
 
-public abstract class AbstractAbsDispersionBased  implements SGPHeuristic, WeightedHeuristic{
+public abstract class AbstractNormalizedDispersionBased  implements SGPHeuristic, WeightedHeuristic{
 
 	protected boolean parallel;
 	private DistanceFunction dist;
-	public AbstractAbsDispersionBased(boolean parallel) {
+	public AbstractNormalizedDispersionBased(boolean parallel) {
 		this.dist = new SimpleDistanceFunction();
 		this.parallel = parallel;
 	}

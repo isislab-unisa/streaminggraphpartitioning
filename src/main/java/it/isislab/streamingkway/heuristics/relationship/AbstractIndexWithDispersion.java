@@ -50,15 +50,9 @@ public abstract class AbstractIndexWithDispersion implements SGPHeuristic, Weigh
 
 			List<Node> cuv = Dispersion.cuvCalculator(n, p);  
 			double emb=(double)cuv.size();
-			double disp=(double)Dispersion.getDispersion(n, p, dist);
-			//double ndisp = emb < 2 ? 0 : 2*disp/(emb*(emb-1)); 
+			double disp=(double)Dispersion.getDispersion(n, p, dist,cuv);
 			double ndisp=emb==0?0:Math.min(1,disp/emb);
 			double beta=1-T;
-			//			System.out.println(n.getId()+"->"+p.getId()+" \tNDISP:"+ndisp+" \tDISP:"+Dispersion.getDispersion(n, p, dist)+" \tEMB:"+cuv.size()+"\t SCORE:"+(T + beta*(1-ndisp))+" temp: "+T);
-
-			//			if(Math.pow(2, val) > 1) System.out.println("GESOCRISTO");
-			//			else System.out.println("A MARONNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-
 			nodeScores.put(p, T + beta*(1-ndisp));
 
 		});
@@ -95,11 +89,8 @@ public abstract class AbstractIndexWithDispersion implements SGPHeuristic, Weigh
 		Integer maxPart = strScore
 				.max(new Comparator<Entry<Integer, Double>>() {
 					public int compare(Entry<Integer, Double> e1, Entry<Integer, Double> e2) {
-						//						Integer intersection1 = partitionMap.getIntersectionValue(n, e1.getKey());
-						//						Integer intersection2 = partitionMap.getIntersectionValue(n, e2.getKey());
 						Integer size1 = partitionMap.getPartitionSize(e1.getKey());
 						Integer size2 = partitionMap.getPartitionSize(e2.getKey());
-						//System.out.println("Score "+e1.getKey()+" "+e1.getValue());
 						Double score1 = getWeight((double)size1, c) *(e1.getValue());
 						Double score2 = getWeight((double)size2, c)*(e2.getValue());
 						if (score1 > score2) {

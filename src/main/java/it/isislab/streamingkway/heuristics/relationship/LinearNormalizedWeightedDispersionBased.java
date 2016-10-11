@@ -2,9 +2,9 @@ package it.isislab.streamingkway.heuristics.relationship;
 
 import it.isislab.streamingkway.heuristics.weight.LinearWeightedHeuristic;
 
-public class LinearAbsWeightedDispersionBased extends AbstractAbsDispersionBased implements LinearWeightedHeuristic {
+public class LinearNormalizedWeightedDispersionBased extends AbstractNormalizedDispersionBased implements LinearWeightedHeuristic {
 
-	public LinearAbsWeightedDispersionBased(boolean parallel) {
+	public LinearNormalizedWeightedDispersionBased(boolean parallel) {
 		super(parallel);
 	}
 
